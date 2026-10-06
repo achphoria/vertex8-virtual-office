@@ -8,6 +8,23 @@
 <link rel="icon" href="data:,">
 <link rel="preload" as="image" href="assets/office-neon.webp" type="image/webp">
 <script>
+/* Link email Supabase (reset password / undangan): ambil token dari URL lalu HAPUS dari address bar secepatnya.
+   Mendukung: #access_token=..&type=recovery (implicit), ?code= (PKCE), ?token_hash=..&type=recovery, dan #error=.. */
+(function(){try{
+  var h=new URLSearchParams(location.hash.replace(/^#/,'')), q=new URLSearchParams(location.search);
+  var inH=h.has('access_token')||h.has('error_code')||(h.has('error')&&h.has('error_description'));
+  var inQ=q.has('code')||q.has('token_hash')||q.has('error_code')||(q.has('error')&&q.has('error_description'));
+  if(!inH&&!inQ) return;
+  var g=function(k){return (inH&&h.get(k))||(inQ&&q.get(k))||'';};
+  window.__kvAuth={access_token:inH?(h.get('access_token')||''):'',refresh_token:inH?(h.get('refresh_token')||''):'',
+    expires_at:inH?(+h.get('expires_at')||0):0,type:g('type'),code:inQ?(q.get('code')||''):'',token_hash:inQ?(q.get('token_hash')||''):'',
+    error:g('error'),error_code:g('error_code'),error_description:g('error_description')};
+  if(inQ)['code','token_hash','type','error','error_code','error_description','sb','redirect_to'].forEach(function(k){q.delete(k);});
+  var qs=q.toString();
+  history.replaceState(null,'',location.pathname+(qs?'?'+qs:'')+(inH?'':location.hash));
+}catch(e){}})();
+</script>
+<script>
 /* =====================================================================
    DATA AGEN (cadangan) — data utama: Supabase (tabel kv_office_state)
    + Supabase Realtime (perubahan masuk dalam hitungan detik).
@@ -276,7 +293,7 @@ body.rekam .chip{font-size:calc(max(12px, 9.5px * var(--ik)))}
 .m-chat{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed color-mix(in srgb,var(--acc) 45%,transparent)}
 .m-chat small{margin:0 !important}
 .lg-card{width:min(400px,100%)}
-.lg-card h2{margin:0 0 4px}
+.lg-card h2{margin:0 0 4px;padding-right:42px}
 .lg-sub,.lg-note{margin:6px 0 12px;font-size:11.5px;color:var(--muted);line-height:1.45;font-weight:600}
 .lg-card label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin:10px 0 0}
 .kv-in{display:block;width:100%;margin-top:5px;padding:9px 10px;font:inherit;font-weight:600;font-size:14px;color:#fff;background:rgba(5,7,24,.9);
@@ -287,6 +304,17 @@ body.rekam .chip{font-size:calc(max(12px, 9.5px * var(--ik)))}
 .nbtn:disabled{opacity:.5;cursor:wait}
 .chat-ov{align-items:stretch;z-index:61}
 #loginOv{z-index:70}
+#rcOv{z-index:72}
+.lg-card[hidden],.lg-card [hidden]{display:none !important}
+.lg-link{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--cyan);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.lg-link:hover,.lg-link:focus-visible{color:var(--mag);outline:none}
+.lg-forgot{display:flex;justify-content:flex-end;margin:6px 0 0}
+.lg-ok{margin:10px 0 8px;padding:9px 10px;font-size:12.5px;line-height:1.5;color:var(--work);border:1px solid rgba(61,255,168,.45);border-radius:4px;background:rgba(61,255,168,.07);text-shadow:0 0 6px rgba(61,255,168,.5)}
+.lg-show{display:flex !important;align-items:center;gap:7px;text-transform:none !important;letter-spacing:.02em !important;color:var(--muted) !important;font-weight:600;cursor:pointer}
+.lg-show input{accent-color:var(--mag)}
+.rc-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.rc-acts .nbtn{flex:1;padding:10px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .cw{position:relative;width:min(1000px,100%);height:min(88vh,780px);margin:auto;display:flex;flex-direction:column;padding:0;overflow:hidden;animation:pop .25s ease-out both}
 .cw-head{display:flex;align-items:center;gap:12px;padding:12px 56px 12px 16px;border-bottom:1px solid rgba(255,61,242,.4);flex:none}
 .cw-head h2{margin:0;font-size:17px;color:var(--mag);letter-spacing:.06em;text-shadow:0 0 8px rgba(255,61,242,.8);white-space:nowrap}
@@ -436,9 +464,41 @@ body.rekam .staff,body.rekam .chat-ov{display:none !important}
     <input class="kv-in" type="email" id="lgEmail" autocomplete="username" inputmode="email" required>
     <label for="lgPass">Kata sandi</label>
     <input class="kv-in" type="password" id="lgPass" autocomplete="current-password" required>
+    <div class="lg-forgot"><button class="lg-link" type="button" id="lgForgot">Lupa password?</button></div>
     <div class="lg-err" id="lgErr" role="alert"></div>
     <button class="nbtn" type="submit" id="lgBtn">Masuk</button>
-    <p class="lg-note">Belum punya akun atau lupa kata sandi? Hubungi admin Vertex8.</p>
+    <p class="lg-note">Belum punya akun? Hubungi admin Vertex8.</p>
+  </form>
+  <form class="m-card neon lg-card" id="forgotForm" role="dialog" aria-modal="true" aria-labelledby="fgTitle" novalidate hidden>
+    <button class="nbtn m-x" id="forgotX" type="button" aria-label="Tutup">&times;</button>
+    <h2 class="m-name" id="fgTitle" style="--acc:var(--cyan);color:var(--cyan)">Lupa Password</h2>
+    <p class="lg-sub">Masukkan email akun staf kamu. Kami kirim link untuk mengatur password baru (berlaku 1 jam, sekali pakai).</p>
+    <label for="fgEmail">Email</label>
+    <input class="kv-in" type="email" id="fgEmail" autocomplete="username" inputmode="email" required>
+    <div class="lg-err" id="fgErr" role="alert"></div>
+    <div class="lg-ok" id="fgOk" role="status" hidden></div>
+    <button class="nbtn" type="submit" id="fgBtn">Kirim Link Reset</button>
+    <p class="lg-note"><button class="lg-link" type="button" id="fgBack">&larr; Kembali ke Masuk</button></p>
+  </form>
+</div>
+
+<div class="modal" id="rcOv" hidden>
+  <form class="m-card neon lg-card" id="rcForm" role="dialog" aria-modal="true" aria-labelledby="rcTitle" novalidate>
+    <button class="nbtn m-x" id="rcX" type="button" aria-label="Tutup">&times;</button>
+    <h2 class="m-name" id="rcTitle" style="--acc:var(--mag);color:var(--mag)">Atur Password Baru</h2>
+    <p class="lg-sub" id="rcSub">Memeriksa link reset…</p>
+    <input class="sr-only" type="email" id="rcUser" autocomplete="username" tabindex="-1" aria-hidden="true" readonly>
+    <div id="rcFields" hidden>
+      <label for="rcPass">Password baru</label>
+      <input class="kv-in" type="password" id="rcPass" autocomplete="new-password" minlength="8" maxlength="72">
+      <label for="rcPass2">Ulangi password baru</label>
+      <input class="kv-in" type="password" id="rcPass2" autocomplete="new-password" minlength="8" maxlength="72">
+      <label class="lg-show"><input type="checkbox" id="rcShow"> Tampilkan password</label>
+    </div>
+    <div class="lg-err" id="rcErr" role="alert"></div>
+    <div class="lg-ok" id="rcOk" role="status" hidden></div>
+    <button class="nbtn" type="submit" id="rcBtn" hidden>Simpan Password Baru</button>
+    <div class="rc-acts" id="rcActs" hidden></div>
   </form>
 </div>
 
@@ -1509,8 +1569,9 @@ function scheduleRefresh(){
   const ms=Math.max(5000, S.expires_at*1000-Date.now()-90000);
   refreshTimer=setTimeout(()=>refresh().catch(()=>{}), ms);
 }
-async function authPost(path, body, token){
-  const r=await fetch(SB_URL+'/auth/v1/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})},body:JSON.stringify(body||{})});
+function authPost(path, body, token){ return authReq('POST', path, body, token); }
+async function authReq(method, path, body, token){
+  const r=await fetch(SB_URL+'/auth/v1/'+path,{method,cache:'no-store',headers:{'apikey':SB_KEY,'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})},body:method==='GET'?undefined:JSON.stringify(body||{})});
   let j=null; try{ j=await r.json(); }catch(e){}
   if(!r.ok){ const e=new Error((j&&(j.msg||j.error_description||j.message||j.error))||('HTTP '+r.status)); e.status=r.status; e.code=j&&(j.error_code||j.code||j.error); throw e; }
   return j;
@@ -1723,8 +1784,8 @@ function closeChat(){
   if(location.hash==='#ngobrol') history.replaceState(null,'',location.pathname+location.search);
   if(chatReturn && chatReturn.focus) try{ chatReturn.focus({preventScroll:true}); }catch(e){}
 }
-function openLogin(){ loginReturn=document.activeElement; $('#lgErr').textContent=''; $('#loginOv').hidden=false; setTimeout(()=>$('#lgEmail').focus(),30); }
-function closeLogin(){ if($('#loginOv').hidden) return; $('#loginOv').hidden=true; $('#lgPass').value=''; if(loginReturn && loginReturn.focus) try{ loginReturn.focus({preventScroll:true}); }catch(e){} }
+function openLogin(){ loginReturn=document.activeElement; $('#lgErr').textContent=''; $('#loginForm').hidden=false; $('#forgotForm').hidden=true; $('#loginOv').hidden=false; setTimeout(()=>$('#lgEmail').focus(),30); }
+function closeLogin(){ if($('#loginOv').hidden) return; $('#loginOv').hidden=true; $('#lgPass').value=''; $('#loginForm').hidden=false; $('#forgotForm').hidden=true; if(loginReturn && loginReturn.focus) try{ loginReturn.focus({preventScroll:true}); }catch(e){} }
 
 $('#btnChat').addEventListener('click',()=>openChat());
 $('#btnLogin').addEventListener('click',openLogin);
@@ -1758,7 +1819,8 @@ $('#loginForm').addEventListener('submit',async e=>{
 });
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape') return;
-  if(!$('#loginOv').hidden){ e.stopImmediatePropagation(); closeLogin(); }
+  if(!$('#rcOv').hidden){ e.stopImmediatePropagation(); rcClose(); }
+  else if(!$('#loginOv').hidden){ e.stopImmediatePropagation(); closeLogin(); }
   else if(isOpen()){ e.stopImmediatePropagation(); closeChat(); }
 },true);
 document.addEventListener('visibilitychange',()=>{ if(document.hidden || !S) return;
@@ -1766,6 +1828,127 @@ document.addEventListener('visibilitychange',()=>{ if(document.hidden || !S) ret
   if(ME && ME.authorized){ if(!CR.ws){ CR.tries=0; crConnect(); } if(isOpen()) loadThread().catch(()=>{}); } });
 addEventListener('hashchange',()=>{ if(location.hash==='#ngobrol') openChat(); else if(location.hash.startsWith('#ngobrol=')) openChat(location.hash.slice(9)); });
 addEventListener('storage',e=>{ if(e.key===LS_KEY){ const s=loadSession(); if(!s && S){ endSession(); } } });
+
+/* ---------------- lupa password + atur password baru ---------------- */
+const SITE_URL='https://achphoria.github.io/vertex8-virtual-office/'; // harus ada di Auth > URL Configuration > Redirect URLs
+const PKCE_KEY='kv_pkce_verifier';
+let RC=null, rcReturn=null;
+const jwtExp=t=>{ try{ return JSON.parse(atob(String(t).split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).exp||0; }catch(e){ return 0; } };
+function showForgot(on){
+  $('#loginForm').hidden=on; $('#forgotForm').hidden=!on;
+  if(on){ $('#fgErr').textContent=''; $('#fgOk').hidden=true; $('#fgBtn').hidden=false; if(!$('#fgEmail').value) $('#fgEmail').value=$('#lgEmail').value.trim(); setTimeout(()=>$('#fgEmail').focus(),30); }
+  else setTimeout(()=>$('#lgEmail').focus(),30);
+}
+function openForgot(email){ if($('#loginOv').hidden) openLogin(); if(email) $('#fgEmail').value=email; showForgot(true); }
+async function sendRecovery(email){
+  return authPost('recover?redirect_to='+encodeURIComponent(SITE_URL),{email});
+}
+function rcOpen(){ if($('#rcOv').hidden){ rcReturn=document.activeElement; $('#rcOv').hidden=false; } }
+function rcClose(){ if($('#rcOv').hidden) return; $('#rcOv').hidden=true; RC=null; $('#rcPass').value=''; $('#rcPass2').value='';
+  if(rcReturn && rcReturn.focus) try{ rcReturn.focus({preventScroll:true}); }catch(e){} }
+function rcView(st, html, email){
+  $('#rcTitle').textContent = st==='ok' ? 'Password Berhasil Diganti' : st==='gagal' ? 'Link Tidak Bisa Dipakai' : 'Atur Password Baru';
+  $('#rcSub').innerHTML=html||''; $('#rcErr').textContent=''; $('#rcOk').hidden=true;
+  $('#rcFields').hidden = $('#rcBtn').hidden = st!=='form';
+  const acts=$('#rcActs'); acts.hidden = st==='form' || st==='cek';
+  acts.innerHTML = st==='ok'
+    ? `<button class="nbtn rec" type="button" data-rc="close">Tutup</button><button class="nbtn" type="button" data-rc="chat">Buka Ngobrol</button>`
+    : st==='gagal' ? `<button class="nbtn rec" type="button" data-rc="close">Tutup</button><button class="nbtn" type="button" data-rc="new" data-email="${esc(email||'')}">Kirim Link Baru</button>` : '';
+  if(st==='form'){ $('#rcUser').value=email||''; setTimeout(()=>$('#rcPass').focus(),40); }
+  else if(st!=='cek') setTimeout(()=>{ const b=acts.querySelector('.nbtn:last-child'); if(b) b.focus(); },40);
+}
+function rcFailText(code, desc){
+  const s=String(code||'')+' '+String(desc||'');
+  if(/otp_expired|expired|invalid|flow_state|not.?found|bad_jwt|session/i.test(s)) return 'Link reset sudah <b>kedaluwarsa atau sudah pernah dipakai</b>. Link hanya berlaku 1 jam dan sekali pakai. Minta link baru di bawah ini.';
+  if(/pkce/i.test(s)) return 'Link ini dibuat dengan mode aman (PKCE) dan hanya bisa dibuka di browser yang memintanya. Minta link baru lewat tombol di bawah ini.';
+  if(/access_denied/i.test(s)) return 'Link ditolak oleh sistem login. Minta link reset baru di bawah ini.';
+  return 'Link reset tidak bisa diproses. Minta link baru di bawah ini.';
+}
+async function handleAuthRedirect(R){
+  const type=String(R.type||'').toLowerCase();
+  const isPw = type==='recovery' || type==='invite' || (!type && (R.code || R.token_hash));
+  if(R.error || R.error_code){ rcOpen(); rcView('gagal', rcFailText(R.error_code||R.error, R.error_description)); return; }
+  if(!isPw){ // link konfirmasi lain (signup / magic link): cukup masuk
+    if(!R.access_token) return;
+    try{ const u=await authReq('GET','user',null,R.access_token); setSession({...R, expires_at:R.expires_at||jwtExp(R.access_token), user:u}); await afterLogin(); }catch(e){}
+    return;
+  }
+  rcOpen(); rcView('cek','Memeriksa link reset…');
+  try{
+    let sess;
+    if(R.token_hash){ sess=await authPost('verify',{type:type||'recovery', token_hash:R.token_hash}); }
+    else if(R.code){
+      let v=null; try{ v=localStorage.getItem(PKCE_KEY); }catch(e){}
+      if(!v) throw Object.assign(new Error('pkce'),{code:'pkce_missing'});
+      sess=await authPost('token?grant_type=pkce',{auth_code:R.code, code_verifier:v});
+      try{ localStorage.removeItem(PKCE_KEY); }catch(e){}
+    } else {
+      sess={access_token:R.access_token, refresh_token:R.refresh_token, expires_at:R.expires_at||jwtExp(R.access_token)};
+      if(!sess.expires_at || sess.expires_at*1000 < Date.now()+30000){
+        if(!sess.refresh_token) throw Object.assign(new Error('expired'),{code:'otp_expired'});
+        sess=await authPost('token?grant_type=refresh_token',{refresh_token:sess.refresh_token});
+      }
+    }
+    if(!sess.user || !sess.user.email) sess.user=await authReq('GET','user',null,sess.access_token);
+    RC={access_token:sess.access_token, refresh_token:sess.refresh_token, expires_at:sess.expires_at||Math.floor(Date.now()/1000)+(sess.expires_in||3600), user:sess.user};
+    rcView('form', `Untuk akun <b>${esc(RC.user.email||'')}</b>. Minimal 8 karakter, lalu ketik ulang untuk konfirmasi.`, RC.user.email);
+  }catch(e){
+    RC=null; rcView('gagal', rcFailText(e.code, e.message));
+  }
+}
+$('#lgForgot').addEventListener('click',()=>showForgot(true));
+$('#fgBack').addEventListener('click',()=>showForgot(false));
+$('#forgotX').addEventListener('click',closeLogin);
+$('#forgotForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const email=$('#fgEmail').value.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ $('#fgErr').textContent='Masukkan email yang valid.'; return; }
+  $('#fgBtn').disabled=true; $('#fgBtn').textContent='Mengirim…'; $('#fgErr').textContent=''; $('#fgOk').hidden=true;
+  try{
+    await sendRecovery(email);
+    $('#fgOk').innerHTML=`Jika <b>${esc(email)}</b> terdaftar, link reset sudah dikirim. Buka email (cek juga folder Spam/Promosi), lalu klik link-nya <b>dalam 1 jam</b>. Link akan membuka halaman ini untuk mengatur password baru.`;
+    $('#fgOk').hidden=false; $('#fgBtn').hidden=true;
+  }catch(err){
+    const m=String(err.message||'')+' '+String(err.code||'');
+    $('#fgErr').textContent = (err.status===429 || /rate.?limit/i.test(m)) ? 'Batas pengiriman email tercapai. Coba lagi sekitar 1 jam lagi.'
+      : /not authorized/i.test(m) ? 'Email ini belum bisa menerima email dari sistem login. Hubungi admin Vertex8.'
+      : /invalid/i.test(m) ? 'Format email tidak valid.'
+      : err.status ? 'Gagal mengirim link. Coba lagi nanti.' : 'Tidak bisa terhubung. Periksa koneksi internet.';
+  }finally{ $('#fgBtn').disabled=false; $('#fgBtn').textContent='Kirim Link Reset'; }
+});
+$('#rcX').addEventListener('click',rcClose);
+$('#rcOv').addEventListener('click',e=>{ if(e.target===$('#rcOv') && $('#rcFields').hidden) rcClose(); });
+$('#rcShow').addEventListener('change',e=>{ const t=e.target.checked?'text':'password'; $('#rcPass').type=t; $('#rcPass2').type=t; });
+$('#rcActs').addEventListener('click',e=>{ const b=e.target.closest('[data-rc]'); if(!b) return; const a=b.dataset.rc;
+  rcClose(); if(a==='chat') openChat(); else if(a==='new') openForgot(b.dataset.email||''); });
+$('#rcForm').addEventListener('submit',async e=>{
+  e.preventDefault(); if(!RC) return;
+  const p1=$('#rcPass').value, p2=$('#rcPass2').value;
+  if(p1.length<8){ $('#rcErr').textContent='Password minimal 8 karakter.'; $('#rcPass').focus(); return; }
+  if(p1.length>72){ $('#rcErr').textContent='Password maksimal 72 karakter.'; return; }
+  if(p1!==p2){ $('#rcErr').textContent='Konfirmasi password tidak sama.'; $('#rcPass2').focus(); return; }
+  $('#rcBtn').disabled=true; $('#rcBtn').textContent='Menyimpan…'; $('#rcErr').textContent='';
+  try{
+    if(RC.expires_at*1000 < Date.now()+30000 && RC.refresh_token){
+      const r=await authPost('token?grant_type=refresh_token',{refresh_token:RC.refresh_token});
+      RC={...RC, access_token:r.access_token, refresh_token:r.refresh_token, expires_at:r.expires_at||Math.floor(Date.now()/1000)+(r.expires_in||3600)};
+    }
+    const u=await authReq('PUT','user',{password:p1},RC.access_token);
+    const email=(u&&u.email)||RC.user.email||'';
+    setSession({...RC, user:u&&u.id?u:RC.user}); RC=null;
+    $('#rcPass').value=''; $('#rcPass2').value='';
+    rcView('ok', `Password akun <b>${esc(email)}</b> sudah diperbarui dan kamu sudah <b>masuk</b> di Kantor Virtual. Lain kali, masuk dengan email dan password baru ini.`);
+    afterLogin().catch(()=>{});
+  }catch(err){
+    const m=String(err.message||'')+' '+String(err.code||'');
+    $('#rcErr').textContent = /same_password|different from the old/i.test(m) ? 'Password baru harus berbeda dari password lama.'
+      : /weak_password|weak|pwned|characters/i.test(m) ? 'Password terlalu lemah. Pakai kombinasi huruf besar, kecil, angka, dan simbol.'
+      : /reauthentication/i.test(m) ? 'Sistem meminta verifikasi ulang. Minta link reset baru lalu coba lagi.'
+      : (err.status===401 || err.status===403 || /session|jwt|expired/i.test(m)) ? 'Sesi reset sudah kedaluwarsa. Minta link reset baru.'
+      : err.status===429 ? 'Terlalu banyak percobaan. Coba lagi beberapa menit lagi.'
+      : err.status ? 'Gagal menyimpan password. Coba lagi.' : 'Tidak bisa terhubung. Periksa koneksi internet.';
+  }finally{ $('#rcBtn').disabled=false; $('#rcBtn').textContent='Simpan Password Baru'; }
+});
 
 /* tombol "Ngobrol" di detail agent (klik robot / meja / kartu) */
 window.KVChat={
@@ -1786,6 +1969,8 @@ document.getElementById('mbody').addEventListener('click',e=>{ const b=e.target.
     try{ if(S.expires_at*1000-Date.now()<60000) await refresh(); else scheduleRefresh(); }catch(e){}
     if(S) await afterLogin();
   }
+  const AR=window.__kvAuth; window.__kvAuth=null;
+  if(AR){ await handleAuthRedirect(AR); return; }
   if(location.hash==='#ngobrol') openChat(); else if(location.hash.startsWith('#ngobrol=')) openChat(location.hash.slice(9));
 })();
 })();

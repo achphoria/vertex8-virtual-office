@@ -96,6 +96,18 @@ SQL lengkap: `supabase/kv_chat.sql`; kode fungsi: `supabase/functions/kv-chat-no
 Lainnya: `staff-admin.py list | disable --email … | enable --email … | remove --email … | update --email … --agents …`
 dan `staff-admin.py rotate-token`.
 
+### Lupa password / atur password baru
+
+- Di modal **Masuk** ada tautan **Lupa password?** → `POST /auth/v1/recover` dengan
+  `redirect_to=https://achphoria.github.io/vertex8-virtual-office/`. URL itu **wajib** ada di Supabase →
+  *Authentication → URL Configuration → Redirect URLs*; kalau tidak, Supabase memakai Site URL (`http://localhost:3000`).
+  Menambah Redirect URL tidak mengubah Site URL / aplikasi lain.
+- Saat halaman dibuka dari link email (`#access_token=…&type=recovery`, `?token_hash=…&type=recovery`, atau `?code=` PKCE),
+  token langsung dihapus dari address bar (`history.replaceState`), lalu muncul modal **Atur Password Baru**
+  (min. 8 karakter + konfirmasi) → `PUT /auth/v1/user`. Setelah berhasil, pengguna langsung masuk.
+- Link lama yang terlanjur ke `http://localhost:3000/#access_token=…`: ganti awalan `http://localhost:3000/` dengan
+  `https://achphoria.github.io/vertex8-virtual-office/` (bagian `#…` tetap). Link email sekali pakai dan berlaku 1 jam.
+
 ### Secret webhook (Dashboard → Edge Functions → Secrets)
 
 `WEBHOOK_URL_CONTENT` (wajib), `WEBHOOK_KEY_CONTENT` (kunci pengirim), opsional `WEBHOOK_AUTH_HEADER`
