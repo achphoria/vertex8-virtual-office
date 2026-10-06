@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T15:29:39+07:00",
+  "updated_at": "2026-10-06T15:29:48+07:00",
   "log": [
     {
-      "t": "2026-10-06T15:29:39+07:00",
-      "agent": "Mr. Widodo",
-      "status": "Selesai",
+      "t": "2026-10-06T15:29:48+07:00",
+      "agent": "Mr. Winarto",
+      "status": "Sedang kerja",
       "text": "Tes status kantor virtual"
+    },
+    {
+      "t": "2026-10-06T15:29:39+07:00",
+      "text": "Tes status kantor virtual",
+      "agent": "Mr. Widodo",
+      "status": "Selesai"
     },
     {
       "t": "2026-10-06T15:29:36+07:00",
@@ -115,12 +121,6 @@
       "text": "Menunggu chat staf",
       "agent": "Mr. Wawan",
       "status": "Terjadwal"
-    },
-    {
-      "t": "2026-10-06T13:42:56+07:00",
-      "text": "Membalas chat staf",
-      "agent": "Mr. Wawan",
-      "status": "Selesai"
     }
   ],
   "agents": [
@@ -193,9 +193,9 @@
           "status": "Terjadwal"
         },
         {
-          "status": "Selesai",
+          "text": "Tes status kantor virtual",
           "label": "Baru selesai",
-          "text": "Tes status kantor virtual"
+          "status": "Selesai"
         }
       ]
     },
@@ -205,6 +205,11 @@
       "name": "Mr. Winarto",
       "role": "Performance",
       "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Tes status kantor virtual"
+        },
         {
           "text": "Menunggu tugas pertama",
           "label": "Berikutnya",
