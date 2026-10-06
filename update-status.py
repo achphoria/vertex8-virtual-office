@@ -3,7 +3,7 @@
 
 Pakai:
   python3 /workspace/vertex8-virtual-office-repo/update-status.py \
-      --agent "Vertex8 Marketing" --state working|scheduled|done --task "..." [--next "..."]
+      --agent "Mr. Wahyudi" --state working|scheduled|done --task "..." [--next "..."]
 
 state:
   working   -> tugas "Sekarang" (Sedang kerja) diganti dengan --task
@@ -65,7 +65,7 @@ def ststate(status):
 
 def main():
     ap = argparse.ArgumentParser(description="Perbarui status agen Kantor Virtual Vertex8 dan push ke GitHub.")
-    ap.add_argument("--agent", required=True, help='nama atau id agen, mis. "Vertex8 Marketing"')
+    ap.add_argument("--agent", required=True, help='nama atau id agen, mis. "Mr. Wahyudi"')
     ap.add_argument("--state", required=True, choices=list(STATE_MAP))
     ap.add_argument("--task", required=True)
     ap.add_argument("--next", dest="nxt", default=None, help='tugas "Berikutnya" (opsional)')

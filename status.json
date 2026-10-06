@@ -4,8 +4,8 @@
   "agents": [
     {
       "id": "grok",
-      "name": "Grok Bot",
-      "role": "Koordinator",
+      "name": "Mr. Wakidi",
+      "role": "Builder",
       "theme": "grok",
       "tasks": [
         {
@@ -22,8 +22,8 @@
     },
     {
       "id": "analyst",
-      "name": "Vertex8 Analyst",
-      "role": "Analis Data",
+      "name": "Mr. Wiyadi",
+      "role": "Ops & Data",
       "theme": "analyst",
       "tasks": [
         {
@@ -40,8 +40,8 @@
     },
     {
       "id": "marketing",
-      "name": "Vertex8 Marketing",
-      "role": "Konten & Tren",
+      "name": "Mr. Wahyudi",
+      "role": "Marketing",
       "theme": "marketing",
       "tasks": [
         {
@@ -60,31 +60,31 @@
   "log": [
     {
       "t": "2026-10-06T11:33:34+07:00",
-      "agent": "Vertex8 Marketing",
+      "agent": "Mr. Wahyudi",
       "status": "Sedang kerja",
       "text": "Riset 3 tren fitness/Hyrox yang viral"
     },
     {
       "t": "2026-10-06T11:31:14+07:00",
-      "agent": "Grok Bot",
+      "agent": "Mr. Wakidi",
       "status": "Sedang kerja",
       "text": "Meng-online-kan kantor virtual"
     },
     {
       "t": "2026-10-06T11:31:14+07:00",
-      "agent": "Vertex8 Marketing",
+      "agent": "Mr. Wahyudi",
       "status": "Sedang kerja",
       "text": "Riset 3 tren fitness/Hyrox yang viral"
     },
     {
       "t": "2026-10-06T11:31:14+07:00",
-      "agent": "Vertex8 Analyst",
+      "agent": "Mr. Wiyadi",
       "status": "Sedang kerja",
       "text": "Menyiapkan laporan mingguan"
     },
     {
       "t": "2026-10-06T11:31:14+07:00",
-      "agent": "Grok Bot",
+      "agent": "Mr. Wakidi",
       "status": "Selesai",
       "text": "Analisa data gym Vertex8"
     }
