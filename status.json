@@ -1,18 +1,30 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T12:38:50+07:00",
+  "updated_at": "2026-10-06T12:38:53+07:00",
   "log": [
     {
-      "t": "2026-10-06T12:38:50+07:00",
-      "agent": "Mr. Widodo",
+      "t": "2026-10-06T12:38:53+07:00",
+      "agent": "Mr. Winarto",
       "status": "Terjadwal",
       "text": "Menunggu tugas pertama"
     },
     {
-      "t": "2026-10-06T12:38:50+07:00",
-      "agent": "Mr. Widodo",
+      "t": "2026-10-06T12:38:53+07:00",
+      "agent": "Mr. Winarto",
       "status": "Info",
-      "text": "Bergabung ke kantor sebagai Member Success"
+      "text": "Bergabung ke kantor sebagai Performance"
+    },
+    {
+      "t": "2026-10-06T12:38:50+07:00",
+      "text": "Menunggu tugas pertama",
+      "agent": "Mr. Widodo",
+      "status": "Terjadwal"
+    },
+    {
+      "t": "2026-10-06T12:38:50+07:00",
+      "text": "Bergabung ke kantor sebagai Member Success",
+      "agent": "Mr. Widodo",
+      "status": "Info"
     },
     {
       "t": "2026-10-06T12:34:39+07:00",
@@ -170,8 +182,21 @@
     },
     {
       "id": "member",
+      "desk": 4,
       "name": "Mr. Widodo",
       "role": "Member Success",
+      "tasks": [
+        {
+          "text": "Menunggu tugas pertama",
+          "label": "Berikutnya",
+          "status": "Terjadwal"
+        }
+      ]
+    },
+    {
+      "id": "performance",
+      "name": "Mr. Winarto",
+      "role": "Performance",
       "tasks": [
         {
           "status": "Terjadwal",
@@ -179,7 +204,7 @@
           "text": "Menunggu tugas pertama"
         }
       ],
-      "desk": 4
+      "desk": 5
     }
   ]
 }
