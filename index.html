@@ -292,6 +292,7 @@ body.rekam .chip{font-size:calc(max(12px, 9.5px * var(--ik)))}
 .cw-head h2{margin:0;font-size:17px;color:var(--mag);letter-spacing:.06em;text-shadow:0 0 8px rgba(255,61,242,.8);white-space:nowrap}
 .cw-user{margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cw-user b{color:var(--work)}
+.cw-user .cw-out{font-size:10px;padding:4px 8px;margin-left:8px}
 .cw-body{flex:1;min-height:0;display:grid;grid-template-columns:270px minmax(0,1fr)}
 .cw-list{border-right:1px solid rgba(61,245,255,.25);overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;scrollbar-width:thin;scrollbar-color:#3a2a80 transparent}
 .cw-list h3{margin:2px 2px 4px;font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
@@ -1638,7 +1639,7 @@ function renderHeader(){
   $('#btnLogin').hidden=on; $('#whoBox').hidden=!on;
   const name=(ME&&ME.authorized&&ME.display_name)||(S&&S.user.email)||'';
   $('#whoName').textContent=name; $('#whoName').title=(S&&S.user.email)||'';
-  $('#cwUser').innerHTML = on ? `Masuk sebagai <b>${esc(name)}</b>` : '';
+  $('#cwUser').innerHTML = on ? `Masuk sebagai <b>${esc(name)}</b> <button class="nbtn rec cw-out" type="button" data-act="logout">Keluar</button>` : '';
 }
 function renderList(){
   const rank=a=>canChat(a.agent)?0:a.enabled?1:2;
@@ -1733,6 +1734,7 @@ $('#loginX').addEventListener('click',closeLogin);
 $('#chatOv').addEventListener('click',e=>{ if(e.target===$('#chatOv')) closeChat(); });
 $('#loginOv').addEventListener('click',e=>{ if(e.target===$('#loginOv')) closeLogin(); });
 $('#cwList').addEventListener('click',e=>{ const b=e.target.closest('[data-ag]'); if(!b||b.disabled) return; cur=b.dataset.ag; msgs=[]; renderList(); renderThead(); renderMsgs(true); loadThread().then(schedulePoll).catch(()=>{}); });
+$('#cwUser').addEventListener('click',e=>{ if(e.target.closest('[data-act=logout]')) logout(); });
 $('#cwMsgs').addEventListener('click',e=>{ const b=e.target.closest('[data-act]'); if(!b) return; if(b.dataset.act==='login') openLogin(); else if(b.dataset.act==='logout') logout(); });
 $('#cwForm').addEventListener('submit',e=>{ e.preventDefault(); const t=$('#cwInput').value.trim(); if(t) send(t); });
 $('#cwInput').addEventListener('keydown',e=>{ if(e.key==='Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); $('#cwForm').requestSubmit(); } });
