@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T15:29:51+07:00",
+  "updated_at": "2026-10-06T15:29:53+07:00",
   "log": [
     {
-      "t": "2026-10-06T15:29:51+07:00",
-      "agent": "Mr. Wawan",
+      "t": "2026-10-06T15:29:53+07:00",
+      "agent": "Mr. Wiyadi",
       "status": "Sedang kerja",
       "text": "Tes status kantor virtual"
+    },
+    {
+      "t": "2026-10-06T15:29:51+07:00",
+      "text": "Tes status kantor virtual",
+      "agent": "Mr. Wawan",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T15:29:48+07:00",
@@ -115,12 +121,6 @@
       "text": "Membalas chat staf",
       "agent": "Mr. Wawan",
       "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T13:48:19+07:00",
-      "text": "Prototipe login staf dan chat agent di web",
-      "agent": "Mr. Wakidi",
-      "status": "Selesai"
     }
   ],
   "agents": [
@@ -144,6 +144,11 @@
       "name": "Mr. Wiyadi",
       "role": "Ops & Data",
       "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Tes status kantor virtual"
+        },
         {
           "text": "Laporan harian besok pagi",
           "label": "Berikutnya",
@@ -237,9 +242,9 @@
       "role": "Content & Creative",
       "tasks": [
         {
-          "status": "Sedang kerja",
+          "text": "Tes status kantor virtual",
           "label": "Sekarang",
-          "text": "Tes status kantor virtual"
+          "status": "Sedang kerja"
         },
         {
           "text": "Menunggu chat staf",
