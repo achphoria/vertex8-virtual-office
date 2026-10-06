@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T15:29:53+07:00",
+  "updated_at": "2026-10-06T15:29:56+07:00",
   "log": [
     {
-      "t": "2026-10-06T15:29:53+07:00",
-      "agent": "Mr. Wiyadi",
+      "t": "2026-10-06T15:29:56+07:00",
+      "agent": "Mr. Wahyudi",
       "status": "Sedang kerja",
       "text": "Tes status kantor virtual"
+    },
+    {
+      "t": "2026-10-06T15:29:53+07:00",
+      "text": "Tes status kantor virtual",
+      "agent": "Mr. Wiyadi",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T15:29:51+07:00",
@@ -115,12 +121,6 @@
       "text": "Membalas chat staf",
       "agent": "Mr. Wawan",
       "status": "Selesai"
-    },
-    {
-      "t": "2026-10-06T14:01:44+07:00",
-      "text": "Membalas chat staf",
-      "agent": "Mr. Wawan",
-      "status": "Sedang kerja"
     }
   ],
   "agents": [
@@ -145,9 +145,9 @@
       "role": "Ops & Data",
       "tasks": [
         {
-          "status": "Sedang kerja",
+          "text": "Tes status kantor virtual",
           "label": "Sekarang",
-          "text": "Tes status kantor virtual"
+          "status": "Sedang kerja"
         },
         {
           "text": "Laporan harian besok pagi",
@@ -173,6 +173,11 @@
       "name": "Mr. Wahyudi",
       "role": "Marketing",
       "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Tes status kantor virtual"
+        },
         {
           "text": "Draf hook, skrip Reels, dan caption",
           "label": "Berikutnya",
@@ -211,9 +216,11 @@
       "role": "Performance",
       "tasks": [
         {
+          "step": "Cek koneksi status",
           "text": "Tes status kantor virtual",
           "label": "Sekarang",
-          "status": "Sedang kerja"
+          "status": "Sedang kerja",
+          "step_at": "2026-10-06T15:29:55+07:00"
         },
         {
           "text": "Menunggu tugas pertama",
