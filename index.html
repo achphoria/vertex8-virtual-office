@@ -266,6 +266,87 @@ body.rekam .chip{font-size:calc(max(12px, 9.5px * var(--ik)))}
 }
 @media (max-width:480px){ .clock{font-size:22px} .sub{font-size:10px} .clockbox .nbtn{font-size:11px;padding:6px 8px} }
 @media (prefers-reduced-motion:reduce){ .tk-move{animation-duration:120s} }
+/* ---------- staf: masuk + ngobrol dengan agent ---------- */
+.staff{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.staff[hidden],.staff [hidden]{display:none !important}
+.who{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--work);letter-spacing:.06em;text-shadow:0 0 6px rgba(61,255,168,.7);max-width:200px}
+.who b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nbtn .badge{display:inline-block;min-width:16px;padding:1px 4px;margin-left:6px;border-radius:8px;background:var(--hot);color:#fff;font-size:10px;line-height:14px;text-align:center;box-shadow:0 0 8px var(--hot)}
+.nbtn .badge[hidden]{display:none}
+.m-chat{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px dashed color-mix(in srgb,var(--acc) 45%,transparent)}
+.m-chat small{margin:0 !important}
+.lg-card{width:min(400px,100%)}
+.lg-card h2{margin:0 0 4px}
+.lg-sub,.lg-note{margin:6px 0 12px;font-size:11.5px;color:var(--muted);line-height:1.45;font-weight:600}
+.lg-card label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin:10px 0 0}
+.kv-in{display:block;width:100%;margin-top:5px;padding:9px 10px;font:inherit;font-weight:600;font-size:14px;color:#fff;background:rgba(5,7,24,.9);
+  border:1px solid rgba(61,245,255,.5);border-radius:4px;outline:none;letter-spacing:.02em}
+.kv-in:focus{border-color:var(--mag);box-shadow:0 0 10px rgba(255,61,242,.45)}
+.lg-err{min-height:1.3em;margin:10px 0 6px;font-size:12px;color:var(--hot);text-shadow:0 0 6px rgba(255,61,122,.6)}
+.lg-card .nbtn[type=submit]{width:100%;padding:10px}
+.nbtn:disabled{opacity:.5;cursor:wait}
+.chat-ov{align-items:stretch;z-index:61}
+#loginOv{z-index:70}
+.cw{position:relative;width:min(1000px,100%);height:min(88vh,780px);margin:auto;display:flex;flex-direction:column;padding:0;overflow:hidden;animation:pop .25s ease-out both}
+.cw-head{display:flex;align-items:center;gap:12px;padding:12px 56px 12px 16px;border-bottom:1px solid rgba(255,61,242,.4);flex:none}
+.cw-head h2{margin:0;font-size:17px;color:var(--mag);letter-spacing:.06em;text-shadow:0 0 8px rgba(255,61,242,.8);white-space:nowrap}
+.cw-user{margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cw-user b{color:var(--work)}
+.cw-body{flex:1;min-height:0;display:grid;grid-template-columns:270px minmax(0,1fr)}
+.cw-list{border-right:1px solid rgba(61,245,255,.25);overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;scrollbar-width:thin;scrollbar-color:#3a2a80 transparent}
+.cw-list h3{margin:2px 2px 4px;font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.cw-ag{display:flex;align-items:center;gap:9px;width:100%;text-align:left;padding:7px 8px;border-radius:5px;cursor:pointer;color:#fff;font:inherit;
+  background:rgba(12,18,54,.85);border:1px solid color-mix(in srgb,var(--acc) 40%,transparent);box-shadow:inset 3px 0 0 var(--acc)}
+.cw-ag:hover:not(:disabled){background:rgba(20,28,78,.95)}
+.cw-ag.on{background:rgba(30,20,70,.95);box-shadow:inset 3px 0 0 var(--acc),0 0 14px color-mix(in srgb,var(--acc) 45%,transparent)}
+.cw-ag:disabled{opacity:.45;cursor:default}
+.cw-ag .ava{width:34px}
+.cw-ag span{display:flex;flex-direction:column;min-width:0;gap:3px}
+.cw-ag b{font-size:12.5px;color:var(--acc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cw-ag small{font-size:9.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cw-ag em{font-style:normal;font-size:9px;letter-spacing:.06em;padding:2px 5px;border-radius:3px;align-self:flex-start;color:#060818;background:var(--work)}
+.cw-ag em.soon{background:#5b6396;color:#e3e7ff} .cw-ag em.no{background:var(--sched)}
+.cw-main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.cw-thead{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(61,245,255,.2);flex:none;--acc:#ff8a3d}
+.cw-thead .ava{width:40px}
+.cw-thead b{display:block;color:var(--acc);font-size:14px;text-shadow:0 0 6px color-mix(in srgb,var(--acc) 70%,transparent)}
+.cw-thead small{display:block;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+.cw-msgs{flex:1;min-height:0;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:#3a2a80 transparent}
+.cw-empty{margin:auto;max-width:430px;text-align:center;color:var(--muted);font-size:13px;line-height:1.55;font-weight:600}
+.cw-empty b{color:#fff}
+.cw-empty .nbtn{margin-top:12px}
+.bub{max-width:78%;padding:8px 11px 6px;border-radius:8px;font-size:13.5px;line-height:1.45;font-weight:600;white-space:pre-wrap;word-break:break-word}
+.bub.new{animation:pop .2s ease-out both}
+.bub.me{align-self:flex-end;background:rgba(61,245,255,.1);border:1px solid rgba(61,245,255,.6);box-shadow:0 0 10px rgba(61,245,255,.18);border-bottom-right-radius:2px}
+.bub.ag{align-self:flex-start;background:rgba(255,138,61,.08);border:1px solid color-mix(in srgb,var(--acc,#ff8a3d) 65%,transparent);box-shadow:0 0 10px color-mix(in srgb,var(--acc,#ff8a3d) 18%,transparent);border-bottom-left-radius:2px}
+.bub .bm{display:block;margin-top:4px;font-size:9.5px;letter-spacing:.06em;color:var(--muted);text-align:right;white-space:nowrap}
+.bub.ag .bm{text-align:left}
+.bub .bm i{font-style:normal;color:var(--sched)} .bub .bm i.ok{color:var(--work)} .bub .bm i.err{color:var(--hot)}
+.bub.sending{opacity:.6}
+.cw-day{align-self:center;font-size:9.5px;letter-spacing:.12em;color:#6f78b0;text-transform:uppercase;padding:2px 8px;border:1px solid rgba(111,120,176,.35);border-radius:10px}
+.cw-typing{flex:none;padding:6px 16px;font-size:11.5px;color:var(--acc,#ff8a3d);letter-spacing:.04em;--acc:#ff8a3d;text-shadow:0 0 6px color-mix(in srgb,var(--acc) 60%,transparent)}
+.cw-typing[hidden]{display:none}
+.cw-typing .dots i{display:inline-block;width:5px;height:5px;margin-left:3px;border-radius:50%;background:currentColor;animation:dot 1.2s infinite}
+.cw-typing .dots i:nth-child(2){animation-delay:.2s} .cw-typing .dots i:nth-child(3){animation-delay:.4s}
+.cw-typing small{color:var(--muted);text-shadow:none;margin-left:6px}
+.cw-form{flex:none;display:flex;gap:8px;align-items:flex-end;padding:10px 14px 12px;border-top:1px solid rgba(255,61,242,.35)}
+.cw-form[hidden]{display:none}
+.cw-form textarea{flex:1;resize:none;min-height:42px;max-height:140px;margin:0}
+.cw-form .nbtn{padding:11px 14px}
+.cw-err{flex:none;padding:0 16px 4px;font-size:11.5px;color:var(--hot)}
+.cw-err:empty{display:none}
+@keyframes dot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+body.rekam .staff,body.rekam .chat-ov{display:none !important}
+@media (max-width:760px){
+  .cw{height:100%;max-height:none}
+  .chat-ov{padding:0}
+  .cw-body{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+  .cw-list{flex-direction:row;overflow-x:auto;overflow-y:hidden;border-right:0;border-bottom:1px solid rgba(61,245,255,.25);padding:8px}
+  .cw-list h3{display:none}
+  .cw-ag{width:auto;flex:none;max-width:200px}
+  .cw-user{display:none}
+  .bub{max-width:90%}
+}
 </style>
 </head>
 <body>
@@ -279,6 +360,11 @@ body.rekam .chip{font-size:calc(max(12px, 9.5px * var(--ik)))}
       </div>
     </div>
     <div class="clockbox">
+      <div class="staff" id="staffBox">
+        <button class="nbtn" id="btnChat" type="button" title="Ngobrol dengan agent (khusus staf)">&#128172; Ngobrol<span class="badge" id="chatBadge" hidden>0</span></button>
+        <button class="nbtn" id="btnLogin" type="button" title="Masuk khusus staf Vertex8">Masuk</button>
+        <span class="who" id="whoBox" hidden><b id="whoName" title=""></b><button class="nbtn rec" id="btnLogout" type="button">Keluar</button></span>
+      </div>
       <button class="nbtn rec" id="btnRekam" type="button" title="Tampilan vertikal 9:16 untuk rekam konten"><b></b>Mode Rekam</button>
       <div class="live"><i></i>LIVE</div>
       <div>
@@ -337,6 +423,44 @@ body.rekam .chip{font-size:calc(max(12px, 9.5px * var(--ik)))}
   <div class="m-card neon" role="dialog" aria-modal="true" aria-labelledby="mname" id="mcard">
     <button class="nbtn m-x" id="mx" type="button" aria-label="Tutup">&times;</button>
     <div id="mbody"></div>
+  </div>
+</div>
+
+<div class="modal" id="loginOv" hidden>
+  <form class="m-card neon lg-card" id="loginForm" role="dialog" aria-modal="true" aria-labelledby="lgTitle" novalidate>
+    <button class="nbtn m-x" id="loginX" type="button" aria-label="Tutup">&times;</button>
+    <h2 class="m-name" id="lgTitle" style="--acc:var(--cyan);color:var(--cyan)">Masuk Staf</h2>
+    <p class="lg-sub">Khusus staf Vertex8 yang sudah didaftarkan admin. Setelah masuk, kamu bisa ngobrol dengan agent.</p>
+    <label for="lgEmail">Email</label>
+    <input class="kv-in" type="email" id="lgEmail" autocomplete="username" inputmode="email" required>
+    <label for="lgPass">Kata sandi</label>
+    <input class="kv-in" type="password" id="lgPass" autocomplete="current-password" required>
+    <div class="lg-err" id="lgErr" role="alert"></div>
+    <button class="nbtn" type="submit" id="lgBtn">Masuk</button>
+    <p class="lg-note">Belum punya akun atau lupa kata sandi? Hubungi admin Vertex8.</p>
+  </form>
+</div>
+
+<div class="modal chat-ov" id="chatOv" hidden>
+  <div class="cw neon" role="dialog" aria-modal="true" aria-labelledby="cwTitle">
+    <div class="cw-head">
+      <h2 id="cwTitle">Ngobrol dengan Agent</h2>
+      <span class="cw-user" id="cwUser"></span>
+      <button class="nbtn m-x" id="chatX" type="button" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="cw-body">
+      <nav class="cw-list" id="cwList" aria-label="Daftar agent"></nav>
+      <section class="cw-main">
+        <div class="cw-thead" id="cwThead" hidden></div>
+        <div class="cw-msgs" id="cwMsgs" aria-live="polite"></div>
+        <div class="cw-typing" id="cwTyping" hidden></div>
+        <div class="cw-err" id="cwErr" role="alert"></div>
+        <form class="cw-form" id="cwForm" hidden>
+          <textarea class="kv-in" id="cwInput" rows="1" maxlength="2000" placeholder="Tulis pesan&hellip;" aria-label="Tulis pesan"></textarea>
+          <button class="nbtn" type="submit" id="cwSend">Kirim</button>
+        </form>
+      </section>
+    </div>
   </div>
 </div>
 <script>
@@ -1023,7 +1147,8 @@ function renderModal(){
     ${ru.length?sec('Rutin','sched',ru,''):''}
     ${sec('Baru selesai','done',dn,'Belum ada.')}
     ${out?`<section class="m-sec"><h3><i style="background:var(--acc)"></i>Hasil terakhir</h3><p class="m-out">${esc(out)}</p>${a.last_output_at?`<small>${esc(fmtWhen(a.last_output_at))} WIB</small>`:''}</section>`:''}
-    <section class="m-sec"><h3><i style="background:var(--acc)"></i>Riwayat terbaru</h3>${hist.length?`<ol class="m-hist">${hist.map(e=>{const s=ST(e.status); return `<li class="st-${s}"><time>${esc(fmtWhen(e.t))}</time><em>${esc((e.status||'').toUpperCase())}</em><span>${esc(e.text)}</span></li>`;}).join('')}</ol>`:'<p class="none">Belum ada riwayat.</p>'}</section>`;
+    <section class="m-sec"><h3><i style="background:var(--acc)"></i>Riwayat terbaru</h3>${hist.length?`<ol class="m-hist">${hist.map(e=>{const s=ST(e.status); return `<li class="st-${s}"><time>${esc(fmtWhen(e.t))}</time><em>${esc((e.status||'').toUpperCase())}</em><span>${esc(e.text)}</span></li>`;}).join('')}</ol>`:'<p class="none">Belum ada riwayat.</p>'}</section>
+    ${window.KVChat && !REKAM ? window.KVChat.modalHtml(modalKey) : ''}`;
   drawAvatars(performance.now()/1000);
 }
 function openModal(k){ if(!agentByKey.has(k)) return; if(!modalKey) modalReturn=document.activeElement; modalKey=k; renderModal(); $('#modal').hidden=false; $('#mx').focus(); }
@@ -1331,6 +1456,336 @@ function loop(ms){
 }
 requestAnimationFrame(loop);
 window.__kv={bots,DESKS,CAM,get DATA(){return DATA;},applyData,openModal,setRekam,celebrate:k=>celebrate(bots.get(k),performance.now()/1000),get rt(){return RT.live;},get src(){return srcKey;}};
+})();
+</script>
+<script>
+/* =====================================================================
+   STAF: MASUK (Supabase Auth, email + sandi) + NGOBROL DENGAN AGENT
+   - Tanpa library: REST /auth/v1 + /rest/v1 + Realtime websocket mini.
+   - Isi chat hanya bisa dibaca staf yang login & terdaftar (RLS di tabel kv_chat_messages).
+   - Situs publik: tidak ada data chat yang dimuat sebelum login.
+   ===================================================================== */
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const SB_URL='https://ccbyqgisgclqlqatxwbk.supabase.co';
+const SB_KEY='sb_publishable_pdEdMAYvBL4HUF9AMp1LaA_z0rbnXsY';
+const LS_KEY='kv_staff_session_v1';
+const TZ='Asia/Jakarta';
+const fHM=new Intl.DateTimeFormat('id-ID',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false});
+const fDay=new Intl.DateTimeFormat('id-ID',{timeZone:TZ,weekday:'long',day:'numeric',month:'long'});
+const fYMD=new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'});
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DESK_C={grok:'#ff4fd8',analyst:'#3df5ff',marketing:'#ff5c8a',member:'#7dff6a',performance:'#b86bff',finance:'#ffd23d',content:'#ff8a3d',hr:'#4d8bff',engineering:'#3dffc2'};
+const DEFAULT_AGENTS=[['grok','Mr. Wakidi','Builder'],['analyst','Mr. Wiyadi','Ops & Data'],['marketing','Mr. Wahyudi','Marketing'],['member','Mr. Widodo','Member Success'],
+  ['performance','Mr. Winarto','Performance'],['finance','Mr. Wibowo','Finance'],['content','Mr. Wawan','Content & Creative'],['hr','Mr. Wisnu','HR & People'],['engineering','Mr. Warsito','Engineering & Facility']]
+  .map(([agent,display_name,role_label],i)=>({agent,display_name,role_label,enabled:agent==='content',sort:i+1}));
+
+let S=null;            // sesi auth {access_token, refresh_token, expires_at, user:{id,email}}
+let ME=null;           // hasil kv_chat_me
+let AG=DEFAULT_AGENTS; // daftar agent (publik, tabel kv_chat_agents)
+let cur=null;          // agent yang sedang dibuka
+let msgs=[];           // pesan utas agent aktif (urut waktu)
+let unread=0, refreshTimer=0, pollTimer=0, sending=false;
+let renderedOnce=false; const seen=new Set(); // id pesan yang sudah pernah tampil (animasi hanya untuk yang baru)
+
+const kvApi = () => window.__kv || null;
+const colorOf = k => DESK_C[k] || '#3df5ff';
+const agentInfo = k => AG.find(a=>a.agent===k) || {agent:k, display_name:k, role_label:'', enabled:false};
+const canChat = k => !!(ME && ME.authorized && (ME.allowed_agents||[]).includes(k));
+const isOpen = () => !$('#chatOv').hidden;
+
+/* ---------------- sesi ---------------- */
+function saveSession(){ try{ if(S) localStorage.setItem(LS_KEY, JSON.stringify(S)); else localStorage.removeItem(LS_KEY); }catch(e){} }
+function loadSession(){ try{ const j=JSON.parse(localStorage.getItem(LS_KEY)||'null'); if(j && j.refresh_token && j.user && j.user.id) return j; }catch(e){} return null; }
+function setSession(r){
+  S={access_token:r.access_token, refresh_token:r.refresh_token, expires_at:r.expires_at||Math.floor(Date.now()/1000)+(r.expires_in||3600),
+     user:{id:r.user&&r.user.id, email:r.user&&r.user.email}};
+  saveSession(); scheduleRefresh(); crToken();
+}
+function scheduleRefresh(){
+  clearTimeout(refreshTimer); if(!S) return;
+  const ms=Math.max(5000, S.expires_at*1000-Date.now()-90000);
+  refreshTimer=setTimeout(()=>refresh().catch(()=>{}), ms);
+}
+async function authPost(path, body, token){
+  const r=await fetch(SB_URL+'/auth/v1/'+path,{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})},body:JSON.stringify(body||{})});
+  let j=null; try{ j=await r.json(); }catch(e){}
+  if(!r.ok){ const e=new Error((j&&(j.msg||j.error_description||j.message||j.error))||('HTTP '+r.status)); e.status=r.status; e.code=j&&(j.error_code||j.code||j.error); throw e; }
+  return j;
+}
+let refreshing=null;
+function refresh(){
+  if(!S) return Promise.reject(new Error('belum masuk'));
+  if(refreshing) return refreshing;
+  refreshing=authPost('token?grant_type=refresh_token',{refresh_token:S.refresh_token})
+    .then(r=>{ setSession(r); return true; })
+    .catch(e=>{ if(e.status>=400 && e.status<500){ endSession(); } throw e; })
+    .finally(()=>{ refreshing=null; });
+  return refreshing;
+}
+async function login(email,pw){
+  const r=await authPost('token?grant_type=password',{email,password:pw});
+  setSession(r); await afterLogin();
+}
+function endSession(){ S=null; ME=null; msgs=[]; saveSession(); clearTimeout(refreshTimer); crClose(); setUnread(0); renderAll(); }
+async function logout(){
+  const tok=S&&S.access_token;
+  endSession();
+  if(tok) try{ await authPost('logout',{},tok); }catch(e){}
+}
+async function api(path, opts={}, retry=true){
+  if(S && S.expires_at*1000-Date.now()<30000) { try{ await refresh(); }catch(e){} }
+  const h={'apikey':SB_KEY,'Accept':'application/json',...(opts.headers||{})};
+  h['Authorization']='Bearer '+(S?S.access_token:SB_KEY);
+  if(opts.body!==undefined) h['Content-Type']='application/json';
+  const r=await fetch(SB_URL+path,{method:opts.method||'GET',headers:h,body:opts.body!==undefined?JSON.stringify(opts.body):undefined,cache:'no-store'});
+  if(r.status===401 && S && retry){ try{ await refresh(); return api(path,opts,false); }catch(e){} }
+  let j=null; const t=await r.text(); try{ j=t?JSON.parse(t):null; }catch(e){}
+  if(!r.ok){ const e=new Error((j&&j.message)||('HTTP '+r.status)); e.status=r.status; e.code=j&&j.code; throw e; }
+  return j;
+}
+
+/* ---------------- data ---------------- */
+async function loadAgents(){ try{ const j=await api('/rest/v1/kv_chat_agents?select=agent,display_name,role_label,enabled,sort&order=sort'); if(Array.isArray(j)&&j.length) AG=j; }catch(e){} }
+async function loadMe(){ ME=await api('/rest/v1/rpc/kv_chat_me',{method:'POST',body:{}}); return ME; }
+async function afterLogin(){
+  try{ await loadMe(); }catch(e){ ME={authorized:false}; }
+  if(ME && ME.authorized){
+    if(!cur || !canChat(cur)) cur=(ME.allowed_agents||[])[0]||null;
+    crConnect(); if(cur) await loadThread();
+  }
+  renderAll();
+}
+async function loadThread(){
+  if(!S || !cur || !canChat(cur)){ msgs=[]; return; }
+  const a=cur;
+  const rows=await api(`/rest/v1/kv_chat_messages?select=id,agent,role,content,status,sender_name,reply_to,picked_at,notified_at,wake_status,created_at,answered_at`+
+    `&agent=eq.${encodeURIComponent(a)}&user_id=eq.${S.user.id}&order=created_at.desc&limit=100`);
+  if(a!==cur) return;
+  msgs=(rows||[]).reverse();
+  renderMsgs(true); schedulePoll();
+}
+function upsertMsg(m){
+  if(!m || !m.id) return;
+  if(S && m.user_id && m.user_id!==S.user.id) return;
+  if(m.agent!==cur){ if(m.role==='agent') setUnread(unread+1); return; }
+  const i=msgs.findIndex(x=>x.id===m.id);
+  if(i>=0) msgs[i]={...msgs[i],...m}; else { msgs.push(m); msgs.sort((p,q)=>Date.parse(p.created_at)-Date.parse(q.created_at)); }
+  if(m.role==='agent' && (!isOpen() || document.hidden)) setUnread(unread+1);
+  renderMsgs(m.role==='agent' || i<0);
+}
+async function send(text){
+  if(sending || !cur) return;
+  sending=true; $('#cwSend').disabled=true; $('#cwErr').textContent='';
+  const tmp={id:'tmp-'+Date.now(), agent:cur, role:'staff', content:text, status:'sending', created_at:new Date().toISOString()};
+  msgs.push(tmp); renderMsgs(true);
+  try{
+    const rows=await api('/rest/v1/kv_chat_messages',{method:'POST',headers:{'Prefer':'return=representation'},body:{agent:cur, role:'staff', content:text}});
+    msgs=msgs.filter(x=>x.id!==tmp.id); (rows||[]).forEach(upsertMsg); $('#cwInput').value=''; autosize();
+  }catch(e){
+    msgs=msgs.filter(x=>x.id!==tmp.id); renderMsgs();
+    $('#cwErr').textContent = e.code==='42501' ? 'Kamu tidak punya akses untuk ngobrol dengan agent ini.' :
+      (e.code==='54000'||e.code==='22023') ? e.message : e.status===401 ? 'Sesi berakhir. Silakan masuk lagi.' : 'Pesan gagal terkirim. Coba lagi.';
+  }finally{ sending=false; $('#cwSend').disabled=false; $('#cwInput').focus(); schedulePoll(); }
+}
+
+/* ---------------- realtime (dengan token staf, tunduk RLS) ---------------- */
+const CR={ws:null, live:false, ref:0, joinRef:null, hb:0, hbRef:null, timer:0, tries:0, topic:''};
+function crSend(m){ try{ if(CR.ws && CR.ws.readyState===1) CR.ws.send(JSON.stringify(m)); }catch(e){} }
+function crConnect(){
+  clearTimeout(CR.timer);
+  if(CR.ws || !S || !ME || !ME.authorized) return;
+  let ws; try{ ws=new WebSocket(SB_URL.replace(/^http/,'ws')+'/realtime/v1/websocket?apikey='+encodeURIComponent(SB_KEY)+'&vsn=1.0.0'); }catch(e){ crRetry(); return; }
+  CR.ws=ws; CR.topic='realtime:kv-chat-'+S.user.id.slice(0,8);
+  ws.onopen=()=>{
+    CR.joinRef=String(++CR.ref);
+    crSend({topic:CR.topic, event:'phx_join', ref:CR.joinRef, join_ref:CR.joinRef, payload:{config:{broadcast:{self:false,ack:false}, presence:{key:''}, private:false,
+      postgres_changes:[{event:'*', schema:'public', table:'kv_chat_messages', filter:'user_id=eq.'+S.user.id}]}, access_token:S.access_token}});
+    clearInterval(CR.hb); CR.hbRef=null;
+    CR.hb=setInterval(()=>{ if(CR.hbRef){ try{ ws.close(); }catch(e){} return; } CR.hbRef=String(++CR.ref); crSend({topic:'phoenix',event:'heartbeat',payload:{},ref:CR.hbRef}); },25000);
+  };
+  ws.onmessage=ev=>{
+    let m; try{ m=JSON.parse(ev.data); }catch(e){ return; }
+    if(m.topic==='phoenix'){ if(m.event==='phx_reply' && m.ref===CR.hbRef) CR.hbRef=null; return; }
+    if(m.topic!==CR.topic) return;
+    const p=m.payload||{};
+    if(m.event==='phx_reply' && m.ref===CR.joinRef){
+      if(p.status==='ok'){ CR.live=true; CR.tries=0; loadThread().catch(()=>{}); schedulePoll(); } else { try{ ws.close(); }catch(e){} }
+    } else if(m.event==='postgres_changes'){
+      const rec=p.data && p.data.record; if(rec) upsertMsg(rec); else loadThread().catch(()=>{});
+    } else if(m.event==='system'){ if(p.status && p.status!=='ok'){ try{ ws.close(); }catch(e){} } }
+    else if(m.event==='phx_error' || m.event==='phx_close'){ try{ ws.close(); }catch(e){} }
+  };
+  ws.onerror=()=>{ try{ ws.close(); }catch(e){} };
+  ws.onclose=()=>{ if(CR.ws!==ws) return; clearInterval(CR.hb); CR.ws=null; CR.live=false; if(S && ME && ME.authorized) crRetry(); };
+}
+function crRetry(){ clearTimeout(CR.timer); CR.timer=setTimeout(crConnect, Math.min(30000,1000*Math.pow(2,CR.tries++))*(0.75+Math.random()*0.5)); }
+function crToken(){ if(CR.ws && CR.live && S) crSend({topic:CR.topic, event:'access_token', ref:String(++CR.ref), payload:{access_token:S.access_token}}); }
+function crClose(){ clearTimeout(CR.timer); clearInterval(CR.hb); const ws=CR.ws; CR.ws=null; CR.live=false; if(ws) try{ ws.close(); }catch(e){} }
+
+/* cadangan: cek ulang selama ada pesan menunggu (8 dtk bila realtime putus, 30 dtk bila tersambung) */
+function schedulePoll(){
+  clearTimeout(pollTimer);
+  if(!S || !cur || !msgs.some(m=>m.role==='staff' && m.status==='pending')) return;
+  pollTimer=setTimeout(()=>{ if(document.hidden){ schedulePoll(); return; } loadThread().catch(()=>{}).finally(schedulePoll); }, CR.live?30000:8000);
+}
+
+/* ---------------- tampilan ---------------- */
+function setUnread(n){ unread=Math.max(0,n); const b=$('#chatBadge'); b.textContent=String(unread); b.hidden=!unread; }
+function renderHeader(){
+  const on=!!S;
+  $('#btnLogin').hidden=on; $('#whoBox').hidden=!on;
+  const name=(ME&&ME.authorized&&ME.display_name)||(S&&S.user.email)||'';
+  $('#whoName').textContent=name; $('#whoName').title=(S&&S.user.email)||'';
+  $('#cwUser').innerHTML = on ? `Masuk sebagai <b>${esc(name)}</b>` : '';
+}
+function renderList(){
+  const rank=a=>canChat(a.agent)?0:a.enabled?1:2;
+  const rows=AG.slice().sort((p,q)=>rank(p)-rank(q)||(p.sort||0)-(q.sort||0)).map(a=>{
+    const k=a.agent, ok=canChat(k), soon=!a.enabled;
+    const badge = soon ? '<em class="soon">Segera hadir</em>' : ok ? '<em>Bisa diajak ngobrol</em>' : S ? '<em class="no">Belum ada akses</em>' : '<em>Khusus staf</em>';
+    const dis = soon || (S && !ok);
+    return `<button class="cw-ag${k===cur?' on':''}" type="button" data-ag="${esc(k)}" style="--acc:${colorOf(k)}" ${dis?'disabled':''} aria-pressed="${k===cur}">
+      <canvas class="ava pix" width="26" height="24" data-k="${esc(k)}"></canvas><span><b>${esc(a.display_name)}</b><small>${esc(a.role_label||'')}</small>${badge}</span></button>`;
+  }).join('');
+  $('#cwList').innerHTML='<h3>Agent</h3>'+rows;
+}
+function fmtStatus(m){
+  if(m.status==='sending') return '<i>mengirim&hellip;</i>';
+  if(m.status==='answered') return '<i class="ok">&#10003;&#10003; dibalas</i>';
+  if(m.status==='error') return '<i class="err">gagal diproses &mdash; coba kirim ulang</i>';
+  return '<i>&#10003; terkirim</i>';
+}
+function renderMsgs(scroll){
+  const box=$('#cwMsgs'), nearBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
+  if(!S){ box.innerHTML=`<div class="cw-empty"><b>Fitur ini khusus staf Vertex8.</b><br>Masuk dulu untuk ngobrol langsung dengan agent seperti Mr. Wawan (Content &amp; Creative).<br><button class="nbtn" type="button" data-act="login">Masuk</button></div>`; renderTyping(); return; }
+  if(!ME){ box.innerHTML='<div class="cw-empty">Memuat&hellip;</div>'; renderTyping(); return; }
+  if(!ME.authorized){ box.innerHTML=`<div class="cw-empty"><b>Akun kamu belum terdaftar sebagai staf.</b><br>Minta admin Vertex8 menambahkan email <b>${esc(S.user.email||'')}</b> ke daftar staf, lalu masuk lagi.<br><button class="nbtn rec" type="button" data-act="logout">Keluar</button></div>`; renderTyping(); return; }
+  if(!cur){ box.innerHTML='<div class="cw-empty">Belum ada agent yang bisa kamu ajak ngobrol.<br>Hubungi admin untuk akses.</div>'; renderTyping(); return; }
+  const a=agentInfo(cur);
+  if(!msgs.length){ box.innerHTML=`<div class="cw-empty">Mulai ngobrol dengan <b>${esc(a.display_name)}</b>.<br>Tanya ide konten, minta draf caption, atau brainstorming kampanye. Balasan berupa draf &mdash; kamu yang memutuskan.</div>`; }
+  else {
+    let last='', html='';
+    const today=fYMD.format(new Date());
+    for(const m of msgs){
+      const d=new Date(m.created_at), day=fYMD.format(d);
+      if(day!==last){ last=day; html+=`<div class="cw-day">${day===today?'Hari ini':esc(fDay.format(d))}</div>`; }
+      const me=m.role==='staff';
+      const isNew=!seen.has(m.id) && !String(m.id).startsWith('tmp-'); if(!String(m.id).startsWith('tmp-')) seen.add(m.id);
+      html+=`<div class="bub ${me?'me':'ag'}${m.status==='sending'?' sending':''}${isNew&&renderedOnce?' new':''}" style="--acc:${colorOf(m.agent)}">${esc(m.content)}<span class="bm">${me?'':esc(m.sender_name||a.display_name)+' · '}${esc(fHM.format(d).replace(':','.'))} WIB${me?' · '+fmtStatus(m):''}</span></div>`;
+    }
+    box.innerHTML=html; renderedOnce=true;
+  }
+  if(scroll || nearBottom) box.scrollTop=box.scrollHeight;
+  renderTyping();
+}
+function renderTyping(){
+  const el=$('#cwTyping');
+  const pend=S && cur && ME && ME.authorized ? msgs.filter(m=>m.role==='staff' && m.status==='pending') : [];
+  if(!pend.length){ el.hidden=true; return; }
+  const a=agentInfo(cur), lastP=pend[pend.length-1], dots='<span class="dots"><i></i><i></i><i></i></span>';
+  const picked=pend.some(m=>m.picked_at), called=pend.some(m=>['memanggil','dikirim','debounce'].includes(m.wake_status));
+  el.style.setProperty('--acc',colorOf(cur));
+  el.innerHTML = picked ? `${esc(a.display_name)} sedang mengetik${dots}`
+    : called ? `${esc(a.display_name)} sedang membaca${dots}`
+    : `Menunggu ${esc(a.display_name)}${dots}<small>pesan tersimpan, akan dibalas saat ${esc(a.display_name)} aktif</small>`;
+  el.hidden=false;
+}
+function renderThead(){
+  const th=$('#cwThead'), on=!!(S && ME && ME.authorized && cur);
+  th.hidden=!on; $('#cwForm').hidden=!on;
+  if(!on) return;
+  const a=agentInfo(cur);
+  th.style.setProperty('--acc',colorOf(cur));
+  th.innerHTML=`<canvas class="ava pix" width="26" height="24" data-k="${esc(cur)}"></canvas><div><b>${esc(a.display_name)}</b><small>${esc(a.role_label||'')} · balasan berupa draf, tidak diposting otomatis</small></div>`;
+  $('#cwInput').placeholder=`Tulis pesan untuk ${a.display_name}… (Enter kirim, Shift+Enter baris baru)`;
+}
+function renderAll(){ renderHeader(); if(isOpen()){ renderList(); renderThead(); renderMsgs(); } }
+function autosize(){ const t=$('#cwInput'); t.style.height='auto'; t.style.height=Math.min(140,t.scrollHeight+2)+'px'; }
+
+/* ---------------- buka/tutup ---------------- */
+let chatReturn=null, loginReturn=null;
+function openChat(agent){
+  if(document.body.classList.contains('rekam')) return;
+  if(agent && AG.some(a=>a.agent===agent)) cur=agent;
+  if(ME && ME.authorized && (!cur || !canChat(cur))) cur=(ME.allowed_agents||[])[0]||null;
+  if(!isOpen()) chatReturn=document.activeElement;
+  $('#chatOv').hidden=false; setUnread(0);
+  renderList(); renderThead(); renderMsgs(true);
+  if(S && ME && ME.authorized && cur){ loadThread().catch(()=>{}); setTimeout(()=>$('#cwInput').focus(),50); }
+  else $('#chatX').focus();
+  if(location.hash!=='#ngobrol') history.replaceState(null,'',location.pathname+location.search+'#ngobrol');
+}
+function closeChat(){
+  if(!isOpen()) return; $('#chatOv').hidden=true;
+  if(location.hash==='#ngobrol') history.replaceState(null,'',location.pathname+location.search);
+  if(chatReturn && chatReturn.focus) try{ chatReturn.focus({preventScroll:true}); }catch(e){}
+}
+function openLogin(){ loginReturn=document.activeElement; $('#lgErr').textContent=''; $('#loginOv').hidden=false; setTimeout(()=>$('#lgEmail').focus(),30); }
+function closeLogin(){ if($('#loginOv').hidden) return; $('#loginOv').hidden=true; $('#lgPass').value=''; if(loginReturn && loginReturn.focus) try{ loginReturn.focus({preventScroll:true}); }catch(e){} }
+
+$('#btnChat').addEventListener('click',()=>openChat());
+$('#btnLogin').addEventListener('click',openLogin);
+$('#btnLogout').addEventListener('click',()=>logout());
+$('#chatX').addEventListener('click',closeChat);
+$('#loginX').addEventListener('click',closeLogin);
+$('#chatOv').addEventListener('click',e=>{ if(e.target===$('#chatOv')) closeChat(); });
+$('#loginOv').addEventListener('click',e=>{ if(e.target===$('#loginOv')) closeLogin(); });
+$('#cwList').addEventListener('click',e=>{ const b=e.target.closest('[data-ag]'); if(!b||b.disabled) return; cur=b.dataset.ag; msgs=[]; renderList(); renderThead(); renderMsgs(true); loadThread().then(schedulePoll).catch(()=>{}); });
+$('#cwMsgs').addEventListener('click',e=>{ const b=e.target.closest('[data-act]'); if(!b) return; if(b.dataset.act==='login') openLogin(); else if(b.dataset.act==='logout') logout(); });
+$('#cwForm').addEventListener('submit',e=>{ e.preventDefault(); const t=$('#cwInput').value.trim(); if(t) send(t); });
+$('#cwInput').addEventListener('keydown',e=>{ if(e.key==='Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); $('#cwForm').requestSubmit(); } });
+$('#cwInput').addEventListener('input',autosize);
+$('#loginForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const email=$('#lgEmail').value.trim().toLowerCase(), pw=$('#lgPass').value;
+  if(!email || !pw){ $('#lgErr').textContent='Isi email dan kata sandi.'; return; }
+  $('#lgBtn').disabled=true; $('#lgBtn').textContent='Memeriksa…'; $('#lgErr').textContent='';
+  try{
+    await login(email,pw); closeLogin();
+    if(ME && !ME.authorized){ openChat(); }
+    else if(isOpen()) openChat(cur);
+  }catch(err){
+    const m=String(err.message||'');
+    $('#lgErr').textContent = /invalid login|invalid_credentials|invalid_grant/i.test(m+' '+(err.code||'')) ? 'Email atau kata sandi salah.'
+      : /not confirmed/i.test(m) ? 'Email belum dikonfirmasi. Hubungi admin.'
+      : err.status===429 ? 'Terlalu banyak percobaan. Coba lagi beberapa menit lagi.'
+      : err.status ? 'Gagal masuk. Coba lagi.' : 'Tidak bisa terhubung. Periksa koneksi internet.';
+  }finally{ $('#lgBtn').disabled=false; $('#lgBtn').textContent='Masuk'; }
+});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape') return;
+  if(!$('#loginOv').hidden){ e.stopImmediatePropagation(); closeLogin(); }
+  else if(isOpen()){ e.stopImmediatePropagation(); closeChat(); }
+},true);
+document.addEventListener('visibilitychange',()=>{ if(document.hidden || !S) return;
+  if(S.expires_at*1000-Date.now()<120000) refresh().catch(()=>{});
+  if(ME && ME.authorized){ if(!CR.ws){ CR.tries=0; crConnect(); } if(isOpen()) loadThread().catch(()=>{}); } });
+addEventListener('hashchange',()=>{ if(location.hash==='#ngobrol') openChat(); else if(location.hash.startsWith('#ngobrol=')) openChat(location.hash.slice(9)); });
+addEventListener('storage',e=>{ if(e.key===LS_KEY){ const s=loadSession(); if(!s && S){ endSession(); } } });
+
+/* tombol "Ngobrol" di detail agent (klik robot / meja / kartu) */
+window.KVChat={
+  modalHtml(k){ const a=AG.find(x=>x.agent===k); if(!a) return '';
+    if(!a.enabled) return `<div class="m-chat"><button class="nbtn" type="button" disabled>&#128172; Ngobrol</button><small>Chat dengan ${esc(a.display_name)} segera hadir.</small></div>`;
+    return `<div class="m-chat"><button class="nbtn" type="button" data-chat="${esc(k)}">&#128172; Ngobrol dengan ${esc(a.display_name)}</button><small>Khusus staf yang sudah masuk.</small></div>`; },
+  open: openChat,
+  get session(){ return S?{email:S.user.email}:null; }, get me(){ return ME; }, get rt(){ return CR.live; }
+};
+document.getElementById('mbody').addEventListener('click',e=>{ const b=e.target.closest('[data-chat]'); if(!b) return; const k=b.dataset.chat; $('#mx').click(); openChat(k); });
+
+/* ---------------- mulai ---------------- */
+(async()=>{
+  renderHeader();
+  await loadAgents();
+  S=loadSession();
+  if(S){ renderHeader();
+    try{ if(S.expires_at*1000-Date.now()<60000) await refresh(); else scheduleRefresh(); }catch(e){}
+    if(S) await afterLogin();
+  }
+  if(location.hash==='#ngobrol') openChat(); else if(location.hash.startsWith('#ngobrol=')) openChat(location.hash.slice(9));
+})();
 })();
 </script>
 </body>
