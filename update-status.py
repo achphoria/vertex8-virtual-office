@@ -23,6 +23,17 @@ Langkah kecil (sering & murah, HANYA ke Supabase, tanpa commit git):
      Butuh agen yang sedang kerja (atau gabungkan: --state working --task "..." --step "...").
      --state apa pun mengganti tugas "Sekarang" sehingga langkah lama otomatis hilang.
 
+Kolaborasi / rapat (agen pindah ke Ruang Meeting di halaman bila 2+ agen bekerja bersama):
+  update-status.py --agent analyst --state working --task "Susun rencana promo" --with marketing,content
+  update-status.py --agent analyst --meeting "Rencana promo bulan depan" [--with marketing]
+  update-status.py --agent analyst --end-meeting          # selesai rapat, kembali ke meja
+  --with      -> id/nama agen lain dipisah koma (diri sendiri diabaikan). Rekan yang tidak sedang kerja
+                 tetap ikut dipanggil ke ruang meeting di halaman.
+  --meeting   -> topik rapat singkat (maks 80 karakter; aturan teks sama: tanpa Rp/angka member/no. HP).
+                 Dua agen yang sedang kerja dengan topik --meeting sama juga dianggap satu rapat.
+  Disimpan di tugas "Sekarang", jadi butuh agen yang sedang kerja (atau --state working). --state apa pun
+  yang baru (termasuk done) otomatis mengakhiri rapat.
+
 Daftarkan / hapus bot (kantor punya 9 meja divisi, 3x3):
   update-status.py --add-agent --agent <id> --name "Nama Bot" [--role "Peran"] [--desk 1-9] [--state ... --task ...]
   update-status.py --remove-agent --agent <id|nama>
@@ -47,6 +58,7 @@ MAX_AGENTS = 12
 DESKS = 9  # grid meja 3x3 di halaman
 DEFAULT_ROLE = "Asisten AI"
 STEP_MAX = 120
+MEETING_MAX = 80
 # Supabase (proyek "General Table"); URL + kunci publishable memang publik.
 # Penulisan dilindungi token rahasia yang dicek oleh fungsi kv_set_state.
 SB_URL = "https://ccbyqgisgclqlqatxwbk.supabase.co"
@@ -396,6 +408,9 @@ def main():
     ap.add_argument("--role", help=f'peran bot (untuk --add-agent, bawaan "{DEFAULT_ROLE}")')
     ap.add_argument("--desk", type=int, default=None, help=f"nomor meja 1..{DESKS} (untuk --add-agent; bawaan: meja kosong pertama)")
     ap.add_argument("--step", default=None, help=f'langkah kecil yang sedang dikerjakan (maks {STEP_MAX} karakter); hanya ke Supabase, tanpa commit')
+    ap.add_argument("--with", dest="with_", default=None, help='rekan kolaborasi: id/nama agen dipisah koma, mis. "marketing,content"')
+    ap.add_argument("--meeting", default=None, help=f'topik rapat singkat (maks {MEETING_MAX} karakter)')
+    ap.add_argument("--end-meeting", action="store_true", help="akhiri rapat/kolaborasi (hapus --with/--meeting)")
     ap.add_argument("--no-push", action="store_true", help="hanya ubah + commit lokal, tanpa Supabase (untuk uji)")
     ap.add_argument("--no-supabase", action="store_true", help="lewati Supabase, hanya GitHub (cara lama)")
     a = ap.parse_args()
@@ -423,6 +438,24 @@ def main():
         if a.no_supabase:
             die("--step butuh Supabase (jangan pakai --no-supabase)", 2)
 
+    meeting = " ".join(a.meeting.split()) if a.meeting is not None else None
+    with_raw = [x.strip() for x in a.with_.split(",") if x.strip()] if a.with_ is not None else None
+    collab = with_raw is not None or meeting is not None or a.end_meeting
+    if a.meeting is not None and not meeting:
+        die("--meeting kosong", 2)
+    if meeting and len(meeting) > MEETING_MAX:
+        meeting = meeting[:MEETING_MAX - 1].rstrip() + "…"
+    if a.with_ is not None and not with_raw:
+        die("--with kosong (isi id/nama agen dipisah koma)", 2)
+    if with_raw and len(with_raw) > 8:
+        die("--with maksimal 8 agen", 2)
+    if collab:
+        if a.add_agent or a.remove_agent:
+            die("--with/--meeting/--end-meeting tidak bisa digabung dengan --add-agent/--remove-agent", 2)
+        if a.end_meeting and (with_raw is not None or meeting is not None):
+            die("--end-meeting tidak bisa digabung dengan --with/--meeting", 2)
+        if a.state is not None and a.state != "working" and not a.end_meeting:
+            die("--with/--meeting hanya untuk agen yang sedang kerja (--state working)", 2)
     if a.task is not None and not task:
         die("--task kosong", 2)
     if (a.state is None) != (task is None):
@@ -440,8 +473,8 @@ def main():
     if a.remove_agent and (task or nxt or out or name or role):
         die("--remove-agent tidak bisa digabung dengan opsi lain", 2)
     if not a.add_agent and not a.remove_agent:
-        if task is None and out is None and step is None:
-            die("butuh --state + --task (atau --output / --step saja)", 2)
+        if task is None and out is None and step is None and not collab:
+            die("butuh --state + --task (atau --output / --step / --with / --meeting saja)", 2)
         if nxt and task is None:
             die("--next harus dipakai bersama --state dan --task", 2)
         if name or role:
@@ -453,7 +486,7 @@ def main():
             die("--add-agent butuh --name", 2)
         if len(name) > 40 or (role and len(role) > 40):
             die("--name/--role maksimal 40 karakter", 2)
-    for label, val in (("task", task), ("next", nxt), ("output", out), ("name", name), ("role", role), ("step", step)):
+    for label, val in (("task", task), ("next", nxt), ("output", out), ("name", name), ("role", role), ("step", step), ("meeting", meeting)):
         guard(label, val)
 
     # kunci agar beberapa bot tidak bentrok
@@ -461,7 +494,7 @@ def main():
     fcntl.flock(lockf, fcntl.LOCK_EX)
 
     # ---- mode langkah saja: cepat, hanya Supabase ----
-    if step is not None and task is None and out is None:
+    if step is not None and task is None and out is None and not collab:
         if a.no_push:
             print(f"OK (uji, tanpa Supabase): langkah {a.agent} -> {step}")
             return
@@ -528,6 +561,40 @@ def main():
                 die(f"{ag.get('name')} tidak sedang kerja; --step butuh tugas \"Sekarang\".", 2)
             work["step"] = step
             work["step_at"] = ts
+        if collab:
+            work = next((t for t in (ag.get("tasks") or []) if ststate(t.get("status")) == "work"), None)
+            if a.end_meeting:
+                if work is not None and (work.pop("with", None) is not None) | (work.pop("meeting", None) is not None):
+                    add_log(data, ts, ag.get("name"), "Info", "Rapat selesai, kembali ke meja")
+                    msgs.append(f"rapat: {ag.get('name')} selesai")
+                elif task is None:
+                    print(f"Info: {ag.get('name')} tidak sedang rapat.")
+            else:
+                if work is None:
+                    die(f"{ag.get('name')} tidak sedang kerja; --with/--meeting butuh tugas \"Sekarang\" "
+                        "(gabungkan dengan --state working --task \"...\").", 2)
+                before = (list(work.get("with") or []), work.get("meeting"))
+                if with_raw is not None:
+                    ids = []
+                    for key in with_raw:
+                        other = find_agent(agents, key)
+                        if other is None:
+                            die(f"--with: agen '{key}' tidak ditemukan. Pilihan: " +
+                                ", ".join(str(x.get("id", "?")) for x in agents), 2)
+                        oid = str(other.get("id") or "")
+                        if other is not ag and oid and oid not in ids:
+                            ids.append(oid)
+                    if not ids and meeting is None:
+                        die("--with hanya berisi diri sendiri; sebutkan agen lain", 2)
+                    work["with"] = ids
+                if meeting is not None:
+                    work["meeting"] = meeting
+                after = (list(work.get("with") or []), work.get("meeting"))
+                if after != before:
+                    names = [str((find_agent(agents, i) or {}).get("name", i)) for i in after[0]]
+                    txt = "Rapat" + (" dengan " + ", ".join(names) if names else "") + (f": {after[1]}" if after[1] else "")
+                    add_log(data, ts, ag.get("name"), "Info", txt[:400])
+                    msgs.append(f"rapat: {ag.get('name')} " + ",".join(after[0]) + (f" - {after[1]}" if after[1] else ""))
         if out is not None:
             ag["last_output"] = out
             ag["last_output_at"] = ts
