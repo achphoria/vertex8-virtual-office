@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T21:24:30+07:00",
+  "updated_at": "2026-10-06T21:24:34+07:00",
   "log": [
     {
-      "t": "2026-10-06T21:24:30+07:00",
-      "agent": "Mr. Wisnu",
+      "t": "2026-10-06T21:24:34+07:00",
+      "agent": "Mr. Warsito",
       "status": "Sedang kerja",
-      "text": "Siapkan routine chat staf"
+      "text": "Buat routine chat staf Kantor Virtual"
+    },
+    {
+      "t": "2026-10-06T21:24:30+07:00",
+      "text": "Siapkan routine chat staf",
+      "agent": "Mr. Wisnu",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T21:24:26+07:00",
@@ -114,12 +120,6 @@
       "t": "2026-10-06T15:29:51+07:00",
       "text": "Tes status kantor virtual",
       "agent": "Mr. Wawan",
-      "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T15:29:48+07:00",
-      "text": "Tes status kantor virtual",
-      "agent": "Mr. Winarto",
       "status": "Sedang kerja"
     }
   ],
@@ -270,9 +270,9 @@
       "role": "HR & People",
       "tasks": [
         {
-          "status": "Sedang kerja",
+          "text": "Siapkan routine chat staf",
           "label": "Sekarang",
-          "text": "Siapkan routine chat staf"
+          "status": "Sedang kerja"
         },
         {
           "text": "Menunggu tugas pertama",
@@ -292,6 +292,11 @@
       "name": "Mr. Warsito",
       "role": "Engineering & Facility",
       "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Buat routine chat staf Kantor Virtual"
+        },
         {
           "text": "Menunggu tugas pertama",
           "label": "Berikutnya",
