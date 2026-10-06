@@ -83,7 +83,7 @@ def main():
     lockf = open(os.path.join(REPO, ".git", "update-status.lock"), "w")
     fcntl.flock(lockf, fcntl.LOCK_EX)
 
-    git("pull", "--rebase", "--quiet", "origin", "main")
+    git("pull", "--rebase", "--autostash", "--quiet", "origin", "main")
 
     with open(STATUS, encoding="utf-8") as f:
         data = json.load(f)
@@ -143,7 +143,7 @@ def main():
             return
         print(f"push gagal (percobaan {attempt}): {r.stderr.strip()}", file=sys.stderr)
         time.sleep(2 * attempt)
-        git("pull", "--rebase", "--quiet", "origin", "main", check=False)
+        git("pull", "--rebase", "--autostash", "--quiet", "origin", "main", check=False)
     die("push ke GitHub gagal setelah 3 percobaan (commit lokal tetap ada).", 4)
 
 
