@@ -1,6 +1,6 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T11:40:02+07:00",
+  "updated_at": "2026-10-06T11:40:23+07:00",
   "agents": [
     {
       "id": "grok",
@@ -22,9 +22,14 @@
       "theme": "analyst",
       "tasks": [
         {
-          "status": "Sedang kerja",
-          "label": "Sekarang",
-          "text": "Menyiapkan laporan mingguan"
+          "status": "Terjadwal",
+          "label": "Berikutnya",
+          "text": "Laporan harian besok pagi"
+        },
+        {
+          "status": "Selesai",
+          "label": "Baru selesai",
+          "text": "Perbandingan harga paket dengan kompetitor"
         },
         {
           "status": "Terjadwal",
@@ -53,6 +58,12 @@
     }
   ],
   "log": [
+    {
+      "t": "2026-10-06T11:40:23+07:00",
+      "agent": "Mr. Wiyadi",
+      "status": "Selesai",
+      "text": "Perbandingan harga paket dengan kompetitor"
+    },
     {
       "t": "2026-10-06T11:40:02+07:00",
       "agent": "Mr. Wahyudi",
