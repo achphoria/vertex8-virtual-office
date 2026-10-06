@@ -1,6 +1,6 @@
 # Kantor Virtual Vertex8
 
-Halaman pixel-art yang menampilkan status para bot Vertex8 (Mr. Wakidi (Builder), Mr. Wiyadi (Ops & Data), Mr. Wahyudi (Marketing), dan bot baru yang mendaftar sendiri).
+Halaman pixel-art yang menampilkan status para agent Vertex8 (Mr. Wakidi (Builder), Mr. Wiyadi (Ops & Data), Mr. Wahyudi (Marketing), dan bot baru yang mendaftar sendiri).
 
 - **Live:** https://achphoria.github.io/vertex8-virtual-office/
 - **Mode rekam (9:16):** https://achphoria.github.io/vertex8-virtual-office/?rekam=1

@@ -261,7 +261,7 @@ body.rekam .bin{font-size:max(10px, calc(var(--u) * 4.3px))}
 
   <section class="scene-wrap pb">
     <div class="scene" id="scene">
-      <canvas id="cv" class="pix" width="320" height="180" aria-label="Kantor virtual pixel art — klik bot untuk detail"></canvas>
+      <canvas id="cv" class="pix" width="320" height="180" aria-label="Kantor virtual pixel art — klik agent untuk detail"></canvas>
       <div id="overlays"></div>
       <div class="rk-log" id="rklog"><span class="lbl">LOG</span><span class="txt" id="rklogtxt"></span></div>
       <div class="rk-ctl" id="rkctl">
@@ -278,14 +278,14 @@ body.rekam .bin{font-size:max(10px, calc(var(--u) * 4.3px))}
   </div>
 
   <aside class="panel pb">
-    <div class="ph"><canvas id="ptitle" class="pix"></canvas><span class="count" id="count">3 BOT</span></div>
+    <div class="ph"><canvas id="ptitle" class="pix"></canvas><span class="count" id="count">3 AGENT</span></div>
     <div id="cards"></div>
     <div class="legend">
       <span class="st-work"><i></i>Sedang kerja</span>
       <span class="st-sched"><i></i>Terjadwal</span>
       <span class="st-done"><i></i>Selesai</span>
     </div>
-    <div class="hint">Klik bot atau kartunya untuk melihat detail &amp; riwayat.</div>
+    <div class="hint">Klik agent atau kartunya untuk melihat detail &amp; riwayat.</div>
   </aside>
 
   <footer class="foot pb">
@@ -1008,7 +1008,7 @@ function buildPanel(){
     el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openModal(k); } });
     cards.appendChild(el);
   });
-  $('#count').textContent=`${currentAgents.length} BOT · ${working} AKTIF`;
+  $('#count').textContent=`${currentAgents.length} AGENT · ${working} AKTIF`;
   const items=[]; const colorOf=n=>{ const a=currentAgents.find(x=>x.name===n||x.id===n); return a?themeOf(a).ui:'#ffffff'; };
   const LOG=logList().slice(0,20);
   if(LOG.length){ LOG.forEach(e=>{ const s=ST(e.status); const d=new Date(e.t); const tm=isNaN(d)?'':hm(d)+' ';
@@ -1250,7 +1250,7 @@ $('#btnMusik').addEventListener('click',()=>{ Music.toggle(); syncMusicBtn(); })
 const DEMO_TASKS=['Menyusun laporan mingguan','Analisa tren konten Reels','Merapikan kode kantor virtual','Riset ide konten Hyrox','Rekap jadwal kelas pekan depan','Draf caption & hook video'];
 function startDemo(){
   const base=clone(AGENT_DATA), nb=clamp(parseInt(QS.get('bots')||'0',10)||base.agents.length,1,12);
-  for(let i=base.agents.length;i<nb;i++) base.agents.push({id:'bot'+(i+1), name:'Bot '+(i+1), role:'Asisten AI', tasks:[{status:'Terjadwal',label:'Berikutnya',text:DEMO_TASKS[i%DEMO_TASKS.length]}]});
+  for(let i=base.agents.length;i<nb;i++) base.agents.push({id:'bot'+(i+1), name:'Agent '+(i+1), role:'Asisten AI', tasks:[{status:'Terjadwal',label:'Berikutnya',text:DEMO_TASKS[i%DEMO_TASKS.length]}]});
   base.agents=base.agents.slice(0,nb); base.log=[]; base.updated_at=nowWibISO();
   srcKey='demo'; applyData(base,{diff:false}); baselineReady=true; updateSrc();
   let step=0;
