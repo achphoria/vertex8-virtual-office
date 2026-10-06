@@ -1,6 +1,6 @@
 # Kantor Virtual Vertex8
 
-Kantor virtual bergaya **neon cyberpunk** (v4) yang menampilkan status 9 agent Vertex8 di 9 meja divisi:
+Kantor virtual **2 lantai** bergaya **neon cyberpunk** (v5) yang menampilkan status 9 agent Vertex8 di 9 meja divisi:
 01 Builder (Mr. Wakidi), 02 Ops & Data (Mr. Wiyadi), 03 Marketing (Mr. Wahyudi), 04 Member Success (Mr. Widodo),
 05 Performance (Mr. Winarto), 06 Finance (Mr. Wibowo), 07 Content & Creative (Mr. Wawan), 08 HR & People (Mr. Wisnu),
 09 Engineering & Facility (Mr. Warsito).
@@ -18,20 +18,31 @@ Kantor virtual bergaya **neon cyberpunk** (v4) yang menampilkan status 9 agent V
   (1s, 2s, 4s … maks 30s) dan cek Supabase tiap 60 detik.
 - Bila Supabase tidak bisa diakses, halaman memakai cadangan: GitHub API (`contents/status.json`) →
   `raw.githubusercontent.com` → `./status.json` → data bawaan di `index.html`.
-- Latar: `assets/office-neon.webp` (cadangan `assets/office-neon.jpg`), 1600×897. Semua posisi (kursi, laptop,
-  lorong, bar KOPI, layar besar) dipetakan dalam koordinat piksel gambar ini lalu diskalakan responsif.
-- **Tanpa angka bisnis:** area dashboard di layar besar dan kolom harga menu KOPI sudah dihitamkan di file aset;
-  di atasnya halaman menggambar panel **STATUS TIM** (agen aktif, tugas selesai hari ini dari log, jam update WIB,
-  log langsung) dan titik neon di menu.
-- Bot neon berjalan di lantai: **kerja** → duduk di kursi mejanya dan mengetik (layar menyala); **tidak ada tugas
-  aktif** → ngopi di bar KOPI VERTEX8 / sofa dan sesekali jalan-jalan; tugas berisi *laporan/report/analisa* →
-  sesekali berdiri di depan layar besar; tugas **baru selesai** → lompat + konfeti neon + gelembung "Selesai!".
+- Latar v5: `assets/office-v5.webp` (cadangan `assets/office-v5.jpg`), 1600×959, **2 lantai**. Lantai 2: meja
+  01 Builder, 02 Ops & Data, 03 Marketing, lounge + sofa, ruang rapat, perpustakaan. Lantai 1: meja 04–09, bar kopi,
+  pantry. Kursi, monitor, lorong per lantai, tangga, bar kopi, pantry, sofa, perpustakaan, dan pintu ruang rapat
+  dipetakan manual dalam koordinat piksel gambar (graf jalan + Dijkstra, termasuk jalur tangga).
+- **Tanpa angka bisnis:** layar palsu di gambar sudah dicat ulang; di atasnya halaman menggambar layar langsung:
+  2F **STATUS TIM** (agen aktif n/9, selesai hari ini dari log, jam update WIB) + **PAPAN PROYEK** (judul tugas) +
+  **KEHADIRAN** (kerja/santai/staf online); 1F **SOROTAN** (tugas terakhir selesai) + **LOG LANGSUNG**.
+- **Karakter semi-3D (canvas, tanpa gambar):** chibi robot-humanoid dengan gradasi volumetrik, rim light warna neon
+  divisi, bayangan AO, tampak 3/4 / samping / belakang. Animasi: napas, kedip, tengok, jalan (bob + jejak langkah),
+  ngetik (cahaya monitor di wajah), mikir (hologram), rayakan (lompat + konfeti neon). Aksesori: Builder visor + sabuk
+  alat, Ops & Data kacamata holo, Marketing pin megafon, Member Success headset, Performance sweatband + stopwatch,
+  Finance dasi + koin, Content kamera + baret, HR lanyard ID, Engineering helm proyek. Urutan gambar memakai y-sort
+  dengan meja & tanaman depan sebagai penghalang (karakter di belakang meja tertutup mejanya).
+- Agen **kerja** → duduk di kursinya dan mengetik; **santai** → jalan ke bar kopi, pantry, sofa lantai 2,
+  perpustakaan, ruang rapat, lounge (naik-turun tangga); **baru selesai** → lompat + konfeti + gelembung "Selesai!".
+- Ambient: kedip neon, kilau lampu kota di jendela, uap kopi, sapuan cahaya di lantai, layar berpendar.
+  `prefers-reduced-motion` dihormati (efek berat dimatikan).
+- Kamera: desktop menampilkan seluruh kantor dan zoom halus ke percakapan; HP mengikuti avatar staf (atau tur
+  otomatis antar lantai); mode rekam menyapu kedua lantai dan fokus ke perayaan / percakapan (hanya "…").
 - Meja: field `desk` (1–9) per agent. Agent tanpa `desk` mengisi meja kosong pertama. Meja tanpa agent tampil
   redup dengan label "Segera hadir".
-- Klik bot / meja / kartunya → detail: tugas sekarang, berikutnya, rutin, hasil terakhir (`last_output`), dan riwayat.
+- Klik agent / meja → menu mini **Ngobrol** / **Lihat detail** (detail: tugas sekarang, berikutnya, rutin, hasil
+  terakhir, riwayat). Klik kartu di Papan Tugas → detail.
 - Tombol **Mode Rekam** / `?rekam=1` → tampilan vertikal 9:16 bersih (judul + jam WIB live), tombol **Musik**
-  (lo-fi WebAudio, tanpa file), tombol hilang sendiri setelah 3 detik mouse diam.
-  Di mode rekam kamera menyapu kantor perlahan (dan fokus ke bot yang merayakan), plus daftar 9 meja di bawahnya.
+  (lo-fi WebAudio, tanpa file), tombol hilang sendiri setelah 3 detik mouse diam, plus daftar 9 meja di bawahnya.
 
 ## Memperbarui status
 
@@ -62,12 +73,25 @@ Token penulis Supabase dibaca dari `~/.config/vertex8-office/writer_token` (atau
 > Situs ini publik — jangan tulis angka bisnis (omzet, jumlah member) atau data pribadi. Teks berisi "Rp",
 > "<angka> member", atau nomor telepon ditolak oleh skrip.
 
-## Ngobrol dengan Agent (prototipe, khusus staf)
+## Ngobrol dengan Agent ala The Sims (khusus staf)
 
-Tombol **Masuk** (email + sandi, Supabase Auth) dan **💬 Ngobrol** di header. Setelah masuk, staf yang terdaftar bisa
-ngobrol dengan agent yang diizinkan (saat ini hanya **Mr. Wawan — Content & Creative**; agent lain "Segera hadir").
-Klik robot/meja/kartu Mr. Wawan juga menampilkan tombol "Ngobrol". Tautan langsung: `#ngobrol`.
-Isi chat **tidak pernah** dimuat sebelum login dan hanya bisa dibaca pemiliknya (RLS).
+Tombol **Masuk** (email + sandi, Supabase Auth). Setelah masuk, staf terdaftar muncul sebagai **avatar manusia**
+(warna dari nama, label nama + lencana **STAF**) di dekat tangga/pintu masuk lantai 1. Klik agent atau mejanya →
+**Ngobrol** → avatar berjalan ke meja agent (pathfinding termasuk tangga), agent menoleh, lalu dock obrolan muncul
+di bawah: kolom pesan + **Kirim**, **Riwayat** (laci samping), **Selesai ngobrol** (avatar kembali ke lounge).
+Pesan tampil sebagai gelembung di atas kepala; selama menunggu, agent memunculkan hologram "mikir" dan dock menulis
+*sedang membaca… / sedang mengetik…*; balasan muncul dengan efek mesin ketik (balasan panjang: **Baca selengkapnya**).
+Saat ini hanya **Mr. Wawan — Content & Creative** yang bisa diajak ngobrol; agent lain menjawab
+"Segera bisa diajak ngobrol". Tautan langsung: `#ngobrol`. Isi chat **tidak pernah** dimuat sebelum login dan
+hanya bisa dibaca pemiliknya (RLS).
+
+**Kehadiran (presence) untuk penonton lain:** tabel `kv_presence` (RLS) hanya berisi `pid` acak, nama tampilan
+staf, keadaan (`hadir` / `ngobrol` + id agent), `waiting`, `talk_at`, `reply_at` — **tanpa** user_id, email, atau isi
+chat. Publik hanya bisa membaca baris yang diperbarui ≤10 menit terakhir; tulis hanya lewat RPC
+`kv_presence_set(p_state, p_agent, p_event)` / `kv_presence_leave()` (staf aktif saja, nama diambil dari
+`kv_staff`). Halaman berlangganan perubahan lewat Realtime (plus cek tiap 60 dtk), detak tiap 60 dtk, keluar saat
+logout / tutup tab; avatar basi (>3 menit) disembunyikan. Penonton lain hanya melihat gelembung **"…"**.
+SQL: `supabase/kv_presence.sql`.
 
 Alur: staf kirim pesan → baris `kv_chat_messages` (status `pending`) → trigger DB (pg_net) memanggil Edge Function
 `kv-chat-notify` → fungsi itu POST ke **webhook routine** agent (bila secret sudah diset) → agent bangun di box dan
@@ -79,6 +103,7 @@ menjalankan `agent-chat.py` → balasan muncul langsung di browser lewat Realtim
 | `kv_chat_agents` | daftar agent + `enabled` (publik, hanya nama) |
 | `kv_chat_messages` | pesan; RLS: staf hanya baca utasnya sendiri & hanya insert pesan `staff` ke agent yang diizinkan; realtime aktif |
 | `kv_chat_me()` | profil staf yang login (dipakai halaman) |
+| `kv_presence` + `kv_presence_set / kv_presence_leave` | kehadiran avatar staf (publik: nama tampilan + keadaan saja) |
 | `kv_chat_pending / kv_chat_reply / kv_chat_error` | RPC agent, dijaga **token penulis** |
 | `kv_staff_admin` | RPC admin, dijaga **token admin** (`~/.config/vertex8-office/admin_token`, chmod 600) |
 | Edge Function `kv-chat-notify` | membangunkan agent; debounce 60 dtk; tanpa secret → pesan tetap menunggu |
