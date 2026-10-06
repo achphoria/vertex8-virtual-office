@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T15:04:53+07:00",
+  "updated_at": "2026-10-06T15:08:11+07:00",
   "log": [
     {
-      "t": "2026-10-06T15:04:53+07:00",
+      "t": "2026-10-06T15:08:11+07:00",
       "agent": "Mr. Wakidi",
-      "status": "Selesai",
-      "text": "Rapikan tampilan: papan tugas auto-hide, label meja disembunyikan"
+      "status": "Sedang kerja",
+      "text": "Tambah nama di atas karakter & blokir akses HP"
+    },
+    {
+      "t": "2026-10-06T15:04:53+07:00",
+      "text": "Rapikan tampilan: papan tugas auto-hide, label meja disembunyikan",
+      "agent": "Mr. Wakidi",
+      "status": "Selesai"
     },
     {
       "t": "2026-10-06T14:47:28+07:00",
@@ -115,12 +121,6 @@
       "text": "Ngobrol dengan achphoria",
       "agent": "Mr. Wakidi",
       "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T12:50:38+07:00",
-      "text": "Revamp kantor virtual gaya neon 9 meja",
-      "agent": "Mr. Wakidi",
-      "status": "Selesai"
     }
   ],
   "agents": [
@@ -131,9 +131,14 @@
       "role": "Builder",
       "tasks": [
         {
-          "status": "Selesai",
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Tambah nama di atas karakter & blokir akses HP"
+        },
+        {
+          "text": "Rapikan tampilan: papan tugas auto-hide, label meja disembunyikan",
           "label": "Baru selesai",
-          "text": "Rapikan tampilan: papan tugas auto-hide, label meja disembunyikan"
+          "status": "Selesai"
         }
       ],
       "theme": "grok"
