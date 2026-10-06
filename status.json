@@ -1,18 +1,30 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T12:38:56+07:00",
+  "updated_at": "2026-10-06T12:38:58+07:00",
   "log": [
     {
-      "t": "2026-10-06T12:38:56+07:00",
-      "agent": "Mr. Wibowo",
+      "t": "2026-10-06T12:38:58+07:00",
+      "agent": "Mr. Wawan",
       "status": "Terjadwal",
       "text": "Menunggu tugas pertama"
     },
     {
-      "t": "2026-10-06T12:38:56+07:00",
-      "agent": "Mr. Wibowo",
+      "t": "2026-10-06T12:38:58+07:00",
+      "agent": "Mr. Wawan",
       "status": "Info",
-      "text": "Bergabung ke kantor sebagai Finance"
+      "text": "Bergabung ke kantor sebagai Content & Creative"
+    },
+    {
+      "t": "2026-10-06T12:38:56+07:00",
+      "text": "Menunggu tugas pertama",
+      "agent": "Mr. Wibowo",
+      "status": "Terjadwal"
+    },
+    {
+      "t": "2026-10-06T12:38:56+07:00",
+      "text": "Bergabung ke kantor sebagai Finance",
+      "agent": "Mr. Wibowo",
+      "status": "Info"
     },
     {
       "t": "2026-10-06T12:38:53+07:00",
@@ -109,18 +121,6 @@
       "text": "Meng-online-kan kantor virtual",
       "agent": "Mr. Wakidi",
       "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T11:31:14+07:00",
-      "text": "Riset 3 tren fitness/Hyrox yang viral",
-      "agent": "Mr. Wahyudi",
-      "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T11:31:14+07:00",
-      "text": "Menyiapkan laporan mingguan",
-      "agent": "Mr. Wiyadi",
-      "status": "Sedang kerja"
     }
   ],
   "agents": [
@@ -214,8 +214,21 @@
     },
     {
       "id": "finance",
+      "desk": 6,
       "name": "Mr. Wibowo",
       "role": "Finance",
+      "tasks": [
+        {
+          "text": "Menunggu tugas pertama",
+          "label": "Berikutnya",
+          "status": "Terjadwal"
+        }
+      ]
+    },
+    {
+      "id": "content",
+      "name": "Mr. Wawan",
+      "role": "Content & Creative",
       "tasks": [
         {
           "status": "Terjadwal",
@@ -223,7 +236,7 @@
           "text": "Menunggu tugas pertama"
         }
       ],
-      "desk": 6
+      "desk": 7
     }
   ]
 }
