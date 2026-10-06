@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T12:12:14+07:00",
+  "updated_at": "2026-10-06T12:14:02+07:00",
   "log": [
     {
-      "t": "2026-10-06T12:12:14+07:00",
+      "t": "2026-10-06T12:14:02+07:00",
       "agent": "Mr. Wakidi",
-      "status": "Selesai",
-      "text": "Uji realtime kantor virtual (lokal)"
+      "status": "Sedang kerja",
+      "text": "Bikin kantor virtual jadi realtime"
+    },
+    {
+      "t": "2026-10-06T12:12:14+07:00",
+      "text": "Uji realtime kantor virtual (lokal)",
+      "agent": "Mr. Wakidi",
+      "status": "Selesai"
     },
     {
       "t": "2026-10-06T12:08:04+07:00",
@@ -82,9 +88,16 @@
       "role": "Builder",
       "tasks": [
         {
-          "status": "Selesai",
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Bikin kantor virtual jadi realtime",
+          "step": "nunggu GitHub Pages build",
+          "step_at": "2026-10-06T12:14:02+07:00"
+        },
+        {
+          "text": "Uji realtime kantor virtual (lokal)",
           "label": "Baru selesai",
-          "text": "Uji realtime kantor virtual (lokal)"
+          "status": "Selesai"
         }
       ],
       "theme": "grok"
