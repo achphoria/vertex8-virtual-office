@@ -129,7 +129,8 @@ def main():
         f.write(json.dumps(ordered, ensure_ascii=False, indent=2) + "\n")
 
     git("add", "status.json")
-    msg = f"status: {ag.get('name')} {a.state} - {task}"[:72]
+    msg = f"status: {ag.get('name')} {a.state} - {task}"
+    msg = msg if len(msg) <= 100 else msg[:99] + "…"
     git("commit", "--quiet", "-m", msg)
     if a.no_push:
         print(f"OK (lokal, tanpa push): {msg}")
