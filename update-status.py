@@ -26,7 +26,8 @@ STATE_MAP = {
     "done":      ("Selesai", "Baru selesai"),
 }
 BLOCK = [
-    (re.compile(r"Rp", re.I), "mengandung 'Rp'"),
+    (re.compile(r"Rp"), "mengandung 'Rp'"),
+    (re.compile(r"\brp\s*\d", re.I), "mengandung 'rp' + angka"),
     (re.compile(r"\d[\d.,\s]*member", re.I), "mengandung angka + 'member'"),
     (re.compile(r"(\+62|\b62|\b0)8\d[\d\s-]{6,}"), "mirip nomor telepon"),
 ]
