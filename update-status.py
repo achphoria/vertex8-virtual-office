@@ -23,9 +23,13 @@ Langkah kecil (sering & murah, HANYA ke Supabase, tanpa commit git):
      Butuh agen yang sedang kerja (atau gabungkan: --state working --task "..." --step "...").
      --state apa pun mengganti tugas "Sekarang" sehingga langkah lama otomatis hilang.
 
-Daftarkan / hapus bot (kantor otomatis menambah meja & robot pixel baru):
-  update-status.py --add-agent --agent <id> --name "Nama Bot" [--role "Peran"] [--state ... --task ...]
+Daftarkan / hapus bot (kantor punya 9 meja divisi, 3x3):
+  update-status.py --add-agent --agent <id> --name "Nama Bot" [--role "Peran"] [--desk 1-9] [--state ... --task ...]
   update-status.py --remove-agent --agent <id|nama>
+  --desk N   -> (opsional) nomor meja 1..9 (01 Builder, 02 Ops & Data, 03 Marketing, 04 Member Success,
+                05 Performance, 06 Finance, 07 Content & Creative, 08 HR & People, 09 Engineering & Facility).
+                Tanpa --desk, agen baru otomatis dapat meja kosong pertama. Untuk agen yang sudah ada,
+                --add-agent --agent <id> --name "..." --desk N memindahkan mejanya (meja harus kosong).
 
 Keluar 0 bila minimal satu tujuan (Supabase atau GitHub) berhasil; peringatan dicetak bila
 salah satu gagal. --step keluar non-zero bila Supabase gagal. JANGAN masukkan angka bisnis:
@@ -40,6 +44,7 @@ STATUS = os.path.join(REPO, "status.json")
 LOG_MAX = 20
 OUTPUT_MAX = 280
 MAX_AGENTS = 12
+DESKS = 9  # grid meja 3x3 di halaman
 DEFAULT_ROLE = "Asisten AI"
 STEP_MAX = 120
 # Supabase (proyek "General Table"); URL + kunci publishable memang publik.
@@ -182,6 +187,33 @@ def ststate(status):
 def find_agent(agents, key):
     key = key.strip().lower()
     return next((x for x in agents if str(x.get("name", "")).lower() == key or str(x.get("id", "")).lower() == key), None)
+
+
+def desk_of(ag):
+    d = ag.get("desk")
+    return d if isinstance(d, int) and not isinstance(d, bool) and 1 <= d <= DESKS else None
+
+
+def effective_desks(agents):
+    """Sama dengan aturan halaman: meja eksplisit dulu, agen tanpa meja mengisi meja kosong berurutan."""
+    res, used = {}, set()
+    for x in agents:
+        d = desk_of(x)
+        if d is not None and d not in used:
+            res[id(x)] = d
+            used.add(d)
+    for x in agents:
+        if id(x) not in res:
+            d = next((n for n in range(1, DESKS + 1) if n not in used), None)
+            if d is not None:
+                res[id(x)] = d
+                used.add(d)
+    return res
+
+
+def free_desk(agents):
+    used = set(effective_desks(agents).values())
+    return next((n for n in range(1, DESKS + 1) if n not in used), None)
 
 
 def add_log(data, ts, name, status, text):
@@ -362,6 +394,7 @@ def main():
     ap.add_argument("--remove-agent", action="store_true", help="hapus bot (butuh --agent <id|nama>)")
     ap.add_argument("--name", help="nama tampilan bot (untuk --add-agent)")
     ap.add_argument("--role", help=f'peran bot (untuk --add-agent, bawaan "{DEFAULT_ROLE}")')
+    ap.add_argument("--desk", type=int, default=None, help=f"nomor meja 1..{DESKS} (untuk --add-agent; bawaan: meja kosong pertama)")
     ap.add_argument("--step", default=None, help=f'langkah kecil yang sedang dikerjakan (maks {STEP_MAX} karakter); hanya ke Supabase, tanpa commit')
     ap.add_argument("--no-push", action="store_true", help="hanya ubah + commit lokal, tanpa Supabase (untuk uji)")
     ap.add_argument("--no-supabase", action="store_true", help="lewati Supabase, hanya GitHub (cara lama)")
@@ -399,6 +432,11 @@ def main():
             die("--output kosong", 2)
         if len(out) > OUTPUT_MAX:
             out = out[:OUTPUT_MAX - 1].rstrip() + "…"
+    if a.desk is not None:
+        if not a.add_agent:
+            die("--desk hanya untuk --add-agent", 2)
+        if not 1 <= a.desk <= DESKS:
+            die(f"--desk harus 1..{DESKS}", 2)
     if a.remove_agent and (task or nxt or out or name or role):
         die("--remove-agent tidak bisa digabung dengan opsi lain", 2)
     if not a.add_agent and not a.remove_agent:
@@ -451,18 +489,27 @@ def main():
             clash = find_agent(agents, name)
             if clash is not None and clash is not ag:
                 die(f"nama '{name}' sudah dipakai agen lain ({clash.get('id')})", 2)
+            if a.desk is not None:
+                owner = next((x for x in agents if x is not ag and desk_of(x) == a.desk), None)
+                if owner is not None:
+                    die(f"meja {a.desk} sudah dipakai {owner.get('name')} ({owner.get('id')})", 2)
             if ag is None:
                 if len(agents) >= MAX_AGENTS:
                     die(f"maksimal {MAX_AGENTS} agen", 2)
                 ag = {"id": aid, "name": name, "role": role or DEFAULT_ROLE, "tasks": []}
+                desk = a.desk if a.desk is not None else free_desk(agents)
+                if desk is not None:
+                    ag["desk"] = desk
                 agents.append(ag)
                 add_log(data, ts, name, "Info", f"Bergabung ke kantor sebagai {ag['role']}")
-                msgs.append(f"agent: tambah {name} ({aid})")
+                msgs.append(f"agent: tambah {name} ({aid})" + (f" meja {desk}" if desk else ""))
             else:
                 ag["name"] = name
                 if role:
                     ag["role"] = role
-                msgs.append(f"agent: perbarui {name} ({aid})")
+                if a.desk is not None:
+                    ag["desk"] = a.desk
+                msgs.append(f"agent: perbarui {name} ({aid})" + (f" meja {a.desk}" if a.desk is not None else ""))
         else:
             ag = find_agent(agents, a.agent)
             if ag is None:
