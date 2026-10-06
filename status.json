@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T13:47:59+07:00",
+  "updated_at": "2026-10-06T13:48:19+07:00",
   "log": [
     {
+      "t": "2026-10-06T13:48:19+07:00",
+      "agent": "Mr. Wakidi",
+      "status": "Selesai",
+      "text": "Prototipe login staf dan chat agent di web"
+    },
+    {
       "t": "2026-10-06T13:47:59+07:00",
+      "text": "Menunggu chat staf",
       "agent": "Mr. Wawan",
-      "status": "Terjadwal",
-      "text": "Menunggu chat staf"
+      "status": "Terjadwal"
     },
     {
       "t": "2026-10-06T13:42:56+07:00",
@@ -115,12 +121,6 @@
       "text": "Menunggu tugas pertama",
       "agent": "Mr. Winarto",
       "status": "Terjadwal"
-    },
-    {
-      "t": "2026-10-06T12:38:53+07:00",
-      "text": "Bergabung ke kantor sebagai Performance",
-      "agent": "Mr. Winarto",
-      "status": "Info"
     }
   ],
   "agents": [
@@ -131,16 +131,9 @@
       "role": "Builder",
       "tasks": [
         {
-          "step": "Prototipe live, menunggu webhook Mr. Wawan",
-          "text": "Prototipe login staf dan chat agent di web",
-          "label": "Sekarang",
-          "status": "Sedang kerja",
-          "step_at": "2026-10-06T13:33:21+07:00"
-        },
-        {
-          "text": "Revamp kantor virtual gaya neon 9 meja",
+          "status": "Selesai",
           "label": "Baru selesai",
-          "status": "Selesai"
+          "text": "Prototipe login staf dan chat agent di web"
         }
       ],
       "theme": "grok"
@@ -234,9 +227,9 @@
       "role": "Content & Creative",
       "tasks": [
         {
-          "status": "Terjadwal",
+          "text": "Menunggu chat staf",
           "label": "Berikutnya",
-          "text": "Menunggu chat staf"
+          "status": "Terjadwal"
         },
         {
           "text": "Membalas chat staf",
