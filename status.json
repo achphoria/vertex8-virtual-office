@@ -1,133 +1,134 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T12:08:04+07:00",
+  "updated_at": "2026-10-06T12:12:14+07:00",
+  "log": [
+    {
+      "t": "2026-10-06T12:12:14+07:00",
+      "agent": "Mr. Wakidi",
+      "status": "Selesai",
+      "text": "Uji realtime kantor virtual (lokal)"
+    },
+    {
+      "t": "2026-10-06T12:08:04+07:00",
+      "text": "Bikin kantor virtual jadi realtime",
+      "agent": "Mr. Wakidi",
+      "status": "Sedang kerja"
+    },
+    {
+      "t": "2026-10-06T12:07:02+07:00",
+      "text": "Ngobrol dan bantu user di chat",
+      "agent": "Mr. Wakidi",
+      "status": "Sedang kerja"
+    },
+    {
+      "t": "2026-10-06T12:00:13+07:00",
+      "text": "Revamp kantor virtual v2",
+      "agent": "Mr. Wakidi",
+      "status": "Selesai"
+    },
+    {
+      "t": "2026-10-06T11:40:23+07:00",
+      "text": "Perbandingan harga paket dengan kompetitor",
+      "agent": "Mr. Wiyadi",
+      "status": "Selesai"
+    },
+    {
+      "t": "2026-10-06T11:40:02+07:00",
+      "text": "Riset 3 tren viral fitness/Hyrox + draf konten",
+      "agent": "Mr. Wahyudi",
+      "status": "Selesai"
+    },
+    {
+      "t": "2026-10-06T11:39:30+07:00",
+      "text": "Meng-online-kan kantor virtual",
+      "agent": "Mr. Wakidi",
+      "status": "Selesai"
+    },
+    {
+      "t": "2026-10-06T11:33:34+07:00",
+      "text": "Riset 3 tren fitness/Hyrox yang viral",
+      "agent": "Mr. Wahyudi",
+      "status": "Sedang kerja"
+    },
+    {
+      "t": "2026-10-06T11:31:14+07:00",
+      "text": "Meng-online-kan kantor virtual",
+      "agent": "Mr. Wakidi",
+      "status": "Sedang kerja"
+    },
+    {
+      "t": "2026-10-06T11:31:14+07:00",
+      "text": "Riset 3 tren fitness/Hyrox yang viral",
+      "agent": "Mr. Wahyudi",
+      "status": "Sedang kerja"
+    },
+    {
+      "t": "2026-10-06T11:31:14+07:00",
+      "text": "Menyiapkan laporan mingguan",
+      "agent": "Mr. Wiyadi",
+      "status": "Sedang kerja"
+    },
+    {
+      "t": "2026-10-06T11:31:14+07:00",
+      "text": "Analisa data gym Vertex8",
+      "agent": "Mr. Wakidi",
+      "status": "Selesai"
+    }
+  ],
   "agents": [
     {
       "id": "grok",
       "name": "Mr. Wakidi",
       "role": "Builder",
-      "theme": "grok",
       "tasks": [
-        {
-          "status": "Sedang kerja",
-          "label": "Sekarang",
-          "text": "Bikin kantor virtual jadi realtime"
-        },
         {
           "status": "Selesai",
           "label": "Baru selesai",
-          "text": "Revamp kantor virtual v2"
+          "text": "Uji realtime kantor virtual (lokal)"
         }
-      ]
+      ],
+      "theme": "grok"
     },
     {
       "id": "analyst",
       "name": "Mr. Wiyadi",
       "role": "Ops & Data",
-      "theme": "analyst",
       "tasks": [
         {
-          "status": "Terjadwal",
+          "text": "Laporan harian besok pagi",
           "label": "Berikutnya",
-          "text": "Laporan harian besok pagi"
+          "status": "Terjadwal"
         },
         {
-          "status": "Selesai",
+          "text": "Perbandingan harga paket dengan kompetitor",
           "label": "Baru selesai",
-          "text": "Perbandingan harga paket dengan kompetitor"
+          "status": "Selesai"
         },
         {
-          "status": "Terjadwal",
+          "text": "Laporan mingguan tiap Senin 08.00 WIB",
           "label": "Rutin",
-          "text": "Laporan mingguan tiap Senin 08.00 WIB"
+          "status": "Terjadwal"
         }
-      ]
+      ],
+      "theme": "analyst"
     },
     {
       "id": "marketing",
       "name": "Mr. Wahyudi",
       "role": "Marketing",
-      "theme": "marketing",
       "tasks": [
         {
-          "status": "Terjadwal",
+          "text": "Draf hook, skrip Reels, dan caption",
           "label": "Berikutnya",
-          "text": "Draf hook, skrip Reels, dan caption"
+          "status": "Terjadwal"
         },
         {
-          "status": "Selesai",
+          "text": "Riset 3 tren viral fitness/Hyrox + draf konten",
           "label": "Baru selesai",
-          "text": "Riset 3 tren viral fitness/Hyrox + draf konten"
+          "status": "Selesai"
         }
-      ]
-    }
-  ],
-  "log": [
-    {
-      "t": "2026-10-06T12:08:04+07:00",
-      "agent": "Mr. Wakidi",
-      "status": "Sedang kerja",
-      "text": "Bikin kantor virtual jadi realtime"
-    },
-    {
-      "t": "2026-10-06T12:07:02+07:00",
-      "agent": "Mr. Wakidi",
-      "status": "Sedang kerja",
-      "text": "Ngobrol dan bantu user di chat"
-    },
-    {
-      "t": "2026-10-06T12:00:13+07:00",
-      "agent": "Mr. Wakidi",
-      "status": "Selesai",
-      "text": "Revamp kantor virtual v2"
-    },
-    {
-      "t": "2026-10-06T11:40:23+07:00",
-      "agent": "Mr. Wiyadi",
-      "status": "Selesai",
-      "text": "Perbandingan harga paket dengan kompetitor"
-    },
-    {
-      "t": "2026-10-06T11:40:02+07:00",
-      "agent": "Mr. Wahyudi",
-      "status": "Selesai",
-      "text": "Riset 3 tren viral fitness/Hyrox + draf konten"
-    },
-    {
-      "t": "2026-10-06T11:39:30+07:00",
-      "agent": "Mr. Wakidi",
-      "status": "Selesai",
-      "text": "Meng-online-kan kantor virtual"
-    },
-    {
-      "t": "2026-10-06T11:33:34+07:00",
-      "agent": "Mr. Wahyudi",
-      "status": "Sedang kerja",
-      "text": "Riset 3 tren fitness/Hyrox yang viral"
-    },
-    {
-      "t": "2026-10-06T11:31:14+07:00",
-      "agent": "Mr. Wakidi",
-      "status": "Sedang kerja",
-      "text": "Meng-online-kan kantor virtual"
-    },
-    {
-      "t": "2026-10-06T11:31:14+07:00",
-      "agent": "Mr. Wahyudi",
-      "status": "Sedang kerja",
-      "text": "Riset 3 tren fitness/Hyrox yang viral"
-    },
-    {
-      "t": "2026-10-06T11:31:14+07:00",
-      "agent": "Mr. Wiyadi",
-      "status": "Sedang kerja",
-      "text": "Menyiapkan laporan mingguan"
-    },
-    {
-      "t": "2026-10-06T11:31:14+07:00",
-      "agent": "Mr. Wakidi",
-      "status": "Selesai",
-      "text": "Analisa data gym Vertex8"
+      ],
+      "theme": "marketing"
     }
   ]
 }
