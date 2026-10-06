@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T13:33:18+07:00",
+  "updated_at": "2026-10-06T13:33:21+07:00",
   "log": [
     {
+      "t": "2026-10-06T13:33:21+07:00",
+      "agent": "Mr. Wakidi",
+      "status": "Sedang kerja",
+      "text": "Prototipe login staf dan chat agent di web"
+    },
+    {
       "t": "2026-10-06T13:33:18+07:00",
+      "text": "Menunggu chat staf pertama",
       "agent": "Mr. Wawan",
-      "status": "Terjadwal",
-      "text": "Menunggu chat staf pertama"
+      "status": "Terjadwal"
     },
     {
       "t": "2026-10-06T13:30:22+07:00",
@@ -115,12 +121,6 @@
       "text": "Revamp kantor virtual gaya neon 9 meja",
       "agent": "Mr. Wakidi",
       "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T12:15:28+07:00",
-      "text": "Bikin kantor virtual jadi realtime",
-      "agent": "Mr. Wakidi",
-      "status": "Selesai"
     }
   ],
   "agents": [
@@ -131,11 +131,11 @@
       "role": "Builder",
       "tasks": [
         {
-          "step": "Menyiapkan database dan halaman login",
-          "text": "Prototipe login staf dan chat agent di web",
-          "label": "Sekarang",
           "status": "Sedang kerja",
-          "step_at": "2026-10-06T13:16:48+07:00"
+          "label": "Sekarang",
+          "text": "Prototipe login staf dan chat agent di web",
+          "step": "Prototipe live, menunggu webhook Mr. Wawan",
+          "step_at": "2026-10-06T13:33:21+07:00"
         },
         {
           "text": "Revamp kantor virtual gaya neon 9 meja",
@@ -234,9 +234,9 @@
       "role": "Content & Creative",
       "tasks": [
         {
-          "status": "Terjadwal",
+          "text": "Menunggu chat staf pertama",
           "label": "Berikutnya",
-          "text": "Menunggu chat staf pertama"
+          "status": "Terjadwal"
         },
         {
           "text": "Membalas chat staf",
