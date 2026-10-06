@@ -6,7 +6,58 @@
 <title>Kantor Virtual Vertex8</title>
 <meta name="theme-color" content="#070a1f">
 <link rel="icon" href="data:,">
-<link rel="preload" as="image" href="assets/office-v5.webp" type="image/webp">
+<script>
+/* =====================================================================
+   KHUSUS PC / LAPTOP — HP & tablet diblokir SEBELUM apa pun dimuat
+   (tanpa kantor, tanpa realtime/Supabase, tanpa login/chat).
+   Tidak berdasarkan lebar layar: jendela desktop sempit & ?rekam=1 (9:16) tetap jalan,
+   laptop layar sentuh (punya mouse/touchpad → any-pointer:fine) juga tetap jalan.
+   ===================================================================== */
+(function(){
+  var n=navigator, ua=n.userAgent||'', m=false;
+  try{ if(n.userAgentData && n.userAgentData.mobile===true) m=true; }catch(e){}
+  if(/Android|iPhone|iPad|iPod|Mobile|Opera Mini|IEMobile|Silk|Kindle|BlackBerry|BB10|webOS/i.test(ua)) m=true;
+  if(/Macintosh/i.test(ua) && (n.maxTouchPoints||0)>1) m=true;            // iPadOS / iPhone "situs desktop"
+  try{ if(matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches) m=true; }catch(e){} // Android "situs desktop", tablet lain
+  if(!m){ // PC/laptop: preload gambar kantor (HP tidak ikut mengunduhnya)
+    var pl=document.createElement('link'); pl.rel='preload'; pl.as='image'; pl.href='assets/office-v5.webp'; pl.type='image/webp'; document.head.appendChild(pl); return; }
+  window.__KV_BLOCKED=true;
+  var d=document, root=d.documentElement; root.className+=' kv-blocked';
+  var auth=/[#&?](access_token|token_hash|code|type=recovery)=?/.test(location.hash+location.search);
+  var css='html.kv-blocked,html.kv-blocked body{margin:0;height:100%;background:#04050f;overflow:hidden}'+
+    'html.kv-blocked body>*:not(#kvBlock){display:none!important}'+
+    '#kvBlock{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;'+
+      'font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#e8ecff;text-align:center;'+
+      'background:radial-gradient(120% 70% at 50% 0%,rgba(255,61,242,.22),transparent 60%),radial-gradient(120% 70% at 50% 100%,rgba(61,245,255,.18),transparent 60%),#04050f}'+
+    '#kvBlock:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px)}'+
+    '#kvBlock .kb{position:relative;max-width:420px;width:100%;padding:30px 24px 26px;border-radius:18px;background:rgba(8,10,34,.88);border:2px solid #3df5ff;'+
+      'box-shadow:0 0 18px rgba(61,245,255,.55),0 0 46px rgba(255,61,242,.28),inset 0 0 22px rgba(61,245,255,.12)}'+
+    '#kvBlock .ki{font-size:46px;line-height:1;margin-bottom:14px;filter:drop-shadow(0 0 10px rgba(255,61,242,.8))}'+
+    '#kvBlock .kt{margin:0 0 6px;font:800 13px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.22em;color:#ff3df2;text-shadow:0 0 8px #ff3df2}'+
+    '#kvBlock h1{margin:0 0 14px;font-size:26px;line-height:1.15;color:#fff;text-shadow:0 0 10px #3df5ff,0 0 24px rgba(61,245,255,.6)}'+
+    '#kvBlock p{margin:0 0 10px;font-size:15px;line-height:1.55;color:#c9d0ff}'+
+    '#kvBlock .kn{margin-top:16px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,210,61,.6);background:rgba(255,210,61,.08);color:#ffe9a6;font-size:13px}'+
+    '#kvBlock .kf{margin-top:18px;font:700 11px/1.5 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.04em;color:#3dffa8;text-shadow:0 0 6px #3dffa8;overflow-wrap:anywhere}'+
+    '#kvBlock .kf span{display:block;color:#8e97cf;text-shadow:none;letter-spacing:.16em;font-size:10px}';
+  var html='<div class="kb" role="alertdialog" aria-labelledby="kvBlockT"><div class="ki">&#128187;</div><div class="kt">VERTEX8 &middot; KANTOR VIRTUAL</div>'+
+    '<h1 id="kvBlockT">Hanya untuk PC / Laptop</h1>'+
+    '<p>Kantor Virtual Vertex8 hanya bisa dibuka dari komputer atau laptop. Silakan buka lewat browser di PC.</p>'+
+    (auth?'<div class="kn">Link dari email (reset sandi / undangan) juga harus dibuka di PC/laptop. Buka email di komputer, minta link baru bila perlu, lalu klik dari sana.</div>':'')+
+    '<div class="kf"><span>ALAMAT DI PC</span>achphoria.github.io/vertex8-virtual-office</div></div>';
+  // CSS langsung (DOM kantor tersembunyi sejak awal); skrip kantor & chat berhenti sendiri karena __KV_BLOCKED
+  var st=d.createElement('style'); st.id='kvBlockCss'; st.textContent=css; (d.head||root).appendChild(st);
+  function show(){
+    try{
+      var b=d.body; if(!b) return;
+      var el=d.getElementById('kvBlock'); if(!el){ el=d.createElement('div'); el.id='kvBlock'; el.innerHTML=html; }
+      for(var c=b.firstChild;c;){ var nx=c.nextSibling; if(c!==el) b.removeChild(c); c=nx; }   // buang DOM kantor bila sempat terbentuk
+      if(el.parentNode!==b) b.appendChild(el);
+      d.title='Hanya untuk PC / Laptop — Kantor Virtual Vertex8';
+    }catch(e){}
+  }
+  d.addEventListener('DOMContentLoaded',show); window.addEventListener('load',show);
+})();
+</script>
 <script>
 /* Link email Supabase (reset password / undangan): ambil token dari URL lalu HAPUS dari address bar secepatnya.
    Mendukung: #access_token=..&type=recovery (implicit), ?code= (PKCE), ?token_hash=..&type=recovery, dan #error=.. */
@@ -602,6 +653,7 @@ body.rekam .scene{height:auto}
 <script>
 (() => {
 "use strict";
+if(window.__KV_BLOCKED) return; // HP/tablet: kantor tidak dirender
 const $ = s => document.querySelector(s);
 const QS = new URLSearchParams(location.search);
 const DEMO = QS.get('demo') === '1';
@@ -1246,11 +1298,22 @@ function render(t,now){
   for(const o of OCC) items.push({y:o.base, f:()=>drawOcc(o)});
   for(const d of DESKS){ const a=agentAtDesk.get(d.n); items.push({y:d.top+7, f:()=>deskFx(d,a,t)}); }
   for(const b of bots.values()){ const a=agentByKey.get(b.key); if(!a) continue;
-    items.push({y:b.y, f:()=>{ const o=charOpts(b,t,now,true); drawChar(g,b.x,b.y,b.s,o); b.hy=b.y-((o.pose==='sit'?72:o.pose==='sofa'?86:92)+(o.jump||0))*b.s; }}); }
+    items.push({y:b.y, f:()=>{ const o=charOpts(b,t,now,true); drawChar(g,b.x,b.y,b.s,o); b.hy=b.y-((o.pose==='sit'?72:o.pose==='sofa'?86:92)+(o.jump||0))*b.s; b.thk=!!o.think; }}); }
   for(const c of staffChars.values()) items.push({y:c.y, f:()=>{ const o=charOpts(c,t,now,false); drawChar(g,c.x,c.y,c.s,o); c.hy=c.y-92*c.s; }});
   items.sort((p,q)=>p.y-q.y).forEach(it=>it.f());
-  // label nama staf (selalu di atas)
-  for(const c of staffChars.values()) nameTag(c);
+  // label nama di atas kepala (selalu di atas karakter; yang jauh digambar dulu → yang dekat menimpa)
+  // anti-tumpuk: label yang lebih depan tetap di tempat, label di belakangnya naik sedikit bila bertabrakan
+  const tags=[], placed=[];
+  for(const c of staffChars.values()){ const fs=Math.max(9*c.s, 11.5/CAM.k), h=fs*1.45, y=(c.hy!=null?c.hy:c.y-92*c.s)-5*c.s, w=(shortName(c.name).slice(0,18).length+4)*fs*0.62+fs*1.9;
+    placed.push({x0:c.x-w/2,x1:c.x+w/2,y0:y-h,y1:y}); tags.push({y:c.y+0.5, f:()=>nameTag(c)}); }
+  const L=[]; for(const b of bots.values()){ const a=agentByKey.get(b.key); if(a) L.push(agentTagLayout(b,a)); else b.tagTop=null; }
+  L.sort((p,q)=>q.b.y-p.b.y).forEach(T=>{ const pad=T.h*0.12, lim=T.y0-T.h*2.2;
+    for(let it=0;it<6;it++){ const hit=placed.find(r=>T.x0<r.x1+pad && T.x0+T.w>r.x0-pad && T.y0<r.y1+pad && T.y0+T.h>r.y0-pad); if(!hit) break; const ny=hit.y0-pad-T.h; if(ny<lim) break; T.y0=ny; }
+    placed.push({x0:T.x0,x1:T.x0+T.w,y0:T.y0,y1:T.y0+T.h});
+    const B=T.b, off=T.y0-(T.yHead-T.h), kk=1-Math.exp(-Math.min(0.1,Math.max(0,t-(B.tagT||t)))*10); B.tagT=t; // geser halus, tidak meloncat
+    B.tagOff=(B.tagOff||0)+(off-(B.tagOff||0))*kk; T.y0=T.yHead-T.h+B.tagOff;
+    B.tagTop=T.y0; B.tagW=T.w; tags.push({y:B.y, f:()=>agentTag(T,t)}); });
+  tags.sort((p,q)=>p.y-q.y).forEach(it=>it.f());
   // konfeti
   g.save(); g.globalCompositeOperation='lighter';
   for(let i=confetti.length-1;i>=0;i--){ const c=confetti[i]; if(c.age>=c.life){ confetti.splice(i,1); continue; }
@@ -1275,6 +1338,32 @@ function nameTag(c){
   rr(g,x0+fs*0.25,y0+fs*0.22,bw,h-fs*0.44,h*0.2); g.fillStyle=c.P.c; g.fill();
   g.fillStyle='#060818'; g.font=`bold ${(fs*0.78).toFixed(1)}px ${MONO}`; g.fillText('STAF',x0+fs*0.25+bw/2,y-fs*0.3);
   g.font=`bold ${fs.toFixed(1)}px ${MONO}`; g.fillStyle='#ffffff'; g.fillText(name,x0+bw+fs*0.6+tw/2,y-fs*0.24);
+  g.restore();
+}
+/* label nama agent: pil neon kecil (titik status hijau = kerja, kuning = santai) — beda dari label STAF (tanpa badge isi penuh) */
+function agentTagLayout(b,a){
+  const s=b.s, fs=Math.max(8.2*s, 10.5/CAM.k), name=shortName(a.name).slice(0,16)||'Agent';
+  const y=(b.hy!=null?b.hy:b.y-92*s)-(b.thk?27:4)*s;   // di atas ikon "berpikir" bila sedang tampil
+  g.font=`bold ${fs.toFixed(1)}px ${MONO}`; const tw=g.measureText(name).width, dr=fs*0.27, padL=fs*0.5, gap=fs*0.38, padR=fs*0.55;
+  const w=padL+dr*2+gap+tw+padR, h=fs*1.42;
+  return {b, a, name, fs, dr, padL, gap, w, h, x0:b.x-w/2, y0:y-h, yHead:y, col:colorOf(a), wk:isWorking(a)};
+}
+function agentTag(T,t){
+  const {b,name,fs,dr,padL,gap,w:W2,h,x0,y0,col,wk}=T, lw=Math.max(.8,1/CAM.k);
+  g.save(); g.font=`bold ${fs.toFixed(1)}px ${MONO}`; g.textAlign='left'; g.textBaseline='middle';
+  // pil
+  g.shadowColor=rgba(col,.75); g.shadowBlur=6*CAM.dpr;
+  rr(g,x0,y0,W2,h,h/2); g.fillStyle='rgba(5,7,24,.84)'; g.fill(); g.shadowBlur=0;
+  g.strokeStyle=rgba(col,.95); g.lineWidth=lw; g.stroke();
+  // ujung kecil ke arah kepala (garis tipis bila label dinaikkan karena anti-tumpuk)
+  const yb=y0+h; if(T.yHead-yb>fs*0.5){ g.strokeStyle=rgba(col,.55); g.lineWidth=lw; g.beginPath(); g.moveTo(b.x,yb); g.lineTo(b.x,T.yHead); g.stroke(); }
+  g.beginPath(); g.moveTo(b.x-fs*0.28,yb-lw*0.5); g.lineTo(b.x,yb+fs*0.3); g.lineTo(b.x+fs*0.28,yb-lw*0.5); g.closePath(); g.fillStyle=rgba(col,.95); g.fill();
+  // titik status
+  const dc=wk?'#3dffa8':'#ffd23d', dx=x0+padL+dr, dy=y0+h/2, pulse=wk&&!RM?.55+.45*Math.sin(t*4+b.phase):.6;
+  g.fillStyle=rgba(dc,.28*pulse); g.beginPath(); g.arc(dx,dy,dr*1.9,0,TAU); g.fill();
+  g.fillStyle=dc; g.beginPath(); g.arc(dx,dy,dr,0,TAU); g.fill();
+  // nama
+  g.fillStyle='#ffffff'; g.fillText(name,x0+padL+dr*2+gap,dy+fs*0.04);
   g.restore();
 }
 function updateConfetti(dt){ for(const c of confetti){ c.age+=dt; c.vy+=170*dt; c.vx*=(1-0.8*dt); c.x+=c.vx*dt; c.y+=c.vy*dt; c.r+=c.vr*dt; } }
@@ -1380,13 +1469,14 @@ function updateOverlays(now){
     if(!vis) continue;
     let key, tf, tailP=50;
     if(sit){ // di kiri kepala supaya tidak menutupi meja lain
-      const rx=Math.max(b.x-24*b.s, CAM.x0+bw+6), top=hy-6;
+      const rx=Math.max(Math.min(b.x-24*b.s, b.tagTop!=null?b.x-b.tagW/2-3/CAM.k:Infinity), CAM.x0+bw+6), top=hy-6;
       tailP=clamp((b.y-50*b.s)-top,12,60);
       tf=`translate(${rx.toFixed(1)}px,${top.toFixed(1)}px) translate(-100%,0)`; key='s'+tf+tailP;
     } else {
       const cx=clamp(b.x, CAM.x0+bw/2+6, CAM.x0+CAM.vw-bw/2-6);
       tailP=clamp(50+(b.x-cx)/bw*100,8,92);
-      tf=`translate(${cx.toFixed(1)}px,${(hy-4).toFixed(1)}px) translate(-50%,-100%)`; key='t'+tf+tailP;
+      const ty=b.tagTop!=null?Math.min(hy-4,b.tagTop-3/CAM.k):hy-4; // di atas label nama
+      tf=`translate(${cx.toFixed(1)}px,${ty.toFixed(1)}px) translate(-50%,-100%)`; key='t'+tf+tailP;
     }
     if(key!==st.last){ st.last=key; st.el.classList.toggle('side',sit);
       st.el.style.transform=tf; const tl=st.bin.querySelector('.tail'); tl.style.left=sit?'':tailP+'%'; tl.style.top=sit?tailP+'px':''; }
@@ -1431,7 +1521,8 @@ function placeSay(){
     if(!s.vis) continue;
     const c=s.id.startsWith('b:')?bots.get(s.id.slice(2)):staffChars.get(s.id.slice(2)); if(!c){ s.vis=false; s.el.classList.add('off'); continue; }
     const fw=Math.max(13,11.5/CAM.k), isS=s.id.startsWith('s:');
-    const hy=(c.hy!=null?c.hy:c.y-90*c.s)-(isS ? 5*c.s+Math.max(9*c.s,11.5/CAM.k)*1.45+fw*0.6 : fw*0.45);
+    const hy=isS ? (c.hy!=null?c.hy:c.y-90*c.s)-(5*c.s+Math.max(9*c.s,11.5/CAM.k)*1.45+fw*0.6)
+                 : (c.tagTop!=null ? c.tagTop-fw*0.35 : (c.hy!=null?c.hy:c.y-90*c.s)-fw*0.45); // gelembung obrolan agent di atas label nama
     let anc=50; const other=isS ? (c.target && bots.get(c.target)) : (c.chatWith && staffChars.get(c.chatWith));
     if(other) anc = other.x < c.x ? 16 : 84; // gelembung menjauh dari lawan bicara supaya label nama tetap terlihat
     const x=clamp(c.x, CAM.x0+40/CAM.k, CAM.x0+CAM.vw-40/CAM.k);
@@ -2068,6 +2159,7 @@ window.__kv={bots,DESKS,NODES,SPOTS,OCC,CAM,staffChars,get DATA(){return DATA;},
    - Situs publik: tidak ada data chat yang dimuat sebelum login.
    ===================================================================== */
 (() => {
+if(window.__KV_BLOCKED) return; // HP/tablet: tanpa login/chat
 "use strict";
 const $ = s => document.querySelector(s);
 const SB_URL='https://ccbyqgisgclqlqatxwbk.supabase.co';
