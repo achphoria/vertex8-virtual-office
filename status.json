@@ -1,18 +1,30 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T12:39:01+07:00",
+  "updated_at": "2026-10-06T12:39:03+07:00",
   "log": [
     {
-      "t": "2026-10-06T12:39:01+07:00",
-      "agent": "Mr. Wisnu",
+      "t": "2026-10-06T12:39:03+07:00",
+      "agent": "Mr. Warsito",
       "status": "Terjadwal",
       "text": "Menunggu tugas pertama"
     },
     {
-      "t": "2026-10-06T12:39:01+07:00",
-      "agent": "Mr. Wisnu",
+      "t": "2026-10-06T12:39:03+07:00",
+      "agent": "Mr. Warsito",
       "status": "Info",
-      "text": "Bergabung ke kantor sebagai HR & People"
+      "text": "Bergabung ke kantor sebagai Engineering & Facility"
+    },
+    {
+      "t": "2026-10-06T12:39:01+07:00",
+      "text": "Menunggu tugas pertama",
+      "agent": "Mr. Wisnu",
+      "status": "Terjadwal"
+    },
+    {
+      "t": "2026-10-06T12:39:01+07:00",
+      "text": "Bergabung ke kantor sebagai HR & People",
+      "agent": "Mr. Wisnu",
+      "status": "Info"
     },
     {
       "t": "2026-10-06T12:38:58+07:00",
@@ -108,18 +120,6 @@
       "t": "2026-10-06T11:40:23+07:00",
       "text": "Perbandingan harga paket dengan kompetitor",
       "agent": "Mr. Wiyadi",
-      "status": "Selesai"
-    },
-    {
-      "t": "2026-10-06T11:40:02+07:00",
-      "text": "Riset 3 tren viral fitness/Hyrox + draf konten",
-      "agent": "Mr. Wahyudi",
-      "status": "Selesai"
-    },
-    {
-      "t": "2026-10-06T11:39:30+07:00",
-      "text": "Meng-online-kan kantor virtual",
-      "agent": "Mr. Wakidi",
       "status": "Selesai"
     }
   ],
@@ -240,8 +240,21 @@
     },
     {
       "id": "hr",
+      "desk": 8,
       "name": "Mr. Wisnu",
       "role": "HR & People",
+      "tasks": [
+        {
+          "text": "Menunggu tugas pertama",
+          "label": "Berikutnya",
+          "status": "Terjadwal"
+        }
+      ]
+    },
+    {
+      "id": "engineering",
+      "name": "Mr. Warsito",
+      "role": "Engineering & Facility",
       "tasks": [
         {
           "status": "Terjadwal",
@@ -249,7 +262,7 @@
           "text": "Menunggu tugas pertama"
         }
       ],
-      "desk": 8
+      "desk": 9
     }
   ]
 }
