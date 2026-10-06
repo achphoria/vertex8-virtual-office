@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T14:06:06+07:00",
+  "updated_at": "2026-10-06T14:19:17+07:00",
   "log": [
     {
-      "t": "2026-10-06T14:06:06+07:00",
-      "agent": "Mr. Wakidi",
+      "t": "2026-10-06T14:19:17+07:00",
+      "agent": "Mr. Wawan",
       "status": "Sedang kerja",
-      "text": "Kantor virtual v5: 2 lantai, karakter semi-3D, ngobrol ala The Sims"
+      "text": "Membalas chat staf"
+    },
+    {
+      "t": "2026-10-06T14:06:06+07:00",
+      "text": "Kantor virtual v5: 2 lantai, karakter semi-3D, ngobrol ala The Sims",
+      "agent": "Mr. Wakidi",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T14:01:53+07:00",
@@ -115,12 +121,6 @@
       "text": "Menunggu tugas pertama",
       "agent": "Mr. Wawan",
       "status": "Terjadwal"
-    },
-    {
-      "t": "2026-10-06T12:38:58+07:00",
-      "text": "Bergabung ke kantor sebagai Content & Creative",
-      "agent": "Mr. Wawan",
-      "status": "Info"
     }
   ],
   "agents": [
@@ -131,9 +131,9 @@
       "role": "Builder",
       "tasks": [
         {
-          "status": "Sedang kerja",
+          "text": "Kantor virtual v5: 2 lantai, karakter semi-3D, ngobrol ala The Sims",
           "label": "Sekarang",
-          "text": "Kantor virtual v5: 2 lantai, karakter semi-3D, ngobrol ala The Sims"
+          "status": "Sedang kerja"
         },
         {
           "text": "Prototipe login staf dan chat agent di web",
@@ -231,6 +231,13 @@
       "name": "Mr. Wawan",
       "role": "Content & Creative",
       "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Membalas chat staf",
+          "step": "Membalas chat staf",
+          "step_at": "2026-10-06T14:19:17+07:00"
+        },
         {
           "text": "Menunggu chat staf",
           "label": "Berikutnya",
