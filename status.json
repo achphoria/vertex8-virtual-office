@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T15:25:24+07:00",
+  "updated_at": "2026-10-06T15:25:37+07:00",
   "log": [
     {
-      "t": "2026-10-06T15:25:24+07:00",
+      "t": "2026-10-06T15:25:37+07:00",
       "agent": "Mr. Widodo",
       "status": "Sedang kerja",
-      "text": "Cek member yang segera habis untuk pengingat perpanjangan"
+      "text": "Siapkan daftar pengingat perpanjangan membership"
+    },
+    {
+      "t": "2026-10-06T15:25:24+07:00",
+      "text": "Cek member yang segera habis untuk pengingat perpanjangan",
+      "agent": "Mr. Widodo",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T15:21:04+07:00",
@@ -115,12 +121,6 @@
       "text": "Menunggu chat staf pertama",
       "agent": "Mr. Wawan",
       "status": "Terjadwal"
-    },
-    {
-      "t": "2026-10-06T13:30:22+07:00",
-      "text": "Membalas chat staf",
-      "agent": "Mr. Wawan",
-      "status": "Selesai"
     }
   ],
   "agents": [
@@ -190,7 +190,9 @@
         {
           "status": "Sedang kerja",
           "label": "Sekarang",
-          "text": "Cek member yang segera habis untuk pengingat perpanjangan"
+          "text": "Siapkan daftar pengingat perpanjangan membership",
+          "step": "lagi tarik data membership yang mau habis",
+          "step_at": "2026-10-06T15:25:37+07:00"
         },
         {
           "text": "Menunggu tugas pertama",
