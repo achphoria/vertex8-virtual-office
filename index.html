@@ -1345,7 +1345,7 @@ function placeSay(){
     const fw=Math.max(13,11.5/CAM.k), isS=s.id.startsWith('s:');
     const hy=(c.hy!=null?c.hy:c.y-90*c.s)-(isS ? 5*c.s+Math.max(9*c.s,11.5/CAM.k)*1.45+fw*0.6 : fw*0.45);
     let anc=50; const other=isS ? (c.target && bots.get(c.target)) : (c.chatWith && staffChars.get(c.chatWith));
-    if(other){ const os=SAY.get(isS?'b:'+c.target:'s:'+c.chatWith); if(os && os.vis) anc = other.x < c.x ? 16 : 84; }
+    if(other) anc = other.x < c.x ? 16 : 84; // gelembung menjauh dari lawan bicara supaya label nama tetap terlihat
     const x=clamp(c.x, CAM.x0+40/CAM.k, CAM.x0+CAM.vw-40/CAM.k);
     const tf=`translate(${x.toFixed(1)}px,${hy.toFixed(1)}px) translate(-${anc}%,-100%)`; const tl=anc;
     if(tf+tl!==s.last){ s.last=tf+tl; s.el.style.transform=tf; s.el.querySelector('.say-tail').style.left=tl+'%'; }
