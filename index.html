@@ -7,8 +7,9 @@
 <link rel="icon" href="data:,">
 <script>
 /* =====================================================================
-   DATA AGEN (cadangan) — data utama diambil dari status.json di GitHub:
-   1) GitHub API (contents, ±1 menit)  2) raw.githubusercontent.com
+   DATA AGEN (cadangan) — data utama: Supabase (tabel kv_office_state)
+   + Supabase Realtime (perubahan masuk dalam hitungan detik).
+   Bila Supabase gagal: 1) GitHub API  2) raw.githubusercontent.com
    3) ./status.json  4) data ini.
    status: "Sedang kerja" | "Terjadwal" | "Selesai"
    Agen baru tanpa tema khusus otomatis mendapat robot pixel sendiri.
@@ -124,6 +125,10 @@ button{font:inherit}
 .caret{display:inline-block;width:.55em;height:1em;background:#1f1b3a;vertical-align:-.15em;margin-left:1px;animation:blink .8s steps(1) infinite}
 .tail{position:absolute;bottom:calc(var(--b)*-3.4);width:calc(var(--b)*3);height:calc(var(--b)*3);background:#fffdf6;transform:translateX(-50%);
   box-shadow:calc(var(--b)*-1) 0 0 0 #1f1b3a,var(--b) 0 0 0 #1f1b3a,0 var(--b) 0 0 #1f1b3a}
+.b-step{margin-top:.3em;padding-top:.25em;border-top:max(1px, calc(var(--u)*.3px)) dashed #cfc6b0;font-size:.84em;color:#0b7a5e;
+  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.2}
+.b-step[hidden]{display:none}
+.b-step.pop,.c-step.pop,.m-step.pop{animation:stepin .6s steps(6) both}
 .bin.cele{background:#fff3b0}
 .bin.cele .tail{background:#fff3b0}
 .bin.cele .b-label{color:#c1121f;font-size:1.25em}
@@ -167,6 +172,7 @@ button{font:inherit}
 .sq{width:9px;height:9px;flex:none;background:var(--c);margin-top:3px;box-shadow:2px 2px 0 0 rgba(0,0,0,.35)}
 .c-tasks small{display:block;font-size:10px;color:var(--c);letter-spacing:.08em;text-transform:uppercase}
 .c-tasks p{margin:2px 0 0;font-size:12px;line-height:1.35;color:#ece9ff;font-weight:600}
+.c-tasks p.c-step{margin-top:3px;font-size:11px;color:var(--work);font-weight:700;letter-spacing:.02em}
 .legend{display:flex;flex-wrap:wrap;gap:10px 14px;font-size:11px;color:var(--muted);padding-top:10px;border-top:3px dashed #463a85}
 .legend span{display:flex;align-items:center;gap:6px}
 .legend i{width:9px;height:9px;background:var(--c);display:block}
@@ -190,6 +196,8 @@ button{font:inherit}
 .m-sec h3{margin:14px 0 6px;font-size:11px;letter-spacing:.12em;color:var(--c,var(--muted));text-transform:uppercase;display:flex;align-items:center;gap:7px}
 .m-sec h3 i{width:8px;height:8px;background:var(--c,var(--muted));display:block}
 .m-sec p{margin:0;font-size:14px;line-height:1.4;color:#f1eeff;font-weight:600}
+.m-sec p.m-step{margin:4px 0 2px;font-size:12.5px;color:var(--work);font-weight:700}
+.m-sec p.m-step small{display:inline;margin:0 0 0 6px;color:#8d84c4;font-size:10px}
 .m-sec p.none{color:#8d84c4;font-weight:700;font-size:12px}
 .m-out{background:#120c2a;padding:9px 10px;font-size:13px !important;white-space:pre-wrap;word-break:break-word;box-shadow:inset 3px 0 0 0 var(--acc)}
 .m-sec small{display:block;margin-top:4px;font-size:10px;color:#8d84c4}
@@ -217,6 +225,9 @@ body.rekam .rk-log{display:flex;position:absolute;left:4%;right:4%;bottom:calc(v
 .rk-log em{font-style:normal;font-size:.8em;padding:.1em .4em;background:var(--c);color:#120c2a;margin:0 .45em}
 body.rekam .bin{font-size:max(10px, calc(var(--u) * 4.3px))}
 @keyframes blink{50%{opacity:0}}
+@keyframes stepin{0%{background:rgba(6,214,160,.45)}100%{background:transparent}}
+.src-dot.live{background:var(--work);animation:ring 1.6s steps(4) infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(6,214,160,.8)}100%{box-shadow:0 0 0 5px rgba(6,214,160,0)}}
 @keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes flash{0%,50%{box-shadow:0 -3px 0 0 var(--done),0 3px 0 0 var(--done),-3px 0 0 0 var(--done),3px 0 0 0 var(--done), inset 4px 0 0 0 var(--acc)}}
@@ -342,6 +353,9 @@ const workTask = a => (a.tasks||[]).find(t=>ST(t.status)==='work');
 const nextTask = a => (a.tasks||[]).find(t=>ST(t.status)==='sched' && (t.label||'Berikutnya')==='Berikutnya');
 const doneTask = a => (a.tasks||[]).find(t=>ST(t.status)==='done');
 const isWorking = a => !!workTask(a);
+const STEP_TTL = 30*60e3; // langkah kecil kedaluwarsa setelah 30 menit tanpa pembaruan
+const liveStep = t => { if(!t || ST(t.status)!=='work' || typeof t.step!=='string' || !t.step.trim()) return '';
+  const at=Date.parse(t.step_at||''); return (!isNaN(at) && Date.now()-at>STEP_TTL) ? '' : t.step.trim(); };
 const KW = /laporan|report|analisa|analisis|analysis|rekap|presentasi/i;
 const kwText = a => { const t = workTask(a) || nextTask(a); return t ? t.text : ''; };
 
@@ -933,7 +947,7 @@ function buildOverlays(){
   currentAgents.forEach((a,i)=>{ const k=agentKey(a), d=L.desks[i];
     const el=document.createElement('div'); el.className='bubble off';
     el.innerHTML=`<div class="bin"><div class="b-top"><span class="b-dot"></span><span class="b-label"></span><span class="b-idx"></span></div>
-      <div class="b-text"><span class="ghost"></span><span class="typed"><span class="tw"></span><span class="caret"></span></span></div><i class="tail"></i></div>`;
+      <div class="b-text"><span class="ghost"></span><span class="typed"><span class="tw"></span><span class="caret"></span></span></div><div class="b-step" hidden></div><i class="tail"></i></div>`;
     el.addEventListener('click',()=>openModal(k)); ov.appendChild(el);
     const pl=document.createElement('div'); pl.className='plate'; pl.dataset.k=k;
     pl.innerHTML=`<b>${esc(a.name)}</b><span>${esc(a.role||'Asisten AI')}</span>`; pl.addEventListener('click',()=>openModal(k)); ov.appendChild(pl);
@@ -951,11 +965,26 @@ function setBubble(st,idx){
   st.bin.querySelector('.b-idx').textContent=tasks.length>1?`${st.idx+1}/${tasks.length}`:'';
   st.bin.querySelector('.ghost').textContent=tk.text; st.text=tk.text; st.typed=0;
   st.bin.querySelector('.tw').textContent='';
+  setStepEl(st);
+}
+function setStepEl(st){
+  const a=agentByKey.get(st.k), tk=a&&(a.tasks||[])[st.idx], v=st.cele?'':liveStep(tk), el=st.bin.querySelector('.b-step');
+  if(el.dataset.s===v) return; const had=el.dataset.s!=null; el.dataset.s=v; el.textContent=v?'↳ '+v:''; el.hidden=!v;
+  if(v && had){ el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+}
+/* hanya langkah yang berubah → perbarui teks tanpa membangun ulang (gelembung tidak berkedip) */
+function refreshSteps(changed){
+  for(const st of BUB.values()){
+    const a=agentByKey.get(st.k); if(!a) continue;
+    if(changed && changed.has(st.k) && !st.cele){ const wi=(a.tasks||[]).findIndex(t=>ST(t.status)==='work'); if(wi>=0 && wi!==st.idx){ setBubble(st,wi); st.next=performance.now()+9000; continue; } }
+    setStepEl(st);
+  }
 }
 function setCeleBubble(st,text){
   st.bin.className='bin st-done cele pop'; st.cele=true;
   st.bin.querySelector('.b-label').textContent='Selesai!'; st.bin.querySelector('.b-idx').textContent='';
   st.bin.querySelector('.ghost').textContent=text||''; st.text=text||''; st.typed=0; st.bin.querySelector('.tw').textContent='';
+  setStepEl(st);
 }
 setInterval(()=>{ const now=performance.now();
   for(const st of BUB.values()){
@@ -1003,7 +1032,7 @@ function buildPanel(){
     el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label','Detail '+(a.name||k));
     el.innerHTML=`<span class="c-more">DETAIL &rsaquo;</span><div class="c-head"><canvas class="ava pix" width="26" height="24" data-k="${esc(k)}"></canvas>
       <div class="c-name"><b>${esc(a.name)}</b><div class="c-sub"><span>${esc(a.role||'Asisten AI')}</span><span class="pill st-${isWorking(a)?'work':ms==='work'?'sched':ms}"><i></i>${esc(isWorking(a)?main.status:(tasks.length?'Santai':'Siaga'))}</span></div></div></div>
-      <ul class="c-tasks">${tasks.map(t=>{const s=ST(t.status); return `<li class="st-${s}"><span class="sq"></span><div><small>${esc(t.label||DEFAULT_LABEL[s])} &middot; ${esc(t.status)}</small><p>${esc(t.text)}</p></div></li>`;}).join('')}</ul>`;
+      <ul class="c-tasks">${tasks.map(t=>{const s=ST(t.status); return `<li class="st-${s}"><span class="sq"></span><div><small>${esc(t.label||DEFAULT_LABEL[s])} &middot; ${esc(t.status)}</small><p>${esc(t.text)}</p>${liveStep(t)?`<p class="c-step">&#8627; ${esc(liveStep(t))}</p>`:''}</div></li>`;}).join('')}</ul>`;
     el.addEventListener('click',()=>openModal(k));
     el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openModal(k); } });
     cards.appendChild(el);
@@ -1041,7 +1070,8 @@ function renderModal(){
   const P=themeOf(a), tasks=a.tasks||[];
   const w=tasks.filter(t=>ST(t.status)==='work'), nx=tasks.filter(t=>ST(t.status)==='sched' && (t.label||'Berikutnya')!=='Rutin');
   const ru=tasks.filter(t=>(t.label||'')==='Rutin'), dn=tasks.filter(t=>ST(t.status)==='done');
-  const sec=(title,cls,list,empty)=>`<section class="m-sec st-${cls}"><h3><i></i>${title}</h3>${list.length?list.map(t=>`<p>${esc(t.text)}</p>`).join(''):`<p class="none">${empty}</p>`}</section>`;
+  const stp=t=>{ const v=liveStep(t); if(!v) return ''; const d=new Date(t.step_at||''); return `<p class="m-step">&#8627; ${esc(v)}${isNaN(d)?'':`<small>${esc(hms(d))} WIB</small>`}</p>`; };
+  const sec=(title,cls,list,empty)=>`<section class="m-sec st-${cls}"><h3><i></i>${title}</h3>${list.length?list.map(t=>`<p>${esc(t.text)}</p>${stp(t)}`).join(''):`<p class="none">${empty}</p>`}</section>`;
   const hist=logList().filter(e=>e.agent===a.name||e.agent===a.id||e.agent_id===a.id).slice(0,8);
   const out=typeof a.last_output==='string' && a.last_output.trim();
   $('#mcard').style.setProperty('--acc',P.ui);
@@ -1077,12 +1107,17 @@ cv.addEventListener('click',ev=>{ const k=hitBot(ev); if(k) openModal(k); });
 cv.addEventListener('pointermove',ev=>{ cv.style.cursor=hitBot(ev)?'pointer':''; });
 
 /* =====================================================================
-   DATA — sumber: GitHub API (±1 mnt) → raw.githubusercontent → ./status.json → bawaan
+   DATA — sumber utama: Supabase (REST + Realtime websocket, tanpa library)
+   cadangan bila Supabase gagal: GitHub API → raw.githubusercontent → ./status.json → bawaan
    ===================================================================== */
+const SB_URL='https://ccbyqgisgclqlqatxwbk.supabase.co';
+const SB_KEY='sb_publishable_pdEdMAYvBL4HUF9AMp1LaA_z0rbnXsY'; // kunci publik (hanya bisa baca)
+const SB_REST=SB_URL+'/rest/v1/kv_office_state?id=eq.1&select=data';
+const RT_TOPIC='realtime:public:kv_office_state';
 const API_URL='https://api.github.com/repos/achphoria/vertex8-virtual-office/contents/status.json?ref=main';
 const RAW_URL='https://raw.githubusercontent.com/achphoria/vertex8-virtual-office/main/status.json';
-const POLL_MS=60000, API_BACKOFF_MS=10*60000;
-const SRC_NAME={api:'GitHub API (±1 menit)', raw:'raw.githubusercontent (cache ±5 menit)', local:'status.json lokal', def:'data bawaan', demo:'mode demo (?demo=1)'};
+const POLL_MS=60000, RT_POLL_MS=5*60000, API_BACKOFF_MS=10*60000;
+const SRC_NAME={rt:'Supabase Realtime (langsung)', sb:'Supabase (cek tiap 60 dtk)', api:'GitHub API (cadangan, ±1 menit)', raw:'raw.githubusercontent (cadangan, cache ±5 menit)', local:'status.json lokal', def:'data bawaan', demo:'mode demo (?demo=1)'};
 let apiBackoffUntil=0, apiErrStreak=0, srcKey='def', lastJSON='', lastCheck=0, baselineReady=false, snap=null, layoutSig='';
 
 function b64utf8(b64){ const bin=atob(b64.replace(/\s/g,'')); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); return new TextDecoder().decode(bytes); }
@@ -1097,19 +1132,25 @@ async function getApi(){
   if(j && typeof j.content==='string' && j.encoding==='base64'){ txt=b64utf8(j.content); j=JSON.parse(txt); }
   return [txt,j];
 }
+async function getSb(){
+  const r=await fetch(SB_REST,{cache:'no-store', headers:{'apikey':SB_KEY,'Accept':'application/json'}});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const rows=await r.json(); if(!Array.isArray(rows)||!rows.length) throw new Error('kosong');
+  const j=rows[0].data; return [JSON.stringify(j), j];
+}
 async function getUrl(url){ const r=await fetch(url+(url.includes('?')?'&':'?')+'t='+Date.now(),{cache:'no-store'}); if(!r.ok) throw new Error('HTTP '+r.status); const txt=await r.text(); return [txt,JSON.parse(txt)]; }
 let polling=false;
 async function loadStatus(){
   if(polling) return; polling=true;
   try{
-    const tries=[];
+    const tries=[['sb',getSb]]; // GitHub hanya dipakai bila Supabase gagal
     if(Date.now()>=apiBackoffUntil) tries.push(['api',getApi]);
     tries.push(['raw',()=>getUrl(RAW_URL)], ['local',()=>getUrl('./status.json')]);
     for(const [key,fn] of tries){
       try{
         const [txt,j]=await fn(); if(!valid(j)) continue;
         if(key==='api') apiErrStreak=0;
-        lastCheck=Date.now(); srcKey=key; ingest(txt,j,key); return;
+        lastCheck=Date.now(); srcKey=(key==='sb' && RT.live)?'rt':key; ingest(txt,j,key); return;
       }catch(e){
         if(key==='api' && !String(e.message).startsWith('rate')){ if(++apiErrStreak>=3){ apiBackoffUntil=Date.now()+2*60000; apiErrStreak=0; } }
       }
@@ -1119,18 +1160,70 @@ async function loadStatus(){
 }
 function ingest(txt,j,key){
   if(txt===lastJSON){ updateSrc(); return; }
+  if(key==='sb'||key==='rt') lastChange=lastChange||Date.now();
   // jangan mundur ke data lebih lama (mis. cache raw) setelah dapat data lebih baru
   if(baselineReady && DATA && DATA.updated_at && j.updated_at && new Date(j.updated_at) < new Date(DATA.updated_at)){ updateSrc(); return; }
   lastJSON=txt; applyData(j,{diff:baselineReady});
   baselineReady=true; updateSrc();
 }
 function updateSrc(failed){
+  const live=RT.live && (srcKey==='sb'||srcKey==='rt'); if(live) srcKey='rt'; else if(srcKey==='rt') srcKey='sb';
   let s=SRC_NAME[srcKey]||srcKey, cls='';
-  if(srcKey!=='api' && srcKey!=='demo') cls='warn';
+  if(live) cls='live'; else if(srcKey!=='demo') cls='warn';
   if(failed && srcKey==='def') cls='bad';
-  if(apiBackoffUntil>Date.now() && !DEMO) s+=` · API dibatasi, coba lagi ${hm(new Date(apiBackoffUntil))}`;
+  if(!live && !DEMO && srcKey!=='sb' && apiBackoffUntil>Date.now()) s+=` · API dibatasi, coba lagi ${hm(new Date(apiBackoffUntil))}`;
   $('#src').textContent=s; $('#srcdot').className='src-dot '+cls;
-  $('#chk').textContent = DEMO ? 'Status berubah otomatis tiap 6 detik' : (lastCheck ? `Dicek ${hms(new Date(lastCheck))} WIB · tiap 60 dtk` : 'Memuat…');
+  $('#chk').textContent = DEMO ? 'Status berubah otomatis tiap 6 detik'
+    : live ? `Tersambung langsung · perubahan terakhir ${hms(new Date(lastChange||lastCheck))} WIB`
+    : (lastCheck ? `Dicek ${hms(new Date(lastCheck))} WIB · tiap 60 dtk${RT.tries?' · menyambung ulang realtime…':''}` : 'Memuat…');
+}
+
+/* ---- Supabase Realtime: klien Phoenix websocket mini (tanpa library) ---- */
+const RT={ws:null, live:false, ref:0, joinRef:null, hbRef:null, hb:0, timer:0, tries:0};
+let lastChange=0;
+function rtSend(m){ try{ if(RT.ws && RT.ws.readyState===1) RT.ws.send(JSON.stringify(m)); }catch(e){} }
+function rtConnect(){
+  clearTimeout(RT.timer); if(RT.ws) return;
+  let ws; try{ ws=new WebSocket(SB_URL.replace(/^http/,'ws')+'/realtime/v1/websocket?apikey='+encodeURIComponent(SB_KEY)+'&vsn=1.0.0'); }
+  catch(e){ rtRetry(); return; }
+  RT.ws=ws;
+  ws.onopen=()=>{
+    RT.joinRef=String(++RT.ref);
+    rtSend({topic:RT_TOPIC, event:'phx_join', ref:RT.joinRef, join_ref:RT.joinRef, payload:{config:{
+      broadcast:{self:false, ack:false}, presence:{key:''}, private:false,
+      postgres_changes:[{event:'*', schema:'public', table:'kv_office_state'}] }}});
+    clearInterval(RT.hb); RT.hbRef=null;
+    RT.hb=setInterval(()=>{ if(RT.hbRef){ try{ ws.close(); }catch(e){} return; } // heartbeat sebelumnya tak dibalas
+      RT.hbRef=String(++RT.ref); rtSend({topic:'phoenix', event:'heartbeat', payload:{}, ref:RT.hbRef}); },25000);
+  };
+  ws.onmessage=ev=>{
+    let m; try{ m=JSON.parse(ev.data); }catch(e){ return; }
+    if(m.topic==='phoenix'){ if(m.event==='phx_reply' && m.ref===RT.hbRef) RT.hbRef=null; return; }
+    if(m.topic!==RT_TOPIC) return;
+    const p=m.payload||{};
+    if(m.event==='phx_reply' && m.ref===RT.joinRef){
+      if(p.status==='ok'){ RT.live=true; RT.tries=0; updateSrc(); loadStatus(); } // susul perubahan yang terlewat
+      else { try{ ws.close(); }catch(e){} }
+    } else if(m.event==='system'){
+      if(p.status && p.status!=='ok'){ try{ ws.close(); }catch(e){} }
+    } else if(m.event==='postgres_changes'){
+      const rec=p.data && p.data.record;
+      if(rec && rec.data && valid(rec.data)){ lastCheck=lastChange=Date.now(); srcKey='rt'; ingest(JSON.stringify(rec.data), rec.data, 'rt'); }
+      else loadStatus(); // payload terpotong/kosong → ambil lewat REST
+    } else if(m.event==='phx_error' || m.event==='phx_close'){ try{ ws.close(); }catch(e){} }
+  };
+  ws.onerror=()=>{ try{ ws.close(); }catch(e){} };
+  ws.onclose=()=>{
+    if(RT.ws!==ws) return;
+    clearInterval(RT.hb); RT.ws=null; RT.hbRef=null;
+    const was=RT.live; RT.live=false; updateSrc(); if(was) loadStatus();
+    rtRetry();
+  };
+}
+function rtRetry(){
+  clearTimeout(RT.timer);
+  const d=Math.min(30000, 1000*Math.pow(2, RT.tries++)) * (0.75+Math.random()*0.5); // 1s,2s,4s… maks 30s
+  RT.timer=setTimeout(rtConnect, d); updateSrc();
 }
 
 /* ---- deteksi tugas yang baru selesai (untuk perayaan) ---- */
@@ -1141,7 +1234,19 @@ function snapshot(data){
     m.set(agentKey(a),{done:dt?dt.text:'', logT:lt.length?Math.max(...lt):0}); }
   return m;
 }
+const noSteps = d => { const c=clone(d); delete c.updated_at; delete c.updated;
+  for(const a of (c.agents||[])) for(const t of ((a&&a.tasks)||[])){ delete t.step; delete t.step_at; } return JSON.stringify(c); };
 function applyData(j,opts){
+  if(opts.diff && DATA && noSteps(j)===noSteps(DATA)){ // hanya langkah (↳) / waktu yang berubah
+    const prevSteps=new Map(currentAgents.map(a=>[agentKey(a), JSON.stringify((a.tasks||[]).map(t=>t.step||''))]));
+    DATA=j; currentAgents=(DATA.agents||[]).filter(a=>a&&a.name).slice(0,12);
+    agentByKey=new Map(currentAgents.map(a=>[agentKey(a),a]));
+    const changed=new Set(currentAgents.filter(a=>prevSteps.get(agentKey(a))!==JSON.stringify((a.tasks||[]).map(t=>t.step||''))).map(agentKey));
+    buildPanel(); refreshSteps(changed);
+    for(const el of document.querySelectorAll('#cards .card')) if(changed.has(el.dataset.k)){ const s=el.querySelector('.c-step'); if(s) s.classList.add('pop'); }
+    if(modalKey){ renderModal(); if(changed.has(modalKey)){ const s=$('#mbody .m-step'); if(s) s.classList.add('pop'); } }
+    return;
+  }
   DATA=j;
   currentAgents=(DATA.agents||[]).filter(a=>a&&a.name).slice(0,12);
   agentByKey=new Map(currentAgents.map(a=>[agentKey(a),a]));
@@ -1273,9 +1378,13 @@ if(REKAM) document.body.classList.add('rekam');
 if(DEMO){ startDemo(); }
 else {
   applyData(DATA,{diff:false}); updateSrc();
-  loadStatus();
-  setInterval(()=>{ if(!document.hidden) loadStatus(); },POLL_MS);
-  document.addEventListener('visibilitychange',()=>{ if(!document.hidden && Date.now()-lastCheck>POLL_MS) loadStatus(); });
+  loadStatus(); rtConnect();
+  // realtime tersambung → cukup cek ulang tiap 5 menit (jaga-jaga); terputus → cek tiap 60 dtk
+  setInterval(()=>{ if(!document.hidden && Date.now()-lastCheck >= (RT.live?RT_POLL_MS:POLL_MS)-1000) loadStatus(); },POLL_MS/4);
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden) return;
+    if(!RT.ws){ RT.tries=0; rtConnect(); }
+    if(Date.now()-lastCheck>POLL_MS) loadStatus(); });
+  setInterval(()=>{ refreshSteps(); updateSrc(); },30000); // langkah kedaluwarsa hilang sendiri
 }
 if(REKAM){ rkLogTick(); poke(); }
 let prev=performance.now(), avT=0;
@@ -1289,7 +1398,7 @@ function loop(ms){
   if(ms-avT>66){ avT=ms; drawAvatars(now); }
 }
 requestAnimationFrame(loop);
-window.__kv={bots,get L(){return L;},get DATA(){return DATA;},applyData,openModal,setRekam};
+window.__kv={bots,get L(){return L;},get DATA(){return DATA;},applyData,openModal,setRekam,get rt(){return RT.live;},get src(){return srcKey;}};
 })();
 </script>
 </body>

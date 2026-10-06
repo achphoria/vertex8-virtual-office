@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Perbarui status agen di Kantor Virtual Vertex8 (status.json) lalu push ke GitHub.
+"""Perbarui status agen di Kantor Virtual Vertex8.
+
+Alur: (1) tulis ke Supabase (halaman langsung berubah dalam hitungan detik lewat Realtime),
+lalu (2) tulis status.json + commit + push ke GitHub sebagai cadangan.
 
 Pakai (sama seperti sebelumnya):
   python3 /workspace/vertex8-virtual-office-repo/update-status.py \
@@ -14,14 +17,23 @@ state:
                Boleh dipakai sendiri tanpa --state/--task:  --agent grok --output "..."
 Tugas berlabel lain (mis. "Rutin") tidak disentuh.
 
+Langkah kecil (sering & murah, HANYA ke Supabase, tanpa commit git):
+  update-status.py --agent grok --step "lagi query data"
+  -> tampil di gelembung/panel sebagai "↳ lagi query data" pada tugas "Sekarang".
+     Butuh agen yang sedang kerja (atau gabungkan: --state working --task "..." --step "...").
+     --state apa pun mengganti tugas "Sekarang" sehingga langkah lama otomatis hilang.
+
 Daftarkan / hapus bot (kantor otomatis menambah meja & robot pixel baru):
   update-status.py --add-agent --agent <id> --name "Nama Bot" [--role "Peran"] [--state ... --task ...]
   update-status.py --remove-agent --agent <id|nama>
 
-Keluar non-zero bila gagal (termasuk gagal push). JANGAN masukkan angka bisnis:
+Keluar 0 bila minimal satu tujuan (Supabase atau GitHub) berhasil; peringatan dicetak bila
+salah satu gagal. --step keluar non-zero bila Supabase gagal. JANGAN masukkan angka bisnis:
 teks berisi "Rp", "<angka> member", atau nomor telepon akan ditolak.
+Token penulis Supabase dibaca dari ~/.config/vertex8-office/writer_token (atau env KV_WRITER_TOKEN).
 """
 import argparse, datetime, fcntl, json, os, re, subprocess, sys, time
+import urllib.error, urllib.request
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 STATUS = os.path.join(REPO, "status.json")
@@ -29,6 +41,13 @@ LOG_MAX = 20
 OUTPUT_MAX = 280
 MAX_AGENTS = 12
 DEFAULT_ROLE = "Asisten AI"
+STEP_MAX = 120
+# Supabase (proyek "General Table"); URL + kunci publishable memang publik.
+# Penulisan dilindungi token rahasia yang dicek oleh fungsi kv_set_state.
+SB_URL = "https://ccbyqgisgclqlqatxwbk.supabase.co"
+SB_KEY = "sb_publishable_pdEdMAYvBL4HUF9AMp1LaA_z0rbnXsY"
+SB_TOKEN_FILE = os.path.expanduser("~/.config/vertex8-office/writer_token")
+SB_TIMEOUT = 8
 STATE_MAP = {
     "working":   ("Sedang kerja", "Sekarang"),
     "scheduled": ("Terjadwal", "Berikutnya"),
@@ -66,6 +85,93 @@ def guard(label, text):
 def now_wib():
     tz = datetime.timezone(datetime.timedelta(hours=7))
     return datetime.datetime.now(tz).replace(microsecond=0).isoformat()
+
+
+def warn(msg):
+    print(f"update-status: PERINGATAN: {msg}", file=sys.stderr)
+
+
+def sb_token():
+    t = os.environ.get("KV_WRITER_TOKEN", "").strip()
+    if t:
+        return t
+    try:
+        with open(SB_TOKEN_FILE, encoding="utf-8") as f:
+            return f.read().strip()
+    except OSError:
+        return ""
+
+
+def sb_request(method, path, body=None):
+    headers = {"apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY, "Accept": "application/json"}
+    data = None
+    if body is not None:
+        data = json.dumps(body, ensure_ascii=False).encode("utf-8")
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(SB_URL + path, data=data, headers=headers, method=method)
+    try:
+        with urllib.request.urlopen(req, timeout=SB_TIMEOUT) as r:
+            raw = r.read().decode("utf-8")
+            return json.loads(raw) if raw.strip() else None
+    except urllib.error.HTTPError as e:
+        detail = e.read().decode("utf-8", "replace")[:300]
+        try:
+            detail = json.loads(detail).get("message", detail)
+        except Exception:
+            pass
+        raise RuntimeError(f"HTTP {e.code}: {detail}") from None
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        raise RuntimeError(str(getattr(e, "reason", e))) from None
+
+
+def sb_read():
+    """Dokumen terkini dari Supabase, atau None bila gagal/kosong."""
+    try:
+        rows = sb_request("GET", "/rest/v1/kv_office_state?id=eq.1&select=data")
+    except RuntimeError as e:
+        warn(f"gagal membaca Supabase ({e}); pakai status.json lokal")
+        return None
+    if isinstance(rows, list) and rows and isinstance(rows[0].get("data"), dict) \
+            and isinstance(rows[0]["data"].get("agents"), list):
+        return rows[0]["data"]
+    return None
+
+
+def sb_write(doc):
+    """Tulis seluruh dokumen ke Supabase. Kembalikan None bila sukses, atau pesan error."""
+    tok = sb_token()
+    if not tok:
+        return f"token penulis tidak ada ({SB_TOKEN_FILE})"
+    try:
+        sb_request("POST", "/rest/v1/rpc/kv_set_state", {"p_token": tok, "p_data": doc})
+        return None
+    except RuntimeError as e:
+        return str(e)
+
+
+def ts_of(doc):
+    try:
+        return datetime.datetime.fromisoformat(str(doc.get("updated_at", "")).replace("Z", "+00:00"))
+    except (ValueError, TypeError):
+        return None
+
+
+def read_local():
+    try:
+        with open(STATUS, encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else None
+    except (OSError, ValueError):
+        return None
+
+
+def ordered_doc(data, ts):
+    data.pop("updated", None)
+    data["updated_at"] = ts
+    # urutkan kunci supaya updated_at tetap dekat atas
+    ordered = {"office": data.get("office", "Vertex8 HQ"), "updated_at": ts}
+    ordered.update({k: v for k, v in data.items() if k not in ordered})
+    return ordered
 
 
 def ststate(status):
@@ -110,48 +216,143 @@ def apply_state(ag, state, task, nxt):
 
 
 def write_status(data, ts):
-    data.pop("updated", None)
-    data["updated_at"] = ts
-    # urutkan kunci supaya updated_at tetap dekat atas
-    ordered = {"office": data.get("office", "Vertex8 HQ"), "updated_at": ts}
-    ordered.update({k: v for k, v in data.items() if k not in ordered})
+    ordered = ordered_doc(data, ts)
     tmp = STATUS + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
         f.write(json.dumps(ordered, ensure_ascii=False, indent=2) + "\n")
     os.replace(tmp, STATUS)
 
 
-def run_update(mutate, no_push):
-    """pull -> ubah status.json -> commit -> push. Bila push ditolak (ada commit baru di remote),
-    commit kita dibuang, tarik versi terbaru, lalu perubahan diterapkan ulang (tanpa konflik rebase)."""
+def git_publish(mutate, no_push, doc_after=None):
+    """pull -> ubah status.json -> commit -> push. Kembalikan True bila sukses.
+    doc_after: bila Supabase sudah ditulis, status.json disamakan dengan dokumen terbaru di Supabase
+    (dibaca ulang tiap percobaan). Bila None, mutate diterapkan ke status.json hasil pull (cara lama).
+    Bila push ditolak (ada commit baru di remote), commit kita dibuang lalu diulang (tanpa konflik rebase)."""
     for attempt in range(1, 4):
-        git("pull", "--rebase", "--autostash", "--quiet", "origin", "main")
-        with open(STATUS, encoding="utf-8") as f:
-            data = json.load(f)
-        if not isinstance(data.get("agents"), list):
-            data["agents"] = []
-        ts = now_wib()
-        msg = mutate(data, ts)
+        r = git("pull", "--rebase", "--autostash", "--quiet", "origin", "main", check=False)
+        if r.returncode != 0:
+            warn(f"git pull gagal (percobaan {attempt}): {(r.stdout + r.stderr).strip()[:300]}")
+            git("rebase", "--abort", check=False)
+            time.sleep(2 * attempt)
+            continue
+        if doc_after is not None:
+            data = doc_after(attempt)
+            msg = data.pop("__msg__")
+            ts = data.get("updated_at") or now_wib()
+        else:
+            data = read_local()
+            if data is None:
+                warn("status.json tidak terbaca")
+                return False
+            if not isinstance(data.get("agents"), list):
+                data["agents"] = []
+            ts = now_wib()
+            msg = mutate(data, ts)
         write_status(data, ts)
-        git("add", "status.json")
+        git("add", "status.json", check=False)
+        if not git("diff", "--cached", "--quiet", check=False).returncode:
+            print("GitHub: status.json sudah sama, tidak ada commit baru")
+            return True
         msg = msg if len(msg) <= 100 else msg[:99] + "…"
-        git("commit", "--quiet", "-m", msg)
+        r = git("commit", "--quiet", "-m", msg, check=False)
+        if r.returncode != 0:
+            warn(f"git commit gagal: {(r.stdout + r.stderr).strip()[:300]}")
+            git("reset", "--quiet", "HEAD", "--", "status.json", check=False)
+            git("checkout", "--", "status.json", check=False)
+            return False
         if no_push:
             print(f"OK (lokal, tanpa push): {msg}")
-            return
+            return True
         r = git("push", "--quiet", "origin", "HEAD:main", check=False)
         if r.returncode == 0:
             sha = git("rev-parse", "--short", "HEAD").stdout.strip()
-            print(f"OK {sha}: {msg}")
-            return
-        print(f"push gagal (percobaan {attempt}): {r.stderr.strip()}", file=sys.stderr)
+            print(f"GitHub OK {sha}: {msg}")
+            return True
+        warn(f"push gagal (percobaan {attempt}): {r.stderr.strip()}")
         git("reset", "--quiet", "--keep", "HEAD~1")  # buang commit kita saja; file lain tidak disentuh
         time.sleep(2 * attempt)
-    die("push ke GitHub gagal setelah 3 percobaan (tidak ada perubahan yang tersimpan).", 4)
+    warn("push ke GitHub gagal setelah 3 percobaan.")
+    return False
+
+
+def base_doc():
+    """Dokumen dasar: Supabase (paling baru) atau status.json lokal bila lebih baru / Supabase gagal."""
+    sb = sb_read()
+    loc = read_local()
+    if sb is not None and loc is not None:
+        a, b = ts_of(sb), ts_of(loc)
+        if a and b and b > a and isinstance(loc.get("agents"), list):
+            return loc, "lokal (lebih baru dari Supabase)"
+        return sb, "supabase"
+    if sb is not None:
+        return sb, "supabase"
+    return None, "lokal"
+
+
+def run_update(mutate, no_push, use_sb=True):
+    """Supabase dulu (supaya halaman berubah dalam hitungan detik), lalu GitHub sebagai cadangan."""
+    sb_ok = False
+    pushed_doc = None
+    if use_sb and not no_push:
+        base, src = base_doc()
+        if base is not None:
+            data = json.loads(json.dumps(base))
+            if not isinstance(data.get("agents"), list):
+                data["agents"] = []
+            ts = now_wib()
+            msg = mutate(data, ts)
+            doc = ordered_doc(data, ts)
+            err = sb_write(doc)
+            if err is None:
+                sb_ok = True
+                pushed_doc = (doc, msg)
+                print(f"Supabase OK: {msg}")
+            else:
+                warn(f"gagal menulis ke Supabase: {err}")
+        else:
+            warn("Supabase tidak terbaca; lanjut ke GitHub saja")
+
+    if sb_ok:
+        def doc_after(attempt):
+            doc, msg = pushed_doc
+            if attempt > 1:  # retry: pakai versi Supabase terbaru
+                latest = sb_read()
+                if latest is not None:
+                    doc = latest
+            d = json.loads(json.dumps(doc))
+            d["__msg__"] = msg
+            return d
+        gh_ok = git_publish(mutate, no_push, doc_after)
+    else:
+        gh_ok = git_publish(mutate, no_push)
+
+    if sb_ok and not gh_ok:
+        warn("tersimpan di Supabase (halaman sudah berubah), tapi cadangan GitHub gagal.")
+    if not sb_ok and not gh_ok:
+        die("gagal menyimpan ke Supabase maupun GitHub (tidak ada perubahan yang tersimpan).", 4)
+
+
+def run_step(agent_key, step, ts):
+    """Hanya Supabase: set field 'step' pada tugas "Sekarang" milik agen."""
+    data = sb_read()
+    if data is None:
+        die("--step butuh Supabase, tapi Supabase tidak terbaca (langkah tidak disimpan).", 5)
+    ag = find_agent(data["agents"], agent_key)
+    if ag is None:
+        die(f"agen '{agent_key}' tidak ditemukan. Pilihan: " + ", ".join(x.get("name", "?") for x in data["agents"]), 2)
+    work = next((t for t in (ag.get("tasks") or []) if ststate(t.get("status")) == "work"), None)
+    if work is None:
+        die(f"{ag.get('name')} tidak sedang kerja; pakai dulu --state working --task \"...\" (boleh sekalian --step).", 2)
+    work["step"] = step
+    work["step_at"] = ts
+    err = sb_write(ordered_doc(data, ts))
+    if err is not None:
+        die(f"gagal menulis langkah ke Supabase: {err}", 5)
+    print(f"Supabase OK: langkah {ag.get('name')} -> {step}")
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Perbarui status agen Kantor Virtual Vertex8 dan push ke GitHub.")
+    ap = argparse.ArgumentParser(description="Perbarui status agen Kantor Virtual Vertex8 (Supabase realtime + cadangan GitHub).")
     ap.add_argument("--agent", help='nama atau id agen, mis. "Mr. Wahyudi" (untuk --add-agent: id baru, mis. "designer")')
     ap.add_argument("--state", choices=list(STATE_MAP))
     ap.add_argument("--task")
@@ -161,7 +362,9 @@ def main():
     ap.add_argument("--remove-agent", action="store_true", help="hapus bot (butuh --agent <id|nama>)")
     ap.add_argument("--name", help="nama tampilan bot (untuk --add-agent)")
     ap.add_argument("--role", help=f'peran bot (untuk --add-agent, bawaan "{DEFAULT_ROLE}")')
-    ap.add_argument("--no-push", action="store_true", help="hanya ubah + commit lokal (untuk uji)")
+    ap.add_argument("--step", default=None, help=f'langkah kecil yang sedang dikerjakan (maks {STEP_MAX} karakter); hanya ke Supabase, tanpa commit')
+    ap.add_argument("--no-push", action="store_true", help="hanya ubah + commit lokal, tanpa Supabase (untuk uji)")
+    ap.add_argument("--no-supabase", action="store_true", help="lewati Supabase, hanya GitHub (cara lama)")
     a = ap.parse_args()
 
     if a.add_agent and a.remove_agent:
@@ -173,6 +376,19 @@ def main():
     out = a.output.strip() if a.output is not None else None
     name = a.name.strip() if a.name else None
     role = a.role.strip() if a.role else None
+    step = a.step.strip() if a.step is not None else None
+    if a.step is not None:
+        if not step:
+            die("--step kosong", 2)
+        step = " ".join(step.split())
+        if len(step) > STEP_MAX:
+            step = step[:STEP_MAX - 1].rstrip() + "…"
+        if a.add_agent or a.remove_agent:
+            die("--step tidak bisa digabung dengan --add-agent/--remove-agent", 2)
+        if a.state is not None and a.state != "working":
+            die("--step hanya bisa digabung dengan --state working", 2)
+        if a.no_supabase:
+            die("--step butuh Supabase (jangan pakai --no-supabase)", 2)
 
     if a.task is not None and not task:
         die("--task kosong", 2)
@@ -186,8 +402,8 @@ def main():
     if a.remove_agent and (task or nxt or out or name or role):
         die("--remove-agent tidak bisa digabung dengan opsi lain", 2)
     if not a.add_agent and not a.remove_agent:
-        if task is None and out is None:
-            die("butuh --state + --task (atau --output saja)", 2)
+        if task is None and out is None and step is None:
+            die("butuh --state + --task (atau --output / --step saja)", 2)
         if nxt and task is None:
             die("--next harus dipakai bersama --state dan --task", 2)
         if name or role:
@@ -199,12 +415,20 @@ def main():
             die("--add-agent butuh --name", 2)
         if len(name) > 40 or (role and len(role) > 40):
             die("--name/--role maksimal 40 karakter", 2)
-    for label, val in (("task", task), ("next", nxt), ("output", out), ("name", name), ("role", role)):
+    for label, val in (("task", task), ("next", nxt), ("output", out), ("name", name), ("role", role), ("step", step)):
         guard(label, val)
 
     # kunci agar beberapa bot tidak bentrok
     lockf = open(os.path.join(REPO, ".git", "update-status.lock"), "w")
     fcntl.flock(lockf, fcntl.LOCK_EX)
+
+    # ---- mode langkah saja: cepat, hanya Supabase ----
+    if step is not None and task is None and out is None:
+        if a.no_push:
+            print(f"OK (uji, tanpa Supabase): langkah {a.agent} -> {step}")
+            return
+        run_step(a.agent, step, now_wib())
+        return
 
     def mutate(data, ts):
         agents = data["agents"]
@@ -245,9 +469,18 @@ def main():
                 die(f"agen '{a.agent}' tidak ditemukan. Pilihan: " + ", ".join(x.get("name", "?") for x in agents), 2)
 
         if task is not None:
-            status = apply_state(ag, a.state, task, nxt)
+            status = apply_state(ag, a.state, task, nxt)  # tugas baru -> langkah lama ikut hilang
             add_log(data, ts, ag.get("name"), status, task)
             msgs.append(f"status: {ag.get('name')} {a.state} - {task}")
+            if step is not None and a.state == "working":
+                ag["tasks"][0]["step"] = step
+                ag["tasks"][0]["step_at"] = ts
+        if step is not None and task is None:  # mis. --output + --step
+            work = next((t for t in (ag.get("tasks") or []) if ststate(t.get("status")) == "work"), None)
+            if work is None:
+                die(f"{ag.get('name')} tidak sedang kerja; --step butuh tugas \"Sekarang\".", 2)
+            work["step"] = step
+            work["step_at"] = ts
         if out is not None:
             ag["last_output"] = out
             ag["last_output_at"] = ts
@@ -255,7 +488,7 @@ def main():
                 msgs.append(f"status: {ag.get('name')} output")
         return " | ".join(reversed(msgs))
 
-    run_update(mutate, a.no_push)
+    run_update(mutate, a.no_push, use_sb=not a.no_supabase)
 
 
 if __name__ == "__main__":
