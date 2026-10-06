@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T15:19:51+07:00",
+  "updated_at": "2026-10-06T15:21:04+07:00",
   "log": [
     {
-      "t": "2026-10-06T15:19:51+07:00",
+      "t": "2026-10-06T15:21:04+07:00",
       "agent": "Mr. Wakidi",
-      "status": "Sedang kerja",
-      "text": "Tambah nama di atas karakter & blokir akses HP"
+      "status": "Selesai",
+      "text": "Nama karakter & blokir HP selesai"
+    },
+    {
+      "t": "2026-10-06T15:19:51+07:00",
+      "text": "Tambah nama di atas karakter & blokir akses HP",
+      "agent": "Mr. Wakidi",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T15:08:11+07:00",
@@ -115,12 +121,6 @@
       "text": "Membalas chat staf",
       "agent": "Mr. Wawan",
       "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T13:16:48+07:00",
-      "text": "Prototipe login staf dan chat agent di web",
-      "agent": "Mr. Wakidi",
-      "status": "Sedang kerja"
     }
   ],
   "agents": [
@@ -131,16 +131,9 @@
       "role": "Builder",
       "tasks": [
         {
-          "status": "Sedang kerja",
-          "label": "Sekarang",
-          "text": "Tambah nama di atas karakter & blokir akses HP",
-          "step": "Uji Playwright lulus, siap deploy",
-          "step_at": "2026-10-06T15:19:51+07:00"
-        },
-        {
-          "text": "Rapikan tampilan: papan tugas auto-hide, label meja disembunyikan",
+          "status": "Selesai",
           "label": "Baru selesai",
-          "status": "Selesai"
+          "text": "Nama karakter & blokir HP selesai"
         }
       ],
       "theme": "grok"
