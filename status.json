@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T13:42:47+07:00",
+  "updated_at": "2026-10-06T13:42:56+07:00",
   "log": [
     {
-      "t": "2026-10-06T13:42:47+07:00",
+      "t": "2026-10-06T13:42:56+07:00",
       "agent": "Mr. Wawan",
-      "status": "Sedang kerja",
+      "status": "Selesai",
       "text": "Membalas chat staf"
+    },
+    {
+      "t": "2026-10-06T13:42:47+07:00",
+      "text": "Membalas chat staf",
+      "agent": "Mr. Wawan",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T13:33:21+07:00",
@@ -115,12 +121,6 @@
       "text": "Menunggu tugas pertama",
       "agent": "Mr. Widodo",
       "status": "Terjadwal"
-    },
-    {
-      "t": "2026-10-06T12:38:50+07:00",
-      "text": "Bergabung ke kantor sebagai Member Success",
-      "agent": "Mr. Widodo",
-      "status": "Info"
     }
   ],
   "agents": [
@@ -234,21 +234,14 @@
       "role": "Content & Creative",
       "tasks": [
         {
-          "status": "Sedang kerja",
-          "label": "Sekarang",
-          "text": "Membalas chat staf",
-          "step": "Membalas chat staf",
-          "step_at": "2026-10-06T13:42:47+07:00"
-        },
-        {
           "text": "Menunggu chat staf pertama",
           "label": "Berikutnya",
           "status": "Terjadwal"
         },
         {
-          "text": "Membalas chat staf",
+          "status": "Selesai",
           "label": "Baru selesai",
-          "status": "Selesai"
+          "text": "Membalas chat staf"
         }
       ]
     },
