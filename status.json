@@ -1,0 +1,86 @@
+{
+  "office": "Vertex8 HQ",
+  "updated_at": "2026-10-06T11:31:14+07:00",
+  "agents": [
+    {
+      "id": "grok",
+      "name": "Grok Bot",
+      "role": "Koordinator",
+      "theme": "grok",
+      "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Meng-online-kan kantor virtual"
+        },
+        {
+          "status": "Selesai",
+          "label": "Baru selesai",
+          "text": "Analisa data gym Vertex8"
+        }
+      ]
+    },
+    {
+      "id": "analyst",
+      "name": "Vertex8 Analyst",
+      "role": "Analis Data",
+      "theme": "analyst",
+      "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Menyiapkan laporan mingguan"
+        },
+        {
+          "status": "Terjadwal",
+          "label": "Rutin",
+          "text": "Laporan mingguan tiap Senin 08.00 WIB"
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "name": "Vertex8 Marketing",
+      "role": "Konten & Tren",
+      "theme": "marketing",
+      "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Riset 3 tren fitness/Hyrox yang viral"
+        },
+        {
+          "status": "Terjadwal",
+          "label": "Berikutnya",
+          "text": "Draf hook, skrip Reels, dan caption"
+        }
+      ]
+    }
+  ],
+  "log": [
+    {
+      "t": "2026-10-06T11:31:14+07:00",
+      "agent": "Grok Bot",
+      "status": "Sedang kerja",
+      "text": "Meng-online-kan kantor virtual"
+    },
+    {
+      "t": "2026-10-06T11:31:14+07:00",
+      "agent": "Vertex8 Marketing",
+      "status": "Sedang kerja",
+      "text": "Riset 3 tren fitness/Hyrox yang viral"
+    },
+    {
+      "t": "2026-10-06T11:31:14+07:00",
+      "agent": "Vertex8 Analyst",
+      "status": "Sedang kerja",
+      "text": "Menyiapkan laporan mingguan"
+    },
+    {
+      "t": "2026-10-06T11:31:14+07:00",
+      "agent": "Grok Bot",
+      "status": "Selesai",
+      "text": "Analisa data gym Vertex8"
+    }
+  ]
+}
