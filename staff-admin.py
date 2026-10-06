@@ -5,8 +5,10 @@ Token admin dibaca dari ~/.config/vertex8-office/admin_token (atau env KV_ADMIN_
 menyimpan hash sha256-nya. Jangan pernah commit/print token.
 
   staff-admin.py list
-  staff-admin.py add --email nama@contoh.com --name "Nama Staf" [--agents content] [--admin]
-  staff-admin.py update --email nama@contoh.com [--name ...] [--agents content,marketing] [--admin|--no-admin]
+  staff-admin.py add --email nama@contoh.com --name "Nama Staf" [--agents all|content,marketing] [--admin]
+  staff-admin.py update --email nama@contoh.com [--name ...] [--agents all|content,marketing] [--admin|--no-admin]
+  --agents all  -> boleh ngobrol dengan SEMUA agent yang aktif (termasuk agent baru nanti). Bawaan `add`: all.
+                   Admin selalu boleh ngobrol dengan semua agent.
   staff-admin.py disable --email nama@contoh.com     # cabut akses (riwayat chat tetap ada)
   staff-admin.py enable  --email nama@contoh.com
   staff-admin.py remove  --email nama@contoh.com     # hapus dari allowlist
@@ -58,6 +60,13 @@ def call(args):
         die(f"gagal: {getattr(e, 'reason', e)}", 4)
 
 
+def agents_txt(lst):
+    lst = list(lst or [])
+    if "*" in lst:
+        return "semua"
+    return ", ".join(lst) or "-"
+
+
 def show(row):
     if not isinstance(row, dict):
         print(json.dumps(row, ensure_ascii=False))
@@ -65,7 +74,7 @@ def show(row):
     flags = ("AKTIF" if row.get("active") else "NONAKTIF") + (" · ADMIN" if row.get("is_admin") else "")
     acct = ("akun login ada" + ("" if row.get("auth_confirmed") else " (BELUM terkonfirmasi)")) if row.get("auth_user") \
         else "akun login BELUM dibuat"
-    print(f"- {row.get('email')}  \"{row.get('display_name')}\"  [{flags}]  agent: {', '.join(row.get('allowed_agents') or []) or '-'}"
+    print(f"- {row.get('email')}  \"{row.get('display_name')}\"  [{flags}]  agent: {agents_txt(row.get('allowed_agents'))}"
           f"  · {acct}{' · tersambung' if row.get('linked') else ''}")
     if not row.get("auth_user"):
         print("  -> Buat akun: Supabase Dashboard > Authentication > Users > Add user > Create new user "
@@ -77,7 +86,7 @@ def main():
     ap.add_argument("action", choices=["list", "add", "update", "disable", "enable", "remove", "rotate-token"])
     ap.add_argument("--email")
     ap.add_argument("--name", help="nama tampilan staf")
-    ap.add_argument("--agents", help="daftar id agent dipisah koma (bawaan add: content)")
+    ap.add_argument("--agents", help='"all" (semua agent) atau daftar id agent dipisah koma (bawaan add: all)')
     ap.add_argument("--admin", dest="admin", action="store_true", default=None)
     ap.add_argument("--no-admin", dest="admin", action="store_false")
     a = ap.parse_args()
@@ -113,9 +122,11 @@ def main():
     agents = None
     if a.agents is not None:
         agents = [x.strip().lower() for x in a.agents.split(",") if x.strip()]
+        if any(x in ("all", "*", "semua") for x in agents):
+            agents = ["*"]
     if a.action in ("add", "update"):
         if a.action == "add" and agents is None:
-            agents = ["content"]
+            agents = ["*"]
         row = call({"p_token": tok, "p_action": "upsert", "p_email": a.email, "p_display_name": a.name,
                     "p_allowed": agents, "p_is_admin": a.admin if a.action == "update" else bool(a.admin)})
         show(row)

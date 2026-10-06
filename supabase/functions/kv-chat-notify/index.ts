@@ -9,7 +9,11 @@
 //   WEBHOOK_KEY_<AGENT>          kunci pengirim (opsional)
 //   WEBHOOK_AUTH_HEADER[_<AGENT>] nama header kunci (bawaan "Authorization")
 //   WEBHOOK_AUTH_PREFIX[_<AGENT>] awalan nilai header (bawaan "Bearer " untuk Authorization, "" untuk header lain)
-// Bila URL belum diset, pesan tetap "pending" (wake_status = belum_dikonfigurasi) dan staf melihat "menunggu".
+// Agent "content" juga menerima nama lama tanpa akhiran (WEBHOOK_URL / WEBHOOK_KEY) agar kompatibel.
+// Bila URL belum diset, pesan tetap "pending" (wake_status = belum_dikonfigurasi) dan staf melihat catatan
+// "Agent ini belum tersambung…" — pesan tidak hilang dan akan dibalas setelah agent tersambung.
+// GET ?status=1 → {"ok":true,"agents":{"analyst":false,...}}: HANYA boolean "sudah tersambung" per agent
+// (tanpa URL/kunci) untuk ikon steker di web.
 // Isi chat TIDAK pernah dikirim ke webhook; agent mengambilnya sendiri lewat agent-chat.py.
 
 const SB_URL = Deno.env.get("SUPABASE_URL") ?? "";
@@ -17,9 +21,12 @@ const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const REPO = "/workspace/vertex8-virtual-office-repo";
 
-function json(body: unknown, status = 200): Response {
-  return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
+const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "apikey, authorization, content-type" };
+function json(body: unknown, status = 200, extra: Record<string, string> = {}): Response {
+  return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...extra } });
 }
+function suffix(agent: string): string { return agent.toUpperCase().replace(/[^A-Z0-9]/g, "_"); }
 function env(name: string): string | undefined {
   const v = Deno.env.get(name);
   return v === undefined ? undefined : v.trim();
@@ -34,8 +41,34 @@ async function rpc(name: string, args: Record<string, unknown>): Promise<unknown
   const t = await r.text();
   return t ? JSON.parse(t) : null;
 }
+function hookUrl(agent: string): string | undefined {
+  const suf = suffix(agent);
+  return env(`WEBHOOK_URL_${suf}`) || (agent === "content" ? env("WEBHOOK_URL") : undefined) || undefined;
+}
+function hookKey(agent: string): string | undefined {
+  const suf = suffix(agent);
+  return env(`WEBHOOK_KEY_${suf}`) || (agent === "content" ? env("WEBHOOK_KEY") : undefined) || undefined;
+}
+async function connStatus(): Promise<Response> {
+  const agents: Record<string, boolean> = {};
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/kv_chat_agents?select=agent,enabled`, {
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    for (const row of (await r.json()) as Array<{ agent: string; enabled: boolean }>) {
+      if (/^[a-z0-9_-]{1,32}$/.test(row.agent)) agents[row.agent] = !!row.enabled && !!hookUrl(row.agent);
+    }
+  } catch (e) {
+    console.error("status gagal:", (e as Error).message);
+    return json({ ok: false }, 500, CORS);
+  }
+  return json({ ok: true, agents }, 200, { ...CORS, "Cache-Control": "public, max-age=60" });
+}
 
 Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
+  if (req.method === "GET") return SB_URL && SERVICE_KEY ? await connStatus() : json({ ok: false }, 500, CORS);
   if (req.method !== "POST") return json({ ok: false, error: "metode harus POST" }, 405);
   let body: Record<string, unknown> = {};
   try { body = await req.json(); } catch { return json({ ok: false, error: "body bukan JSON" }, 400); }
@@ -54,9 +87,9 @@ Deno.serve(async (req: Request) => {
 
   const agent = String(claim.agent ?? "");
   const agentName = String(claim.agent_name ?? agent);
-  const suf = agent.toUpperCase().replace(/[^A-Z0-9]/g, "_");
-  const url = env(`WEBHOOK_URL_${suf}`);
-  const key = env(`WEBHOOK_KEY_${suf}`);
+  const suf = suffix(agent);
+  const url = hookUrl(agent);
+  const key = hookKey(agent);
   let status = "belum_dikonfigurasi";
 
   if (url) {
@@ -66,9 +99,10 @@ Deno.serve(async (req: Request) => {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (key) headers[header] = prefix ? `${prefix.trimEnd()} ${key}` : key; // mis. "Bearer <kunci>"
     const n = Number(claim.pending ?? 1) || 1;
-    const text = `Ada ${n} pesan chat baru dari staf untuk ${agentName} di Kantor Virtual Vertex8. ` +
+    const text = `Ada ${n} pesan chat baru dari staf untuk ${agentName} (agent "${agent}") di Kantor Virtual Vertex8. ` +
       `Jalankan: python3 ${REPO}/agent-chat.py --agent ${agent} --pending  lalu balas tiap pesan dengan ` +
-      `python3 ${REPO}/agent-chat.py --agent ${agent} --reply <id> --text "..."`;
+      `python3 ${REPO}/agent-chat.py --agent ${agent} --reply <id> --text-file <file>  ` +
+      `(bila gagal: --error <id> --note "..."). Ikuti prompt routine agent ini.`;
     const payload = {
       event: "kv_chat_message", source: "kantor-virtual-vertex8", agent, agent_name: agentName,
       message_id: id, pending: n, sent_at: new Date().toISOString(), text, message: text, prompt: text,
