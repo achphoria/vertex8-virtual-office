@@ -1,6 +1,9 @@
 # Kantor Virtual Vertex8
 
-Halaman pixel-art yang menampilkan status para agent Vertex8 (Mr. Wakidi (Builder), Mr. Wiyadi (Ops & Data), Mr. Wahyudi (Marketing), dan bot baru yang mendaftar sendiri).
+Kantor virtual bergaya **neon cyberpunk** (v4) yang menampilkan status 9 agent Vertex8 di 9 meja divisi:
+01 Builder (Mr. Wakidi), 02 Ops & Data (Mr. Wiyadi), 03 Marketing (Mr. Wahyudi), 04 Member Success (Mr. Widodo),
+05 Performance (Mr. Winarto), 06 Finance (Mr. Wibowo), 07 Content & Creative (Mr. Wawan), 08 HR & People (Mr. Wisnu),
+09 Engineering & Facility (Mr. Warsito).
 
 - **Live:** https://achphoria.github.io/vertex8-virtual-office/
 - **Mode rekam (9:16):** https://achphoria.github.io/vertex8-virtual-office/?rekam=1
@@ -15,13 +18,20 @@ Halaman pixel-art yang menampilkan status para agent Vertex8 (Mr. Wakidi (Builde
   (1s, 2s, 4s … maks 30s) dan cek Supabase tiap 60 detik.
 - Bila Supabase tidak bisa diakses, halaman memakai cadangan: GitHub API (`contents/status.json`) →
   `raw.githubusercontent.com` → `./status.json` → data bawaan di `index.html`.
-- Bot berjalan di lantai: **kerja** → duduk mengetik di meja; **tidak ada tugas aktif** → ngopi di mesin KOPI dan
-  sesekali jalan-jalan; tugas berisi *laporan/report/analisa* → sesekali ke papan tulis; tugas **baru selesai**
-  (terdeteksi saat polling) → lompat + konfeti + gelembung "Selesai!".
-- Klik bot / kartunya → detail: tugas sekarang, berikutnya, rutin, hasil terakhir (`last_output`), dan riwayat.
+- Latar: `assets/office-neon.webp` (cadangan `assets/office-neon.jpg`), 1600×897. Semua posisi (kursi, laptop,
+  lorong, bar KOPI, layar besar) dipetakan dalam koordinat piksel gambar ini lalu diskalakan responsif.
+- **Tanpa angka bisnis:** area dashboard di layar besar dan kolom harga menu KOPI sudah dihitamkan di file aset;
+  di atasnya halaman menggambar panel **STATUS TIM** (agen aktif, tugas selesai hari ini dari log, jam update WIB,
+  log langsung) dan titik neon di menu.
+- Bot neon berjalan di lantai: **kerja** → duduk di kursi mejanya dan mengetik (layar menyala); **tidak ada tugas
+  aktif** → ngopi di bar KOPI VERTEX8 / sofa dan sesekali jalan-jalan; tugas berisi *laporan/report/analisa* →
+  sesekali berdiri di depan layar besar; tugas **baru selesai** → lompat + konfeti neon + gelembung "Selesai!".
+- Meja: field `desk` (1–9) per agent. Agent tanpa `desk` mengisi meja kosong pertama. Meja tanpa agent tampil
+  redup dengan label "Segera hadir".
+- Klik bot / meja / kartunya → detail: tugas sekarang, berikutnya, rutin, hasil terakhir (`last_output`), dan riwayat.
 - Tombol **Mode Rekam** / `?rekam=1` → tampilan vertikal 9:16 bersih (judul + jam WIB live), tombol **Musik**
   (lo-fi WebAudio, tanpa file), tombol hilang sendiri setelah 3 detik mouse diam.
-- Tata letak meja dihitung dari jumlah agen (1–12). Agen tanpa tema mendapat robot pixel otomatis (warna dari id).
+  Di mode rekam kamera menyapu kantor perlahan (dan fokus ke bot yang merayakan), plus daftar 9 meja di bawahnya.
 
 ## Memperbarui status
 
@@ -30,7 +40,7 @@ python3 update-status.py --agent "Mr. Wahyudi" --state working --task "Riset tre
 python3 update-status.py --agent grok --output "Hasil singkat terakhir"          # hanya hasil terakhir
 python3 update-status.py --agent grok --step "lagi query data"                    # langkah kecil, sering & murah
 python3 update-status.py --agent grok --state working --task "..." --step "..."   # tugas baru + langkah pertama
-python3 update-status.py --add-agent --agent designer --name "Mr. Widodo" [--role "Desain"] [--state working --task "..."]
+python3 update-status.py --add-agent --agent designer --name "Mr. Wiryo" [--role "Desain"] [--desk 4] [--state working --task "..."]
 python3 update-status.py --remove-agent --agent designer
 ```
 
@@ -38,6 +48,8 @@ python3 update-status.py --remove-agent --agent designer
 **menulisnya ke Supabase dulu** (lewat RPC `kv_set_state` yang dilindungi token penulis), lalu sebagai cadangan
 melakukan `git pull --rebase`, menulis `status.json`, commit, dan push. Keluar 0 bila minimal satu tujuan berhasil
 (peringatan dicetak bila salah satu gagal). `--output` maks 280 karakter. Peran bawaan agen baru: "Asisten AI".
+`--desk N` (1–9, hanya bersama `--add-agent`) memilih meja; tanpa `--desk` agen baru mendapat meja kosong pertama.
+Meja yang sudah dipakai agen lain ditolak. `--add-agent --desk N` pada agen yang sudah ada memindahkan mejanya.
 
 `--step` (maks 120 karakter) hanya menulis ke Supabase (tanpa commit git), tampil sebagai `↳ ...` di gelembung,
 kartu, dan detail agen pada tugas "Sekarang". Butuh agen yang sedang kerja; `--state` apa pun mengganti tugas
