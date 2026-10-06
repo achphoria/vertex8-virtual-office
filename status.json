@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T21:24:26+07:00",
+  "updated_at": "2026-10-06T21:24:30+07:00",
   "log": [
     {
-      "t": "2026-10-06T21:24:26+07:00",
-      "agent": "Mr. Wibowo",
+      "t": "2026-10-06T21:24:30+07:00",
+      "agent": "Mr. Wisnu",
       "status": "Sedang kerja",
       "text": "Siapkan routine chat staf"
+    },
+    {
+      "t": "2026-10-06T21:24:26+07:00",
+      "text": "Siapkan routine chat staf",
+      "agent": "Mr. Wibowo",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T21:24:23+07:00",
@@ -115,12 +121,6 @@
       "text": "Tes status kantor virtual",
       "agent": "Mr. Winarto",
       "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T15:29:39+07:00",
-      "text": "Tes status kantor virtual",
-      "agent": "Mr. Widodo",
-      "status": "Selesai"
     }
   ],
   "agents": [
@@ -229,9 +229,9 @@
       "role": "Finance",
       "tasks": [
         {
-          "status": "Sedang kerja",
+          "text": "Siapkan routine chat staf",
           "label": "Sekarang",
-          "text": "Siapkan routine chat staf"
+          "status": "Sedang kerja"
         },
         {
           "text": "Menunggu tugas pertama",
@@ -269,6 +269,11 @@
       "name": "Mr. Wisnu",
       "role": "HR & People",
       "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Siapkan routine chat staf"
+        },
         {
           "text": "Menunggu tugas pertama",
           "label": "Berikutnya",
