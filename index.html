@@ -319,7 +319,7 @@ body.rekam .chip{font-size:calc(max(12px, 9.5px * var(--ik)))}
 .bub.new{animation:pop .2s ease-out both}
 .bub.me{align-self:flex-end;background:rgba(61,245,255,.1);border:1px solid rgba(61,245,255,.6);box-shadow:0 0 10px rgba(61,245,255,.18);border-bottom-right-radius:2px}
 .bub.ag{align-self:flex-start;background:rgba(255,138,61,.08);border:1px solid color-mix(in srgb,var(--acc,#ff8a3d) 65%,transparent);box-shadow:0 0 10px color-mix(in srgb,var(--acc,#ff8a3d) 18%,transparent);border-bottom-left-radius:2px}
-.bub .bm{display:block;margin-top:4px;font-size:9.5px;letter-spacing:.06em;color:var(--muted);text-align:right;white-space:nowrap}
+.bub .bm{display:block;margin-top:4px;font-size:9.5px;letter-spacing:.06em;color:var(--muted);text-align:right;white-space:normal}
 .bub.ag .bm{text-align:left}
 .bub .bm i{font-style:normal;color:var(--sched)} .bub .bm i.ok{color:var(--work)} .bub .bm i.err{color:var(--hot)}
 .bub.sending{opacity:.6}
@@ -1560,7 +1560,7 @@ async function afterLogin(){
 async function loadThread(){
   if(!S || !cur || !canChat(cur)){ msgs=[]; return; }
   const a=cur;
-  const rows=await api(`/rest/v1/kv_chat_messages?select=id,agent,role,content,status,sender_name,reply_to,picked_at,notified_at,wake_status,created_at,answered_at`+
+  const rows=await api(`/rest/v1/kv_chat_messages?select=id,agent,role,content,status,sender_name,reply_to,picked_at,notified_at,wake_status,created_at,answered_at,error_note`+
     `&agent=eq.${encodeURIComponent(a)}&user_id=eq.${S.user.id}&order=created_at.desc&limit=100`);
   if(a!==cur) return;
   msgs=(rows||[]).reverse();
@@ -1654,7 +1654,7 @@ function renderList(){
 function fmtStatus(m){
   if(m.status==='sending') return '<i>mengirim&hellip;</i>';
   if(m.status==='answered') return '<i class="ok">&#10003;&#10003; dibalas</i>';
-  if(m.status==='error') return '<i class="err">gagal diproses &mdash; coba kirim ulang</i>';
+  if(m.status==='error') return `<i class="err">gagal diproses${m.error_note?': '+esc(m.error_note):''} &mdash; coba kirim ulang</i>`;
   return '<i>&#10003; terkirim</i>';
 }
 function renderMsgs(scroll){

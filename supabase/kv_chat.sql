@@ -178,6 +178,15 @@ begin
 end $$;
 
 -- ---------- RPC agent (token penulis) ----------
+-- jumlah pesan staf yang masih menunggu untuk agent (hanya dari staf yang masih aktif)
+create function kv_private.kv_chat_pending_count(p_agent text) returns int
+language sql stable security definer set search_path = '' as $$
+  select count(*)::int from public.kv_chat_messages m
+  where m.agent = p_agent and m.role = 'staff' and m.status = 'pending'
+    and exists(select 1 from public.kv_staff s join auth.users u on u.id = m.user_id
+               where s.active and (s.user_id = u.id or (s.user_id is null and s.email = lower(u.email))))
+$$;
+
 create or replace function kv_private.kv_chat_pending_impl(p_token text, p_agent text, p_limit int, p_history int)
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare v jsonb; v_name text; v_ids uuid[];
@@ -227,7 +236,7 @@ begin
    where x.user_id = m.user_id and x.agent = m.agent and x.role = 'staff'
      and (x.id = m.id or (x.status = 'pending' and x.created_at <= m.created_at));
   get diagnostics v_n = row_count;
-  select count(*) into v_left from public.kv_chat_messages x where x.agent = m.agent and x.role = 'staff' and x.status = 'pending';
+  v_left := kv_private.kv_chat_pending_count(m.agent);
   return jsonb_build_object('reply_id', v_id, 'answered', v_n, 'agent', m.agent, 'pending_left', v_left);
 end $$;
 
@@ -239,7 +248,7 @@ begin
   update public.kv_chat_messages set status = 'error', error_note = left(btrim(coalesce(p_note, '')), 200)
    where id = p_message_id and role = 'staff' returning agent into v_agent;
   if v_agent is null then raise exception 'pesan tidak ditemukan' using errcode = 'P0002'; end if;
-  select count(*) into v_left from public.kv_chat_messages x where x.agent = v_agent and x.role = 'staff' and x.status = 'pending';
+  v_left := kv_private.kv_chat_pending_count(v_agent);
   return jsonb_build_object('id', p_message_id, 'status', 'error', 'agent', v_agent, 'pending_left', v_left);
 end $$;
 
