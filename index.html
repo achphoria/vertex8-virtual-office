@@ -146,7 +146,7 @@ button{font:inherit}
 .bin.cele .tail{background:rgba(40,8,46,.95)}
 .bin.cele .b-label{font-size:1.3em;letter-spacing:.06em;color:#fff;text-shadow:0 0 .3em var(--mag),0 0 .7em var(--mag)}
 .st-work{--s:var(--work)} .st-sched{--s:var(--sched)} .st-done{--s:var(--done)} .st-info{--s:var(--info)} .st-idle{--s:#7d86b8}
-.bin.st-work{--c:var(--work)} .bin.st-sched{--c:var(--sched)} .bin.st-done{--c:var(--done)} .bin.st-info{--c:var(--info)}
+.bin.st-work{--c:var(--work)} .bin.st-sched{--c:var(--sched)} .bin.st-done{--c:var(--done)} .bin.st-info{--c:var(--info)} .bin.st-idle{--c:#8e97cf}
 /* ---------- ticker ---------- */
 .ticker{grid-area:ticker;display:flex;align-items:stretch;overflow:hidden;min-width:0;height:40px}
 .tk-label{flex:none;color:#060818;background:var(--cyan);padding:0 12px;display:flex;align-items:center;font-size:12px;letter-spacing:.16em;box-shadow:0 0 12px var(--cyan)}
@@ -389,6 +389,68 @@ body.rekam .say{font-size:calc(max(14px, 13px * var(--ik)))}
   body.chatting .app{padding-bottom:160px}
 }
 @media (prefers-reduced-motion:reduce){ .say.pop .say-in,.dock,.drawer,.ctx{animation:none} }
+
+/* ===== POLISH: papan tugas auto-hide, adegan selebar layar ===== */
+:root{--pw:0px;--chrome:158px}
+.app{max-width:none;padding:10px 14px 10px;grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "scene" "ticker" "foot";grid-template-rows:auto auto auto auto;gap:8px}
+.head{padding:6px 14px}
+#logo{height:36px} #title{height:22px} .sub{margin-top:5px}
+.clock{font-size:24px}
+.scene{aspect-ratio:auto;max-width:none;height:min(calc(100vh - var(--chrome)), calc((100vw - 30px - var(--pw)) / 1.6684));min-height:280px}
+.scene::before{content:"";position:absolute;inset:-30px;background:#05060f url(assets/office-v5.jpg) center/cover no-repeat;filter:blur(22px) brightness(.38) saturate(1.2);pointer-events:none}
+.scene.pan{aspect-ratio:auto;height:max(360px, calc(100svh - 316px));min-height:0}
+.scene.pan::before{display:none}
+.ticker{height:28px}
+.tk-label{font-size:10.5px;padding:0 10px;letter-spacing:.14em}
+.tk-move{font-size:11.5px}
+.tk-item{padding:0 14px}
+.tk-item em{font-size:9.5px;padding:1px 5px}
+.foot{padding:4px 12px;font-size:10px;gap:4px 14px;line-height:1.35}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(372px,88vw);max-height:none;z-index:52;border-radius:12px 0 0 12px;margin:0;
+  background:rgba(9,10,32,.97);transform:translateX(calc(100% + 30px));visibility:hidden;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1),visibility 0s linear .3s}
+.panel.open{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.2,.8,.2,1),visibility 0s}
+#cards{overflow-y:auto;flex:1 1 auto}
+.ph-r{display:flex;align-items:center;gap:6px;flex:none}
+.ph-r .count{white-space:nowrap;font-size:10px;padding:4px 6px}
+.ph #ptitle{flex:none;height:16px}
+.pbtn{font:inherit;font-size:13px;line-height:1;width:28px;height:28px;display:grid;place-items:center;border-radius:5px;cursor:pointer;
+  color:#cfd6ff;background:rgba(255,255,255,.04);border:1px solid rgba(255,61,242,.45);padding:0}
+.pbtn:hover{border-color:var(--mag);box-shadow:0 0 8px rgba(255,61,242,.5)}
+.pbtn:focus-visible{outline:2px solid var(--sched);outline-offset:2px}
+.pbtn[aria-pressed="true"]{color:#060818;background:var(--mag);box-shadow:0 0 10px var(--mag)}
+.pbtn svg{width:14px;height:14px;display:block}
+.ptab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:51;writing-mode:vertical-rl;text-orientation:mixed;
+  font:inherit;font-size:10.5px;letter-spacing:.16em;color:#f3f5ff;padding:14px 6px;cursor:pointer;
+  background:rgba(10,11,36,.9);border:1px solid var(--mag);border-right:0;border-radius:9px 0 0 9px;
+  box-shadow:0 0 12px rgba(255,61,242,.55),inset 0 0 8px rgba(255,61,242,.2);text-shadow:0 0 6px rgba(255,61,242,.8);
+  display:flex;align-items:center;gap:8px;transition:opacity .2s,padding .2s}
+.ptab:hover,.ptab:focus-visible{padding-right:10px;outline:none;box-shadow:0 0 18px rgba(255,61,242,.85),inset 0 0 10px rgba(255,61,242,.3)}
+.ptab i{width:7px;height:7px;border-radius:50%;background:var(--work);box-shadow:0 0 7px var(--work);animation:blink 1.6s steps(1) infinite}
+.ptab b{color:var(--work);font-weight:700;text-shadow:0 0 6px var(--work)}
+body.pnl-open .ptab{opacity:0;pointer-events:none}
+body.rekam .ptab{display:none}
+body.rekam .scene{height:auto}
+.hovertip{position:absolute;z-index:6;pointer-events:none;padding:5px 9px;border-radius:6px;font-size:11.5px;line-height:1.3;color:#fff;white-space:nowrap;
+  background:rgba(8,9,30,.94);border:1px solid var(--c,#ff3df2);box-shadow:0 0 10px color-mix(in srgb,var(--c,#ff3df2) 60%,transparent);transform:translate(12px,-115%)}
+.hovertip small{display:block;color:#9aa3d6;font-size:10px}
+.hovertip[hidden]{display:none}
+#chips{display:none}
+.b-step.stale{color:#9aa3d6;font-weight:400}
+.c-tasks p.c-step.stale,.m-sec p.m-step.stale{color:#9aa3d6;font-weight:400}
+@media (min-width:1100px){
+  body.ppin{--pw:384px}
+  body.ppin .app{padding-right:calc(14px + var(--pw))}
+  body.ppin .ptab{display:none}
+}
+@media (max-width:980px), (orientation:portrait){
+  .app{grid-template-areas:"head" "scene" "ticker" "foot";padding:8px 8px 10px}
+  #cards{overflow-y:auto}
+  .ptab{font-size:9.5px;padding:11px 5px;top:auto;bottom:118px;transform:none}
+  .scene{max-width:none}
+}
+@media (max-width:420px){ .ph #ptitle{height:13px} .ph-r{gap:4px} .ph-r .count{font-size:9px;padding:3px 5px;letter-spacing:.04em} .pbtn{width:26px;height:26px} }
+@media (max-height:520px) and (orientation:landscape){ .head{display:none} :root{--chrome:84px} }
 </style>
 </head>
 <body>
@@ -425,6 +487,7 @@ body.rekam .say{font-size:calc(max(14px, 13px * var(--ik)))}
         <div id="chips"></div>
         <div id="bubbles"></div>
       </div>
+      <div class="hovertip" id="hoverTip" hidden></div>
       <div class="loading" id="loading">MEMUAT KANTOR&hellip;</div>
       <div class="rk-ctl" id="rkctl">
         <button class="nbtn" id="btnMusik" type="button">&#9835; Musik</button>
@@ -441,16 +504,20 @@ body.rekam .say{font-size:calc(max(14px, 13px * var(--ik)))}
     <div class="tk-track"><div class="tk-move" id="tk"></div></div>
   </div>
 
-  <aside class="panel neon">
-    <div class="ph"><canvas id="ptitle" class="pix"></canvas><span class="count" id="count">9 AGENT</span></div>
+  <aside class="panel neon" id="panel" aria-label="Papan tugas">
+    <div class="ph"><canvas id="ptitle" class="pix"></canvas><div class="ph-r"><span class="count" id="count">9 AGENT</span>
+      <button class="pbtn" id="pPin" type="button" aria-pressed="false" title="Sematkan papan tugas (tetap terbuka)" aria-label="Sematkan papan tugas"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 2l7 7-2.5.6-3.8 3.8.4 4.6-1.6 1.6-4.2-4.2L4 20.2 3.8 20l4.8-6.3-4.2-4.2L6 7.9l4.6.4 3.8-3.8z"/></svg></button>
+      <button class="pbtn" id="pClose" type="button" title="Tutup (Esc)" aria-label="Tutup papan tugas">&times;</button></div></div>
     <div id="cards"></div>
     <div class="legend">
       <span class="st-work"><i></i>Sedang kerja</span>
       <span class="st-sched"><i></i>Terjadwal</span>
       <span class="st-done"><i></i>Selesai</span>
+      <span class="st-idle"><i></i>Santai / tanpa update</span>
     </div>
-    <div class="hint">Klik agent atau mejanya &rarr; <b>Ngobrol</b> / <b>Lihat detail</b>. Klik kartu untuk riwayat.</div>
+    <div class="hint">Klik agent atau mejanya &rarr; <b>Ngobrol</b> / <b>Lihat detail</b>. Klik kartu untuk riwayat. Tekan <b>T</b> untuk buka/tutup papan ini.</div>
   </aside>
+  <button class="ptab" id="ptab" type="button" aria-controls="panel" aria-expanded="false" title="Buka papan tugas (T)"><i></i><span id="ptabTxt">PAPAN TUGAS</span></button>
 
   <footer class="foot neon">
     <span><i class="src-dot" id="srcdot"></i>Sumber: <b id="src">data bawaan</b></span>
@@ -656,12 +723,33 @@ function hslHex(s){ const m=s.match(/hsl\((\d+),(\d+)%,(\d+)%\)/); if(!m) return
 const ST = s => { s=(s||'').toLowerCase(); return s.startsWith('sedang')?'work':s.startsWith('terjad')?'sched':s.startsWith('selesai')?'done':s.startsWith('info')?'info':'work'; };
 const DEFAULT_LABEL = {work:'Sekarang', sched:'Berikutnya', done:'Baru selesai', info:'Info'};
 const agentKey = a => String(a.id || a.name);
-const workTask = a => (a.tasks||[]).find(t=>ST(t.status)==='work');
+const workTask = a => (a.tasks||[]).find(t=>ST(t.status)==='work' && !t._stale);
+const staleTask = a => (a.tasks||[]).find(t=>ST(t.status)==='work' && t._stale);
+/* Jaring pengaman status basi: tugas 'kerja' tanpa update (status/langkah) > 45 menit ditampilkan
+   sebagai santai + catatan. Hanya penanda di memori (t._stale); data asli tidak diubah. */
+const STALE_MS=45*60e3;
+function lastUpdateOf(a,data){
+  let last=0; const w=(a.tasks||[]).find(t=>ST(t.status)==='work');
+  if(w) for(const f of ['step_at','updated_at','started_at','since','at']){ const v=Date.parse(w[f]||''); if(v>last) last=v; }
+  const L=Array.isArray(data.log)?data.log:[]; let found=false;
+  for(const e of L) if(e && (e.agent===a.name||e.agent===a.id||(a.id&&e.agent_id===a.id))){ const v=Date.parse(e.t||''); if(v){ found=true; if(v>last) last=v; } }
+  if(!last && !found && L.length>=10){ const ts=L.map(e=>Date.parse((e&&e.t)||'')).filter(Boolean); if(ts.length) return {t:Math.min(...ts),approx:true}; }
+  return {t:last,approx:false};
+}
+function markStale(data){
+  let ch=false; const now=Date.now();
+  for(const a of ((data&&data.agents)||[])){ if(!a) continue;
+    for(const t of (a.tasks||[])){ let v=null;
+      if(t && ST(t.status)==='work'){ const lu=lastUpdateOf(a,data); if(lu.t && now-lu.t>STALE_MS) v='tidak ada update sejak '+(lu.approx?'sebelum ':'')+hm(new Date(lu.t)); }
+      if(t && (t._stale||null)!==v){ ch=true; if(v) Object.defineProperty(t,'_stale',{value:v,writable:true,configurable:true,enumerable:false}); else delete t._stale; } } }
+  return ch;
+}
+const staleSig = () => JSON.stringify(((DATA&&DATA.agents)||[]).map(a=>((a&&a.tasks)||[]).map(t=>t._stale||'')));
 const nextTask = a => (a.tasks||[]).find(t=>ST(t.status)==='sched' && (t.label||'Berikutnya')==='Berikutnya');
 const doneTask = a => (a.tasks||[]).find(t=>ST(t.status)==='done');
 const isWorking = a => !!(a && workTask(a));
 const STEP_TTL = 30*60e3;
-const liveStep = t => { if(!t || ST(t.status)!=='work' || typeof t.step!=='string' || !t.step.trim()) return '';
+const liveStep = t => { if(!t || t._stale || ST(t.status)!=='work' || typeof t.step!=='string' || !t.step.trim()) return '';
   const at=Date.parse(t.step_at||''); return (!isNaN(at) && Date.now()-at>STEP_TTL) ? '' : t.step.trim(); };
 const KW = /laporan|report|analisa|analisis|analysis|rekap|presentasi|dashboard|dasbor/i;
 const kwText = a => { const t = workTask(a) || nextTask(a); return t ? t.text : ''; };
@@ -910,7 +998,7 @@ function measure(){
   const r=sc.getBoundingClientRect(), W=Math.max(1,r.width), H=Math.max(1,r.height), dpr=Math.min(2,window.devicePixelRatio||1);
   CAM.W=W; CAM.H=H; CAM.dpr=dpr;
   const cw=Math.round(W*dpr), ch=Math.round(H*dpr); if(cv.width!==cw||cv.height!==ch){ cv.width=cw; cv.height=ch; }
-  if(!REKAM && !portrait && W/H>=1.4){ CAM.mode='fit'; CAM.base=Math.min(W/WW,H/WH); }
+  if(!REKAM && !portrait && W/H>=1.4){ CAM.mode='fit'; const kf=Math.min(W/WW,H/WH), kc=Math.max(W/WW,H/WH); CAM.base=Math.min(kc,kf*1.14); }
   else { CAM.mode='pan'; const vh=REKAM?620:560; CAM.base=Math.max(H/vh, W/WW); }
   CAM.k=CAM.base*CAM.z; CAM.vw=W/CAM.k; CAM.vh=H/CAM.k; CAM.sig=''; CAM.ik='';
   if(!CAM.inited){ CAM.inited=true; const t0=camTarget(performance.now()/1000); CAM.x0=camClampX(t0.x-CAM.vw/2); CAM.y0=camClampY(t0.y-CAM.vh/2); }
@@ -932,7 +1020,7 @@ function camTarget(now){
   if(pair){ const {st,b}=pair, bx=b.mode==='sit'?b.x:b.x, by=(b.mode==='sit'?b.y-40*b.s:b.y-55*b.s);
     const mx=(st.x+bx)/2, my=(st.y-55*st.s+by)/2; return {x:mx, y:my+(CAM.mode==='fit'?10:0), z:CAM.mode==='fit'?1.85:1.15}; }
   if(now<CAM.focusUntil) return {x:CAM.fx, y:CAM.fy, z:CAM.mode==='fit'?1.25:1};
-  if(CAM.mode==='fit') return {x:WW/2, y:WH/2, z:1};
+  if(CAM.mode==='fit'){ const vv=Math.min(WH,CAM.H/CAM.base); return {x:WW/2, y:(WH-vv)*0.3+vv/2, z:1}; } // potong lebih banyak di bawah (tanaman depan) daripada di atas
   const own=[...staffChars.values()].find(c=>c.own);
   if(own && !REKAM) return {x:own.x, y:own.y-50, z:1};
   // tur otomatis antar lantai (rekam & HP tanpa avatar)
@@ -1149,7 +1237,7 @@ function charOpts(o,t,now,isBot){
     look:o.back?0:(o.dir?0:Math.sin(t*0.55+o.phase)*0.7+(gl.look||0)*0.5), think:!!(o.think||o.thinkR), talk:o.talkUntil>now};
 }
 function render(t,now){
-  const k=CAM.k*CAM.dpr; g.setTransform(1,0,0,1,0,0); g.fillStyle='#05060f'; g.fillRect(0,0,cv.width,cv.height);
+  const k=CAM.k*CAM.dpr; g.setTransform(1,0,0,1,0,0); g.clearRect(0,0,cv.width,cv.height);
   if(!imgOK) return;
   g.setTransform(k,0,0,k,-CAM.x0*k,-CAM.y0*k); g.imageSmoothingEnabled=true; g.imageSmoothingQuality='high';
   g.drawImage(IMG,0,0,WW,WH);
@@ -1212,8 +1300,8 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 let speaker=null, speakerUntil=0;
 const BUB=new Map();
 function stateOf(a){ if(isWorking(a)) return 'work'; const t=(a.tasks||[]); return t.some(x=>ST(x.status)==='sched')?'sched':t.some(x=>ST(x.status)==='done')?'done':'idle'; }
-function buildChips(){
-  const box=$('#chips'); box.innerHTML='';
+function buildChips(){ // label nama di meja dihapus (nama tampil di tooltip, kartu detail & balon)
+  const box=$('#chips'); box.innerHTML=''; return;
   for(const d of DESKS){ const a=agentAtDesk.get(d.n), el=document.createElement('div');
     el.style.left=(d.x1-8)+'px'; el.style.top=(d.top+(d.bot-d.top)*0.62)+'px'; el.style.setProperty('--c',d.c);
     if(a){ const k=agentKey(a), s=stateOf(a); el.className='chip st-'+s; el.dataset.k=k; el.title=`${a.name} — ${a.role||d.div}`;
@@ -1235,23 +1323,23 @@ function buildOverlays(){
 }
 function setBubble(st,idx){
   const a=agentByKey.get(st.k); if(!a) return; const tasks=a.tasks||[]; if(!tasks.length){ st.text=''; return; }
-  st.idx=idx%tasks.length; const tk=tasks[st.idx], s=ST(tk.status);
+  st.idx=idx%tasks.length; const tk=tasks[st.idx], s=tk._stale?'idle':ST(tk.status);
   st.bin.className='bin st-'+s+(st.vis?' pop':''); st.cele=false;
-  st.bin.querySelector('.b-label').textContent=tk.label||DEFAULT_LABEL[s];
+  st.bin.querySelector('.b-label').textContent=tk._stale?'Santai':(tk.label||DEFAULT_LABEL[s]);
   st.bin.querySelector('.b-who').textContent=shortName(a.name)+(tasks.length>1?` ${st.idx+1}/${tasks.length}`:'');
   st.bin.querySelector('.ghost').textContent=tk.text; st.text=tk.text; st.typed=0;
   st.bin.querySelector('.tw').textContent='';
   setStepEl(st);
 }
 function setStepEl(st){
-  const a=agentByKey.get(st.k), tk=a&&(a.tasks||[])[st.idx], v=st.cele?'':liveStep(tk), el=st.bin.querySelector('.b-step');
-  if(el.dataset.s===v) return; const had=el.dataset.s!=null; el.dataset.s=v; el.textContent=v?'↳ '+v:''; el.hidden=!v;
+  const a=agentByKey.get(st.k), tk=a&&(a.tasks||[])[st.idx], sl=!st.cele&&tk&&tk._stale, v=st.cele?'':(sl?'⏸ '+tk._stale:liveStep(tk)), el=st.bin.querySelector('.b-step');
+  if(el.dataset.s===v) return; const had=el.dataset.s!=null; el.dataset.s=v; el.textContent=v?(sl?v:'↳ '+v):''; el.hidden=!v; el.classList.toggle('stale',!!sl);
   if(v && had){ el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
 }
 function refreshSteps(changed){
   for(const st of BUB.values()){
     const a=agentByKey.get(st.k); if(!a) continue;
-    if(changed && changed.has(st.k) && !st.cele){ const wi=(a.tasks||[]).findIndex(t=>ST(t.status)==='work'); if(wi>=0 && wi!==st.idx){ setBubble(st,wi); st.next=performance.now()+9000; continue; } }
+    if(changed && changed.has(st.k) && !st.cele){ const wi=(a.tasks||[]).findIndex(t=>ST(t.status)==='work' && !t._stale); if(wi>=0 && wi!==st.idx){ setBubble(st,wi); st.next=performance.now()+9000; continue; } }
     setStepEl(st);
   }
 }
@@ -1437,19 +1525,19 @@ function drawScreens(t){
 }
 
 /* ---------------- panel + ticker + roster rekam ---------------- */
-function primaryTask(a){ return workTask(a)||nextTask(a)||(a.tasks||[]).find(t=>ST(t.status)==='sched')||doneTask(a)||null; }
+function primaryTask(a){ return workTask(a)||staleTask(a)||nextTask(a)||(a.tasks||[]).find(t=>ST(t.status)==='sched')||doneTask(a)||null; }
 function buildPanel(){
   const cards=$('#cards'); cards.innerHTML='';
   let working=0;
   const ordered=[...currentAgents].sort((p,q)=>((deskOfKey.get(agentKey(p))||{n:99}).n)-((deskOfKey.get(agentKey(q))||{n:99}).n));
   ordered.forEach(a=>{ const tasks=a.tasks||[], k=agentKey(a), d=deskOfKey.get(k), c=colorOf(a), s=stateOf(a);
     if(isWorking(a)) working++;
-    const pt=primaryTask(a), ps=pt?ST(pt.status):'idle', rest=tasks.length-(pt?1:0);
+    const pt=primaryTask(a), ps=pt?(pt._stale?'idle':ST(pt.status)):'idle', rest=tasks.length-(pt?1:0);
     const el=document.createElement('div'); el.className='card'; el.style.setProperty('--acc',c); el.dataset.k=k;
     el.tabIndex=0; el.setAttribute('role','button'); el.setAttribute('aria-label','Detail '+(a.name||k));
     el.innerHTML=`<span class="c-more">DETAIL &rsaquo;</span><div class="c-head"><canvas class="ava" width="104" height="96" data-k="${esc(k)}"></canvas>
-      <div class="c-name"><b>${esc(a.name)}</b><div class="c-sub"><span>${d?`<span class="desk-no">${String(d.n).padStart(2,'0')}</span> · `:''}${esc(a.role||'Asisten AI')}</span><span class="pill st-${s==='idle'?'idle':s==='done'?'sched':s}"><i></i>${s==='work'?'Sedang kerja':s==='idle'?'Siaga':'Santai'}</span></div></div></div>
-      <ul class="c-tasks">${pt?`<li class="st-${ps}"><span class="sq"></span><div><small>${esc(pt.label||DEFAULT_LABEL[ps])} &middot; ${esc(pt.status)}</small><p>${esc(pt.text)}</p>${liveStep(pt)?`<p class="c-step">&#8627; ${esc(liveStep(pt))}</p>`:''}</div></li>`:'<li class="st-idle"><span class="sq"></span><div><p>Belum ada tugas.</p></div></li>'}
+      <div class="c-name"><b>${esc(a.name)}</b><div class="c-sub"><span>${d?`<span class="desk-no">${String(d.n).padStart(2,'0')}</span> · `:''}${esc(a.role||'Asisten AI')}</span><span class="pill st-${s==='idle'?'idle':s==='done'?'sched':s}"><i></i>${s==='work'?'Sedang kerja':s==='idle'&&!staleTask(a)?'Siaga':'Santai'}</span></div></div></div>
+      <ul class="c-tasks">${pt?`<li class="st-${ps}"><span class="sq"></span><div><small>${pt._stale?'Santai &middot; status belum ditutup':`${esc(pt.label||DEFAULT_LABEL[ps])} &middot; ${esc(pt.status)}`}</small><p>${esc(pt.text)}</p>${pt._stale?`<p class="c-step stale">&#9208; ${esc(pt._stale)}</p>`:''}${liveStep(pt)?`<p class="c-step">&#8627; ${esc(liveStep(pt))}</p>`:''}</div></li>`:'<li class="st-idle"><span class="sq"></span><div><p>Belum ada tugas.</p></div></li>'}
       ${rest>0?`<li class="more">+${rest} tugas lain &middot; klik untuk detail</li>`:''}</ul>`;
     el.addEventListener('click',()=>openModal(k));
     el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openModal(k); } });
@@ -1458,6 +1546,8 @@ function buildPanel(){
   for(const d of DESKS) if(!agentAtDesk.has(d.n)){ const el=document.createElement('div'); el.className='card empty'; el.style.setProperty('--acc',d.c);
     el.innerHTML=`<div class="c-name"><b>${String(d.n).padStart(2,'0')} · ${esc(d.div)}</b><div class="c-sub"><span>Segera hadir</span></div></div>`; cards.appendChild(el); }
   $('#count').textContent=`${currentAgents.length} AGENT · ${working} AKTIF`;
+  const ptt=$('#ptabTxt'); if(ptt) ptt.innerHTML=`PAPAN TUGAS · <b>${working}</b> aktif`;
+  const ptb=$('#ptab'); if(ptb) ptb.setAttribute('aria-label',`Papan tugas, ${working} agent aktif`);
   const items=[];
   const LOG=logList().slice(0,20);
   if(LOG.length){ LOG.forEach(e=>{ const s=ST(e.status); const dd=new Date(e.t); const tm=isNaN(dd)?'':hm(dd)+' '; const a=currentAgents.find(x=>x.name===e.agent||x.id===e.agent);
@@ -1474,8 +1564,8 @@ function buildRoster(){
     if(!a) return `<div class="rk-c" style="--acc:${d.c};opacity:.45"><div class="t"><div style="min-width:0"><b>${String(d.n).padStart(2,'0')} ${esc(d.div)}</b><span>Segera hadir</span></div></div><p></p></div>`;
     const k=agentKey(a), s=stateOf(a), pt=primaryTask(a), stp=pt&&liveStep(pt);
     return `<div class="rk-c st-${s}${s==='work'?' on':''}" style="--acc:${d.c}" data-k="${esc(k)}"><div class="t"><canvas class="rk-ava" width="104" height="96" data-k="${esc(k)}"></canvas>
-      <div style="min-width:0"><b>${esc(shortName(a.name))}</b><span><i></i>${esc(s==='work'?'Kerja':s==='idle'?'Siaga':'Santai')} · ${String(d.n).padStart(2,'0')}</span></div></div>
-      <p>${esc(stp?'↳ '+stp:(pt?pt.text:'Belum ada tugas'))}</p></div>`; }).join('');
+      <div style="min-width:0"><b>${esc(shortName(a.name))}</b><span><i></i>${esc(s==='work'?'Kerja':s==='idle'&&!staleTask(a)?'Siaga':'Santai')} · ${String(d.n).padStart(2,'0')}</span></div></div>
+      <p>${esc(stp?'↳ '+stp:(pt?(pt._stale?pt.text+' · '+pt._stale:pt.text):'Belum ada tugas'))}</p></div>`; }).join('');
 }
 $('#rkroster').addEventListener('click',e=>{ const c=e.target.closest('[data-k]'); if(c) openModal(c.dataset.k); });
 let rkIdx=0;
@@ -1495,9 +1585,9 @@ function fmtWhen(iso){ const d=new Date(iso); if(isNaN(d)) return ''; const toda
 function renderModal(){
   const a=agentByKey.get(modalKey); if(!a){ closeModal(); return; }
   const tasks=a.tasks||[], d=deskOfKey.get(modalKey);
-  const w=tasks.filter(t=>ST(t.status)==='work'), nx=tasks.filter(t=>ST(t.status)==='sched' && (t.label||'Berikutnya')!=='Rutin');
+  const w=tasks.filter(t=>ST(t.status)==='work' && !t._stale), sl=tasks.filter(t=>ST(t.status)==='work' && t._stale), nx=tasks.filter(t=>ST(t.status)==='sched' && (t.label||'Berikutnya')!=='Rutin');
   const ru=tasks.filter(t=>(t.label||'')==='Rutin'), dn=tasks.filter(t=>ST(t.status)==='done');
-  const stp=t=>{ const v=liveStep(t); if(!v) return ''; const dd=new Date(t.step_at||''); return `<p class="m-step">&#8627; ${esc(v)}${isNaN(dd)?'':`<small>${esc(hms(dd))} WIB</small>`}</p>`; };
+  const stp=t=>{ if(t._stale) return `<p class="m-step stale">&#9208; ${esc(t._stale)} — dianggap santai (status belum ditutup)</p>`; const v=liveStep(t); if(!v) return ''; const dd=new Date(t.step_at||''); return `<p class="m-step">&#8627; ${esc(v)}${isNaN(dd)?'':`<small>${esc(hms(dd))} WIB</small>`}</p>`; };
   const sec=(title,cls,list,empty)=>`<section class="m-sec st-${cls}"><h3><i></i>${title}</h3>${list.length?list.map(t=>`<p>${esc(t.text)}</p>${stp(t)}`).join(''):`<p class="none">${empty}</p>`}</section>`;
   const hist=logList().filter(e=>e.agent===a.name||e.agent===a.id||e.agent_id===a.id).slice(0,8);
   const out=typeof a.last_output==='string' && a.last_output.trim();
@@ -1506,6 +1596,7 @@ function renderModal(){
     <div><h2 class="m-name" id="mname">${esc(a.name)}</h2><div class="m-role"><span>${d?`Meja ${String(d.n).padStart(2,'0')} · `:''}${esc(a.role||'Asisten AI')}</span>
     <span class="pill st-${w.length?'work':'sched'}"><i></i>${w.length?'Sedang kerja':'Santai'}</span></div></div></div>
     ${sec('Sekarang','work',w,'Tidak ada tugas aktif — sedang santai (ngopi, pantry, sofa, atau perpustakaan).')}
+    ${sl.length?sec('Tanpa update','idle',sl,''):''}
     ${sec('Berikutnya','sched',nx,'Belum ada.')}
     ${ru.length?sec('Rutin','sched',ru,''):''}
     ${sec('Baru selesai','done',dn,'Belum ada.')}
@@ -1518,7 +1609,40 @@ function openModal(k){ if(!agentByKey.has(k)) return; if(!modalKey) modalReturn=
 function closeModal(){ if(!modalKey && $('#modal').hidden) return; modalKey=null; $('#modal').hidden=true; if(modalReturn && modalReturn.focus) try{ modalReturn.focus({preventScroll:true}); }catch(e){} }
 $('#mx').addEventListener('click',closeModal);
 $('#modal').addEventListener('click',e=>{ if(e.target===$('#modal')) closeModal(); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(modalKey) closeModal(); else if(REKAM) setRekam(false); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(modalKey) closeModal(); else if(pOpen && !pPinned) setPanel(false); else if(REKAM) setRekam(false); } });
+/* ---------- Papan tugas: tersembunyi default, tab neon di tepi kanan, auto-hide, pin ---------- */
+const PANEL=$('#panel'), PTAB=$('#ptab'), PIN=$('#pPin');
+const FINE=matchMedia('(hover:hover) and (pointer:fine)');
+let pOpen=false, pPinned=false, pHover=false, pTimer=0;
+try{ pPinned=localStorage.getItem('kv_panel_pin')==='1'; }catch(e){}
+function armHide(ms){ clearTimeout(pTimer); if(pPinned || !pOpen) return;
+  pTimer=setTimeout(()=>{ if(pPinned) return; const ae=document.activeElement, kb=ae && PANEL.contains(ae) && ae.matches(':focus-visible');
+    if(pHover || kb) armHide(); else setPanel(false); }, ms||7000); }
+function setPanel(open){ pOpen=!!open || pPinned;
+  PANEL.classList.toggle('open',pOpen); document.body.classList.toggle('pnl-open',pOpen);
+  PANEL.inert=!pOpen; PTAB.setAttribute('aria-expanded',String(pOpen));
+  if(!pOpen){ clearTimeout(pTimer); if(PANEL.contains(document.activeElement)) PTAB.focus({preventScroll:true}); } else armHide(); }
+function setPin(v){ pPinned=!!v; try{ localStorage.setItem('kv_panel_pin',pPinned?'1':'0'); }catch(e){}
+  document.body.classList.toggle('ppin',pPinned); PIN.setAttribute('aria-pressed',String(pPinned));
+  PIN.title=pPinned?'Lepas sematan (papan bisa sembunyi otomatis)':'Sematkan papan tugas (tetap terbuka)';
+  setPanel(pPinned||pOpen); if(!pPinned) armHide(); requestAnimationFrame(()=>measure()); }
+let hoverT=0; // sedikit jeda supaya sapuan kursor tak sengaja tidak langsung membuka
+PTAB.addEventListener('mouseenter',()=>{ if(FINE.matches){ clearTimeout(hoverT); hoverT=setTimeout(()=>setPanel(true),140); } });
+PTAB.addEventListener('mouseleave',()=>clearTimeout(hoverT));
+PTAB.addEventListener('click',()=>setPanel(!pOpen));
+PIN.addEventListener('click',()=>setPin(!pPinned));
+$('#pClose').addEventListener('click',()=>{ if(pPinned) setPin(false); setPanel(false); });
+PANEL.addEventListener('mouseenter',()=>{ pHover=true; clearTimeout(pTimer); });
+PANEL.addEventListener('mouseleave',()=>{ pHover=false; if(FINE.matches && !pPinned) armHide(650); });
+['pointerdown','wheel','keydown','touchstart','scroll'].forEach(ev=>PANEL.addEventListener(ev,()=>{ if(!pHover) armHide(); },{passive:true,capture:true}));
+document.addEventListener('pointerdown',e=>{ if(!pOpen || pPinned) return; const t=e.target;
+  if(PANEL.contains(t) || PTAB.contains(t) || t.closest('.modal,#chatDock,#chatDrawer,#ctxMenu')) return; setPanel(false); });
+document.addEventListener('keydown',e=>{ if((e.key!=='t' && e.key!=='T') || e.ctrlKey || e.metaKey || e.altKey || e.repeat || REKAM) return;
+  const t=e.target; if(t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+  if(modalKey || document.querySelector('.modal:not([hidden])')) return;
+  e.preventDefault(); setPanel(!pOpen); });
+document.addEventListener('click',e=>{ if(!pPinned && pOpen && e.target.closest && e.target.closest('[data-chat]')) setPanel(false); }); // mulai ngobrol → papan minggir
+document.body.classList.toggle('ppin',pPinned); PIN.setAttribute('aria-pressed',String(pPinned)); setPanel(pPinned);
 
 /* =====================================================================
    KLIK agent / meja → menu mini "Ngobrol" / "Lihat detail"
@@ -1555,7 +1679,21 @@ function hideCtx(){ if(ctxEl.hidden) return; ctxEl.hidden=true; ctxKey=null; }
 ctxEl.addEventListener('click',e=>{ const b=e.target.closest('[data-act]'); if(!b) return; const k=ctxKey; hideCtx();
   if(b.dataset.act==='detail') openModal(k); else if(window.KVChat) window.KVChat.start(k); else openModal(k); });
 cv.addEventListener('click',ev=>{ const h=hitAt(ev); if(h && h.k) showCtx(h.k,ev); else hideCtx(); });
-cv.addEventListener('pointermove',ev=>{ if(ev.pointerType!=='mouse') return; const h=hitAt(ev); cv.style.cursor=h&&h.k?'pointer':''; });
+const tipEl=$('#hoverTip'); let tipKey='';
+function hideTip(){ if(!tipEl.hidden){ tipEl.hidden=true; tipKey=''; } }
+cv.addEventListener('pointermove',ev=>{ if(ev.pointerType!=='mouse') return; const h=hitAt(ev); cv.style.cursor=h&&h.k?'pointer':'';
+  if(!h || !ctxEl.hidden){ hideTip(); return; }
+  let key, name, sub, col;
+  if(h.k){ const a=agentByKey.get(h.k); if(!a){ hideTip(); return; } const d=deskOfKey.get(h.k), s=stateOf(a);
+    key='a:'+h.k; name=a.name; col=colorOf(a);
+    sub=(d?`Meja ${String(d.n).padStart(2,'0')} · `:'')+(a.role||'Asisten AI')+' · '+(s==='work'?'Sedang kerja':s==='idle'&&!staleTask(a)?'Siaga':'Santai'); }
+  else if(h.staff){ key='s:'+h.staff.id; name=h.staff.name||'Staf'; sub=h.staff.own?'Kamu (staf)':'Staf Vertex8'; col='#3df5ff'; }
+  else { hideTip(); return; }
+  if(key!==tipKey){ tipKey=key; tipEl.innerHTML=`<b>${esc(name)}</b><small>${esc(sub)}</small>`; tipEl.style.setProperty('--c',col); }
+  const r=$('#scene').getBoundingClientRect(); let x=ev.clientX-r.left, y=ev.clientY-r.top;
+  tipEl.hidden=false; const tw=tipEl.offsetWidth; if(x+12+tw>r.width-4) x=r.width-16-tw;
+  tipEl.style.left=x+'px'; tipEl.style.top=Math.max(y,tipEl.offsetHeight+6)+'px'; });
+cv.addEventListener('pointerleave',hideTip); cv.addEventListener('pointerdown',hideTip);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') hideCtx(); },true);
 document.addEventListener('pointerdown',e=>{ if(!ctxEl.hidden && !ctxEl.contains(e.target) && e.target!==cv && !e.target.closest('.chip')) hideCtx(); });
 /* =====================================================================
@@ -1728,15 +1866,17 @@ const noSteps = d => { const c=clone(d); delete c.updated_at; delete c.updated;
 function applyData(j,opts){
   if(opts.diff && DATA && noSteps(j)===noSteps(DATA)){ // hanya langkah (↳) / waktu yang berubah
     const prevSteps=new Map(currentAgents.map(a=>[agentKey(a), JSON.stringify((a.tasks||[]).map(t=>t.step||''))]));
-    DATA=j; currentAgents=(DATA.agents||[]).filter(a=>a&&a.name).slice(0,12);
+    const prevStale=staleSig();
+    DATA=j; markStale(DATA); currentAgents=(DATA.agents||[]).filter(a=>a&&a.name).slice(0,12);
     agentByKey=new Map(currentAgents.map(a=>[agentKey(a),a])); assignDesks();
+    if(staleSig()!==prevStale){ const nw=performance.now()/1000; for(const b of bots.values()) reconsider(b,nw); for(const st of BUB.values()) if(!st.cele) setBubble(st,st.idx); }
     const changed=new Set(currentAgents.filter(a=>prevSteps.get(agentKey(a))!==JSON.stringify((a.tasks||[]).map(t=>t.step||''))).map(agentKey));
     buildPanel(); refreshSteps(changed); buildScreen();
     for(const el of document.querySelectorAll('#cards .card')) if(changed.has(el.dataset.k)){ const s=el.querySelector('.c-step'); if(s) s.classList.add('pop'); }
     if(modalKey){ renderModal(); if(changed.has(modalKey)){ const s=$('#mbody .m-step'); if(s) s.classList.add('pop'); } }
     return;
   }
-  DATA=j;
+  DATA=j; markStale(DATA);
   currentAgents=(DATA.agents||[]).filter(a=>a&&a.name).slice(0,12);
   agentByKey=new Map(currentAgents.map(a=>[agentKey(a),a]));
   const prevDesk=new Map([...deskOfKey].map(([k,d])=>[k,d.n]));
@@ -1758,6 +1898,11 @@ function applyData(j,opts){
   if(REKAM) rkLogTick();
 }
 setInterval(()=>{ buildScreen(); },30000);
+setInterval(()=>{ // evaluasi ulang status basi tiap menit (tanpa mengubah data)
+  if(!DATA || !markStale(DATA)) return; const now=performance.now()/1000;
+  for(const b of bots.values()) reconsider(b,now);
+  buildPanel(); for(const st of BUB.values()) if(!st.cele) setBubble(st,st.idx); buildScreen(); if(modalKey) renderModal();
+},60000);
 new ResizeObserver(()=>measure()).observe($('#scene'));
 addEventListener('resize',()=>measure());
 

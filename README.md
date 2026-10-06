@@ -37,10 +37,23 @@ Kantor virtual **2 lantai** bergaya **neon cyberpunk** (v5) yang menampilkan sta
   `prefers-reduced-motion` dihormati (efek berat dimatikan).
 - Kamera: desktop menampilkan seluruh kantor dan zoom halus ke percakapan; HP mengikuti avatar staf (atau tur
   otomatis antar lantai); mode rekam menyapu kedua lantai dan fokus ke perayaan / percakapan (hanya "…").
-- Meja: field `desk` (1–9) per agent. Agent tanpa `desk` mengisi meja kosong pertama. Meja tanpa agent tampil
-  redup dengan label "Segera hadir".
+- Meja: field `desk` (1–9) per agent. Agent tanpa `desk` mengisi meja kosong pertama. Tidak ada lagi label nama
+  di atas meja (adegan lebih bersih); label divisi yang tercetak di gambar (mis. "01 BUILDER") tetap. Nama agent
+  muncul di **tooltip** saat kursor di atas agent/meja, di kartu detail, dan di gelembung.
 - Klik agent / meja → menu mini **Ngobrol** / **Lihat detail** (detail: tugas sekarang, berikutnya, rutin, hasil
   terakhir, riwayat). Klik kartu di Papan Tugas → detail.
+- **Papan Tugas sembunyi otomatis:** kantor memenuhi lebar layar (skala sesuai, potongan tepi maks ±14% supaya
+  tidak ada bingkai hitam besar; sisa tepi diisi latar buram). Tab neon tipis di tepi kanan
+  (**PAPAN TUGAS · n aktif**) membuka panel sebagai lapisan: arahkan kursor / klik (desktop) atau ketuk (HP).
+  Panel menutup sendiri saat kursor keluar, setelah ±7 detik tanpa aktivitas, ketuk di luar, atau `Esc`.
+  Tombol **pin** menahan panel tetap terbuka (diingat di `localStorage`, kunci `kv_panel_pin`; di layar lebar
+  kantor bergeser memberi ruang). Pintasan keyboard **T** = buka/tutup. Strip LOG dan footer dibuat lebih tipis.
+- **Jaring pengaman status basi:** bila agent masih berstatus *kerja* tetapi tidak ada update (status maupun
+  `--step`) lebih dari **45 menit**, halaman menampilkannya sebagai **Santai** dengan catatan kecil
+  "tidak ada update sejak HH.MM" (kartu, gelembung, detail, mode rekam); robotnya ikut santai dan tidak dihitung
+  "aktif". Waktu update terakhir diambil dari `step_at` tugas dan entri log terbaru agent itu. Dievaluasi ulang
+  tiap menit; **data di Supabase/`status.json` tidak diubah** — begitu agent mengirim status atau langkah baru,
+  tampilan kembali "Sedang kerja". Tutup tugas dengan `--state done` / `scheduled` agar tidak tergantung ini.
 - Tombol **Mode Rekam** / `?rekam=1` → tampilan vertikal 9:16 bersih (judul + jam WIB live), tombol **Musik**
   (lo-fi WebAudio, tanpa file), tombol hilang sendiri setelah 3 detik mouse diam, plus daftar 9 meja di bawahnya.
 
