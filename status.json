@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T15:30:27+07:00",
+  "updated_at": "2026-10-06T20:52:35+07:00",
   "log": [
     {
+      "t": "2026-10-06T20:52:35+07:00",
+      "agent": "Mr. Wakidi",
+      "status": "Sedang kerja",
+      "text": "Revamp v6: chat semua agent, ruang meeting, riwayat kerja"
+    },
+    {
       "t": "2026-10-06T15:30:27+07:00",
+      "text": "Tes status kantor virtual",
       "agent": "Mr. Wisnu",
-      "status": "Selesai",
-      "text": "Tes status kantor virtual"
+      "status": "Selesai"
     },
     {
       "t": "2026-10-06T15:30:25+07:00",
@@ -115,12 +121,6 @@
       "text": "Siapkan daftar pengingat perpanjangan membership",
       "agent": "Mr. Widodo",
       "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T15:25:24+07:00",
-      "text": "Cek member yang segera habis untuk pengingat perpanjangan",
-      "agent": "Mr. Widodo",
-      "status": "Sedang kerja"
     }
   ],
   "agents": [
@@ -130,6 +130,11 @@
       "name": "Mr. Wakidi",
       "role": "Builder",
       "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Revamp v6: chat semua agent, ruang meeting, riwayat kerja"
+        },
         {
           "text": "Nama karakter & blokir HP selesai",
           "label": "Baru selesai",
@@ -265,9 +270,9 @@
           "status": "Terjadwal"
         },
         {
-          "status": "Selesai",
+          "text": "Tes status kantor virtual",
           "label": "Baru selesai",
-          "text": "Tes status kantor virtual"
+          "status": "Selesai"
         }
       ]
     },
