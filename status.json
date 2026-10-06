@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T15:29:56+07:00",
+  "updated_at": "2026-10-06T15:30:00+07:00",
   "log": [
     {
-      "t": "2026-10-06T15:29:56+07:00",
-      "agent": "Mr. Wahyudi",
+      "t": "2026-10-06T15:30:00+07:00",
+      "agent": "Mr. Wibowo",
       "status": "Sedang kerja",
       "text": "Tes status kantor virtual"
+    },
+    {
+      "t": "2026-10-06T15:29:56+07:00",
+      "text": "Tes status kantor virtual",
+      "agent": "Mr. Wahyudi",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T15:29:53+07:00",
@@ -115,12 +121,6 @@
       "text": "Kantor virtual v5: 2 lantai, karakter semi-3D, ngobrol ala The Sims",
       "agent": "Mr. Wakidi",
       "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T14:01:53+07:00",
-      "text": "Membalas chat staf",
-      "agent": "Mr. Wawan",
-      "status": "Selesai"
     }
   ],
   "agents": [
@@ -145,9 +145,11 @@
       "role": "Ops & Data",
       "tasks": [
         {
+          "step": "Cek koneksi status",
           "text": "Tes status kantor virtual",
           "label": "Sekarang",
-          "status": "Sedang kerja"
+          "status": "Sedang kerja",
+          "step_at": "2026-10-06T15:29:58+07:00"
         },
         {
           "text": "Laporan harian besok pagi",
@@ -174,9 +176,9 @@
       "role": "Marketing",
       "tasks": [
         {
-          "status": "Sedang kerja",
+          "text": "Tes status kantor virtual",
           "label": "Sekarang",
-          "text": "Tes status kantor virtual"
+          "status": "Sedang kerja"
         },
         {
           "text": "Draf hook, skrip Reels, dan caption",
@@ -236,6 +238,11 @@
       "role": "Finance",
       "tasks": [
         {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Tes status kantor virtual"
+        },
+        {
           "text": "Menunggu tugas pertama",
           "label": "Berikutnya",
           "status": "Terjadwal"
@@ -249,9 +256,11 @@
       "role": "Content & Creative",
       "tasks": [
         {
+          "step": "Cek koneksi status",
           "text": "Tes status kantor virtual",
           "label": "Sekarang",
-          "status": "Sedang kerja"
+          "status": "Sedang kerja",
+          "step_at": "2026-10-06T15:29:58+07:00"
         },
         {
           "text": "Menunggu chat staf",
