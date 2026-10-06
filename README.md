@@ -1,13 +1,25 @@
 # Kantor Virtual Vertex8
 
-Kantor virtual **2 lantai** bergaya **neon cyberpunk** (v5) yang menampilkan status 9 agent Vertex8 di 9 meja divisi:
+Kantor virtual **2 lantai** bergaya **neon cyberpunk** (v6) yang menampilkan status 9 agent Vertex8 di 9 meja divisi:
 01 Builder (Mr. Wakidi), 02 Ops & Data (Mr. Wiyadi), 03 Marketing (Mr. Wahyudi), 04 Member Success (Mr. Widodo),
 05 Performance (Mr. Winarto), 06 Finance (Mr. Wibowo), 07 Content & Creative (Mr. Wawan), 08 HR & People (Mr. Wisnu),
 09 Engineering & Facility (Mr. Warsito).
 
 - **Live:** https://achphoria.github.io/vertex8-virtual-office/
 - **Mode rekam (9:16):** https://achphoria.github.io/vertex8-virtual-office/?rekam=1
-- **Demo (status berganti otomatis):** https://achphoria.github.io/vertex8-virtual-office/?demo=1 (bisa digabung: `?demo=1&rekam=1`, `?demo=1&bots=6`)
+- **Demo (status berganti otomatis):** https://achphoria.github.io/vertex8-virtual-office/?demo=1 (bisa digabung: `?demo=1&rekam=1`, `?demo=1&bots=6`;
+  demo juga memutar skenario **rapat** di Ruang Meeting, `&meet=hold` menahannya)
+
+## Baru di v6
+
+- **Ngobrol dengan semua agent** (kecuali Mr. Wakidi, "Segera"): pilih agent dari karakter, meja, atau tombol
+  **Ngobrol** (daftar agent dengan status **Siap** / **🔌 Belum tersambung**). Riwayat per agent di laci samping.
+- **Ruang Meeting:** bila 2+ agent berkolaborasi (`--with` / `--meeting`), mereka berjalan ke Ruang Meeting
+  (lantai 2 kanan), duduk/berdiri mengelilingi meja, bergantian bergelembung + topik rapat, lencana **MEETING · n**
+  dan cahaya neon; setelah selesai kembali ke meja. Berlaku juga di mode rekam.
+- **Riwayat kerja:** klik agent → kartu detail berisi status sekarang, tugas selesai hari ini, tugas selesai minggu
+  ini + grafik batang per hari (Sen–Min, WIB), dan terakhir aktif. Papan Tugas menampilkan **Top agent minggu ini**.
+  Tanpa angka bisnis.
 
 ## Cara kerja
 
@@ -40,8 +52,11 @@ Kantor virtual **2 lantai** bergaya **neon cyberpunk** (v5) yang menampilkan sta
 - Meja: field `desk` (1–9) per agent. Agent tanpa `desk` mengisi meja kosong pertama. Tidak ada lagi label nama
   di atas meja (adegan lebih bersih); label divisi yang tercetak di gambar (mis. "01 BUILDER") tetap. Nama agent
   muncul di **tooltip** saat kursor di atas agent/meja, di kartu detail, dan di gelembung.
-- Klik agent / meja → menu mini **Ngobrol** / **Lihat detail** (detail: tugas sekarang, berikutnya, rutin, hasil
-  terakhir, riwayat). Klik kartu di Papan Tugas → detail.
+- Klik agent / meja → menu mini **Ngobrol** / **Lihat detail** (detail: tugas sekarang, rapat, riwayat kerja
+  hari ini/minggu ini + grafik, terakhir aktif, berikutnya, rutin, hasil terakhir). Klik kartu di Papan Tugas → detail.
+- **Riwayat kerja (`kv_activity_log`):** tabel append-only yang diisi otomatis oleh trigger di `kv_office_state`
+  (setiap entri log baru + langkah baru). RLS: publik hanya bisa **membaca 30 hari terakhir**, tidak ada insert/ubah
+  dari web; baris >90 hari dipangkas otomatis. SQL: `supabase/kv_v6_activity_log.sql`.
 - **Papan Tugas sembunyi otomatis:** kantor memenuhi lebar layar (skala sesuai, potongan tepi maks ±14% supaya
   tidak ada bingkai hitam besar; sisa tepi diisi latar buram). Tab neon tipis di tepi kanan
   (**PAPAN TUGAS · n aktif**) membuka panel sebagai lapisan: arahkan kursor / klik (desktop) atau ketuk (HP).
@@ -80,6 +95,20 @@ kartu, dan detail agen pada tugas "Sekarang". Butuh agen yang sedang kerja; `--s
 "Sekarang" sehingga langkah lama otomatis hilang, dan langkah yang tidak diperbarui 30 menit disembunyikan.
 Opsi uji: `--no-push` (commit lokal saja, tanpa Supabase), `--no-supabase` (GitHub saja).
 
+### Kolaborasi / rapat (Ruang Meeting)
+
+```bash
+python3 update-status.py --agent analyst --state working --task "Susun rencana promo" --with marketing,content
+python3 update-status.py --agent analyst --meeting "Rencana promo bulan depan" [--with marketing]
+python3 update-status.py --agent analyst --end-meeting          # selesai rapat, kembali ke meja
+```
+
+`--with` = id/nama agen dipisah koma (maks 8; diri sendiri diabaikan; nama tak dikenal ditolak). Rekan yang sedang
+tidak kerja tetap dipanggil ke ruang meeting. `--meeting` = topik singkat (maks 80 karakter, aturan teks sama:
+tanpa Rp / angka member / no. HP). Keduanya butuh agen yang sedang kerja (atau `--state working` di perintah yang
+sama). Dua agen kerja dengan topik `--meeting` yang sama juga dianggap satu rapat. Disimpan di tugas "Sekarang"
+(`with`, `meeting`) di Supabase + `status.json`; `--state` baru atau `--end-meeting` mengakhiri rapat.
+
 Token penulis Supabase dibaca dari `~/.config/vertex8-office/writer_token` (atau env `KV_WRITER_TOKEN`) dan
 **tidak pernah** disimpan di repo ini. Kunci Supabase di `index.html`/skrip adalah kunci *publishable* (hanya baca).
 
@@ -94,8 +123,10 @@ Tombol **Masuk** (email + sandi, Supabase Auth). Setelah masuk, staf terdaftar m
 di bawah: kolom pesan + **Kirim**, **Riwayat** (laci samping), **Selesai ngobrol** (avatar kembali ke lounge).
 Pesan tampil sebagai gelembung di atas kepala; selama menunggu, agent memunculkan hologram "mikir" dan dock menulis
 *sedang membaca… / sedang mengetik…*; balasan muncul dengan efek mesin ketik (balasan panjang: **Baca selengkapnya**).
-Saat ini hanya **Mr. Wawan — Content & Creative** yang bisa diajak ngobrol; agent lain menjawab
-"Segera bisa diajak ngobrol". Tautan langsung: `#ngobrol`. Isi chat **tidak pernah** dimuat sebelum login dan
+Semua agent bisa diajak ngobrol kecuali **Mr. Wakidi** (Builder, "Segera"). Tombol **Ngobrol** di header membuka
+daftar agent: **Siap** = webhook agent tersambung; **🔌 Belum tersambung** = pesan tetap tersimpan dan agent
+menjawab "Agent ini belum tersambung — pesanmu tersimpan dan akan dibalas setelah agent tersambung." Chip agent
+di dock & laci Riwayat untuk berpindah agent; titik merah = balasan belum dibaca. Tautan langsung: `#ngobrol`. Isi chat **tidak pernah** dimuat sebelum login dan
 hanya bisa dibaca pemiliknya (RLS).
 
 **Kehadiran (presence) untuk penonton lain:** tabel `kv_presence` (RLS) hanya berisi `pid` acak, nama tampilan
@@ -112,23 +143,24 @@ menjalankan `agent-chat.py` → balasan muncul langsung di browser lewat Realtim
 
 | Objek | Fungsi |
 |---|---|
-| `kv_staff` | allowlist staf: `email`, `display_name`, `allowed_agents[]`, `is_admin`, `active` (tanpa akses langsung dari web kecuali baris sendiri) |
-| `kv_chat_agents` | daftar agent + `enabled` (publik, hanya nama) |
+| `kv_staff` | allowlist staf: `email`, `display_name`, `allowed_agents[]` (`{*}` = semua agent, bawaan v6), `is_admin`, `active` (tanpa akses langsung dari web kecuali baris sendiri) |
+| `kv_chat_agents` | daftar agent + `enabled` (publik, hanya nama). v6: semua aktif kecuali `grok` |
 | `kv_chat_messages` | pesan; RLS: staf hanya baca utasnya sendiri & hanya insert pesan `staff` ke agent yang diizinkan; realtime aktif |
 | `kv_chat_me()` | profil staf yang login (dipakai halaman) |
 | `kv_presence` + `kv_presence_set / kv_presence_leave` | kehadiran avatar staf (publik: nama tampilan + keadaan saja) |
 | `kv_chat_pending / kv_chat_reply / kv_chat_error` | RPC agent, dijaga **token penulis** |
 | `kv_staff_admin` | RPC admin, dijaga **token admin** (`~/.config/vertex8-office/admin_token`, chmod 600) |
-| Edge Function `kv-chat-notify` | membangunkan agent; debounce 60 dtk; tanpa secret → pesan tetap menunggu |
+| Edge Function `kv-chat-notify` | membangunkan agent; debounce 60 dtk; tanpa secret → pesan tetap menunggu + catatan "belum tersambung". `GET` → `{agents:{id:true/false}}` (status tersambung, tanpa isi chat) |
+| `kv_activity_log` | riwayat kerja append-only (publik baca 30 hari, tulis hanya lewat trigger penulis) |
 
-SQL lengkap: `supabase/kv_chat.sql`; kode fungsi: `supabase/functions/kv-chat-notify/index.ts`.
+SQL lengkap: `supabase/kv_chat.sql` + `supabase/kv_v6_chat_all_agents.sql`; kode fungsi: `supabase/functions/kv-chat-notify/index.ts`.
 
 ### Menambah staf (pemilik)
 
 1. Supabase Dashboard → proyek *General Table* → **Authentication → Users → Add user → Create new user**: isi email +
    sandi sementara, centang **Auto Confirm User**. (Pendaftaran publik tidak dipakai; email tanpa allowlist tidak dapat apa-apa.)
-2. Di box: `python3 staff-admin.py add --email nama@contoh.com --name "Nama Staf"` (bawaan agent: `content`;
-   `--agents content,marketing`, `--admin` opsional).
+2. Di box: `python3 staff-admin.py add --email nama@contoh.com --name "Nama Staf"` (bawaan: **semua agent**;
+   batasi dengan `--agents content,marketing`, kembalikan dengan `--agents all`; `--admin` opsional).
 3. Kirim email + sandi ke staf; staf klik **Masuk** di situs.
 
 Lainnya: `staff-admin.py list | disable --email … | enable --email … | remove --email … | update --email … --agents …`
@@ -148,14 +180,16 @@ dan `staff-admin.py rotate-token`.
 
 ### Secret webhook (Dashboard → Edge Functions → Secrets)
 
-`WEBHOOK_URL_CONTENT` (wajib), `WEBHOOK_KEY_CONTENT` (kunci pengirim), opsional `WEBHOOK_AUTH_HEADER`
-(bawaan `Authorization`, nilai `Bearer <kunci>`; header lain → kunci mentah) dan `WEBHOOK_AUTH_PREFIX`.
-Versi per agent: tambahkan `_<AGENT>` (mis. `WEBHOOK_AUTH_HEADER_CONTENT`). Agent lain: `WEBHOOK_URL_<ID>` + aktifkan
-`enabled` di `kv_chat_agents`.
+Per agent: `WEBHOOK_URL_<AGENT>` (wajib agar agent dibangunkan) + `WEBHOOK_KEY_<AGENT>` (kunci pengirim), dengan
+`<AGENT>` = `ANALYST`, `MARKETING`, `MEMBER`, `PERFORMANCE`, `FINANCE`, `CONTENT`, `HR`, `ENGINEERING`.
+Wawan juga menerima nama lama `WEBHOOK_URL` / `WEBHOOK_KEY`. Opsional `WEBHOOK_AUTH_HEADER[_<AGENT>]`
+(bawaan `Authorization`, nilai `Bearer <kunci>`; header lain → kunci mentah) dan `WEBHOOK_AUTH_PREFIX[_<AGENT>]`.
+Prompt routine: satu template untuk semua agent (`--agent <id>`), lihat contoh di bagian *Sisi agent*.
 
 ### Sisi agent
 
 ```bash
+python3 agent-chat.py --agent <id> --pending                          # mis. analyst, marketing, content …
 python3 agent-chat.py --agent content --pending                       # JSON: id, sender, content, history
 python3 agent-chat.py --agent content --reply <id> --text "..."       # atau --text-file f.txt / --text - (stdin)
 python3 agent-chat.py --agent content --error <id> --note "alasan"
@@ -164,3 +198,7 @@ python3 agent-chat.py --agent content --error <id> --note "alasan"
 `--reply` menandai pesan itu (dan pesan pending lebih lama di utas yang sama) *dibalas*. Status kantor otomatis:
 langkah "Membalas chat staf" saat ada pesan, selesai bila tidak ada yang menunggu (`--no-status` untuk melewati).
 Isi chat tidak pernah masuk ke status publik.
+
+Routine tiap agent: bangun → `--pending` → balas tiap pesan dengan `--reply <id> --text-file` → `--error <id> --note`
+bila gagal. Hanya baca data, tidak pernah mengirim pesan keluar, dan tanpa angka bisnis (Rp, jumlah member,
+nomor telepon, nama member) di status maupun balasan.
