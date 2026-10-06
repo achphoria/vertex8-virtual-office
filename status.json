@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T15:30:00+07:00",
+  "updated_at": "2026-10-06T15:30:02+07:00",
   "log": [
     {
+      "t": "2026-10-06T15:30:02+07:00",
+      "agent": "Mr. Winarto",
+      "status": "Selesai",
+      "text": "Tes status kantor virtual selesai"
+    },
+    {
       "t": "2026-10-06T15:30:00+07:00",
+      "text": "Tes status kantor virtual",
       "agent": "Mr. Wibowo",
-      "status": "Sedang kerja",
-      "text": "Tes status kantor virtual"
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T15:29:56+07:00",
@@ -115,12 +121,6 @@
       "text": "Membalas chat staf",
       "agent": "Mr. Wawan",
       "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T14:06:06+07:00",
-      "text": "Kantor virtual v5: 2 lantai, karakter semi-3D, ngobrol ala The Sims",
-      "agent": "Mr. Wakidi",
-      "status": "Sedang kerja"
     }
   ],
   "agents": [
@@ -218,16 +218,14 @@
       "role": "Performance",
       "tasks": [
         {
-          "step": "Cek koneksi status",
-          "text": "Tes status kantor virtual",
-          "label": "Sekarang",
-          "status": "Sedang kerja",
-          "step_at": "2026-10-06T15:29:55+07:00"
-        },
-        {
           "text": "Menunggu tugas pertama",
           "label": "Berikutnya",
           "status": "Terjadwal"
+        },
+        {
+          "status": "Selesai",
+          "label": "Baru selesai",
+          "text": "Tes status kantor virtual selesai"
         }
       ]
     },
@@ -238,9 +236,9 @@
       "role": "Finance",
       "tasks": [
         {
-          "status": "Sedang kerja",
+          "text": "Tes status kantor virtual",
           "label": "Sekarang",
-          "text": "Tes status kantor virtual"
+          "status": "Sedang kerja"
         },
         {
           "text": "Menunggu tugas pertama",
