@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T21:24:50+07:00",
+  "updated_at": "2026-10-06T21:29:27+07:00",
   "log": [
     {
-      "t": "2026-10-06T21:24:50+07:00",
-      "agent": "Mr. Wisnu",
+      "t": "2026-10-06T21:29:27+07:00",
+      "agent": "Mr. Wibowo",
       "status": "Selesai",
       "text": "Routine chat staf siap"
+    },
+    {
+      "t": "2026-10-06T21:24:50+07:00",
+      "text": "Routine chat staf siap",
+      "agent": "Mr. Wisnu",
+      "status": "Selesai"
     },
     {
       "t": "2026-10-06T21:24:46+07:00",
@@ -115,12 +121,6 @@
       "text": "Tes status kantor virtual selesai",
       "agent": "Mr. Winarto",
       "status": "Selesai"
-    },
-    {
-      "t": "2026-10-06T15:30:00+07:00",
-      "text": "Tes status kantor virtual",
-      "agent": "Mr. Wibowo",
-      "status": "Sedang kerja"
     }
   ],
   "agents": [
@@ -224,19 +224,14 @@
       "role": "Finance",
       "tasks": [
         {
-          "text": "Siapkan routine chat staf",
-          "label": "Sekarang",
-          "status": "Sedang kerja"
-        },
-        {
           "text": "Menunggu tugas pertama",
           "label": "Berikutnya",
           "status": "Terjadwal"
         },
         {
-          "text": "Tes status kantor virtual selesai",
+          "status": "Selesai",
           "label": "Baru selesai",
-          "status": "Selesai"
+          "text": "Routine chat staf siap"
         }
       ]
     },
@@ -270,9 +265,9 @@
           "status": "Terjadwal"
         },
         {
-          "status": "Selesai",
+          "text": "Routine chat staf siap",
           "label": "Baru selesai",
-          "text": "Routine chat staf siap"
+          "status": "Selesai"
         }
       ]
     },
