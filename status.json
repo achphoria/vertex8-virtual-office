@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-06T15:25:37+07:00",
+  "updated_at": "2026-10-06T15:27:25+07:00",
   "log": [
     {
-      "t": "2026-10-06T15:25:37+07:00",
+      "t": "2026-10-06T15:27:25+07:00",
       "agent": "Mr. Widodo",
-      "status": "Sedang kerja",
-      "text": "Siapkan daftar pengingat perpanjangan membership"
+      "status": "Selesai",
+      "text": "Daftar pengingat perpanjangan membership siap"
+    },
+    {
+      "t": "2026-10-06T15:25:37+07:00",
+      "text": "Siapkan daftar pengingat perpanjangan membership",
+      "agent": "Mr. Widodo",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-06T15:25:24+07:00",
@@ -115,12 +121,6 @@
       "text": "Prototipe login staf dan chat agent di web",
       "agent": "Mr. Wakidi",
       "status": "Sedang kerja"
-    },
-    {
-      "t": "2026-10-06T13:33:18+07:00",
-      "text": "Menunggu chat staf pertama",
-      "agent": "Mr. Wawan",
-      "status": "Terjadwal"
     }
   ],
   "agents": [
@@ -188,16 +188,14 @@
       "role": "Member Success",
       "tasks": [
         {
-          "status": "Sedang kerja",
-          "label": "Sekarang",
-          "text": "Siapkan daftar pengingat perpanjangan membership",
-          "step": "lagi tarik data membership yang mau habis",
-          "step_at": "2026-10-06T15:25:37+07:00"
-        },
-        {
           "text": "Menunggu tugas pertama",
           "label": "Berikutnya",
           "status": "Terjadwal"
+        },
+        {
+          "status": "Selesai",
+          "label": "Baru selesai",
+          "text": "Daftar pengingat perpanjangan membership siap"
         }
       ]
     },
