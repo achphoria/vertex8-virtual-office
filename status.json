@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-07T09:11:54+07:00",
+  "updated_at": "2026-10-07T09:12:17+07:00",
   "log": [
     {
-      "t": "2026-10-07T09:11:54+07:00",
+      "t": "2026-10-07T09:12:17+07:00",
       "agent": "Mr. Wiyadi",
-      "status": "Sedang kerja",
+      "status": "Selesai",
       "text": "Membalas chat staf"
+    },
+    {
+      "t": "2026-10-07T09:11:54+07:00",
+      "text": "Membalas chat staf",
+      "agent": "Mr. Wiyadi",
+      "status": "Sedang kerja"
     },
     {
       "t": "2026-10-07T08:17:45+07:00",
@@ -115,12 +121,6 @@
       "text": "Menunggu chat staf",
       "agent": "Mr. Wawan",
       "status": "Terjadwal"
-    },
-    {
-      "t": "2026-10-06T15:30:17+07:00",
-      "text": "Tes status kantor virtual",
-      "agent": "Mr. Wahyudi",
-      "status": "Selesai"
     }
   ],
   "agents": [
@@ -145,21 +145,14 @@
       "role": "Ops & Data",
       "tasks": [
         {
-          "status": "Sedang kerja",
-          "label": "Sekarang",
-          "text": "Membalas chat staf",
-          "step": "Membalas chat staf",
-          "step_at": "2026-10-07T09:11:54+07:00"
-        },
-        {
           "text": "Laporan harian besok pagi",
           "label": "Berikutnya",
           "status": "Terjadwal"
         },
         {
-          "text": "Laporan harian terkirim",
+          "status": "Selesai",
           "label": "Baru selesai",
-          "status": "Selesai"
+          "text": "Membalas chat staf"
         },
         {
           "text": "Laporan mingguan tiap Senin 08.00 WIB",
