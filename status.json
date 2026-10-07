@@ -1,12 +1,18 @@
 {
   "office": "Vertex8 HQ",
-  "updated_at": "2026-10-07T09:14:52+07:00",
+  "updated_at": "2026-10-07T11:15:56+07:00",
   "log": [
     {
+      "t": "2026-10-07T11:15:56+07:00",
+      "agent": "Mr. Wakidi",
+      "status": "Sedang kerja",
+      "text": "Ngobrol dengan achphoria"
+    },
+    {
       "t": "2026-10-07T09:14:52+07:00",
+      "text": "Membalas chat staf",
       "agent": "Mr. Wahyudi",
-      "status": "Selesai",
-      "text": "Membalas chat staf"
+      "status": "Selesai"
     },
     {
       "t": "2026-10-07T09:14:24+07:00",
@@ -115,12 +121,6 @@
       "text": "Revamp v6 selesai",
       "agent": "Mr. Wakidi",
       "status": "Selesai"
-    },
-    {
-      "t": "2026-10-06T20:52:35+07:00",
-      "text": "Revamp v6: chat semua agent, ruang meeting, riwayat kerja",
-      "agent": "Mr. Wakidi",
-      "status": "Sedang kerja"
     }
   ],
   "agents": [
@@ -130,6 +130,13 @@
       "name": "Mr. Wakidi",
       "role": "Builder",
       "tasks": [
+        {
+          "status": "Sedang kerja",
+          "label": "Sekarang",
+          "text": "Ngobrol dengan achphoria",
+          "step": "Rencana sambung agent ke Telegram",
+          "step_at": "2026-10-07T11:15:56+07:00"
+        },
         {
           "text": "Revamp v6 selesai",
           "label": "Baru selesai",
@@ -174,9 +181,9 @@
           "status": "Terjadwal"
         },
         {
-          "status": "Selesai",
+          "text": "Membalas chat staf",
           "label": "Baru selesai",
-          "text": "Membalas chat staf"
+          "status": "Selesai"
         }
       ],
       "theme": "marketing"
